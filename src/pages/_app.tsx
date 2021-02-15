@@ -1,7 +1,14 @@
-import "../styles/globals.css";
+import React from "react";
+import Footer from "../components/Footer";
+import "../scss/main.scss";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
-}
+const App = ({ Component, pageProps }) => {
+  return (
+    <div>
+      <Component {...pageProps} />
+      <Footer />
+    </div>
+  );
+};
 
-export default MyApp;
+export default App;
