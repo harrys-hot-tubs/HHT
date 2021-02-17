@@ -1,36 +1,28 @@
-import moment from 'moment'
-import { NextPageContext } from 'next'
-import React, { useState } from 'react'
+import React from 'react'
 import { Button, Form } from 'react-bootstrap'
 import Calendar from '../components/Calendar'
-import LocationSelector from '../components/LocationSelector'
-import { LocationDB } from '../typings/Location'
-import db from '../utils/db'
+import PostcodeField from '../components/PostcodeField'
+import useAsyncValidatedInput from '../hooks/useAsyncValidatedInput'
+import { validatePostcode } from '../utils/validators'
 
-const Hire = ({ locations }) => {
-	const [location, setLocation] = useState('Select Location')
+const Hire = () => {
+	const postcode = useAsyncValidatedInput<string>(validatePostcode)
 	return (
 		<Form>
-			<Form.Control autoComplete='postal-code' />
-			<LocationSelector
-				locations={locations}
-				selected={location}
-				updateSelected={setLocation}
+			<Calendar isStudent={false} />
+			<PostcodeField
+				loading={postcode.loading}
+				isInvalid={postcode.valid == false}
+				isValid={postcode.valid}
+				onChange={postcode.setValue}
+				invalidMessage={postcode.message}
+				onValidate={postcode.validate}
 			/>
-			<Calendar isStudent={false} blockedDates={[moment('2021-02-26')]} />
 			<Button type='submit'>Submit</Button>
 		</Form>
 	)
 }
 
-export async function getStaticProps(context: NextPageContext) {
-	const locations = await db<LocationDB>('locations').select()
-	const options = locations.map((loc) => loc.name)
-	return {
-		props: {
-			locations: options,
-		},
-	}
-}
-
+// TODO on submit display all hot tubs that match criteria
+//TODO when selected go straight to checkout
 export default Hire
