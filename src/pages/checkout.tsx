@@ -16,9 +16,8 @@ const Checkout = ({ stripePromise }: PageProps) => {
 }
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
-	const loadedStripe = await loadStripe(
-		'pk_test_JJ1eMdKN0Hp4UFJ6kWXWO4ix00jtXzq5XG'
-	)
+	const loadedStripe = await loadStripe(process.env.STRIPE_TOKEN)
+	console.log('loadedStr', loadStripe.name)
 	return {
 		props: {
 			stripePromise: loadedStripe,
