@@ -14,17 +14,16 @@ const MAX_NIGHTS = 7
 
 interface ComponentProps {
 	isStudent: boolean
-	blockedDates: moment.Moment[]
+	blockedDates?: moment.Moment[]
 }
 
-const Calendar = ({ isStudent, blockedDates }: ComponentProps) => {
+const Calendar = ({ isStudent, blockedDates = [] }: ComponentProps) => {
 	const [startDate, setStartDate] = useState<moment.Moment>()
 	const [endDate, setEndDate] = useState<moment.Moment>()
 	const [focused, setFocused] = useState<FocusedInputShape>(null)
 	const [showModal, setShowModal] = useState<boolean>(false)
 
 	const isDayBlocked = (day: moment.Moment): boolean => {
-		// TODO indicate no drop off or pickup on weekends.
 		return (
 			blockedDates.some((blockedDate) => blockedDate.isSame(day, 'D')) ||
 			isWeekend(day)
