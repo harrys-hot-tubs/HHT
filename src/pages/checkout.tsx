@@ -1,5 +1,4 @@
-import { loadStripe, Stripe } from '@stripe/stripe-js'
-import { GetStaticProps } from 'next'
+import { Stripe } from '@stripe/stripe-js'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Col, Form } from 'react-bootstrap'
@@ -9,7 +8,7 @@ interface PageProps {
 	stripePromise: Stripe
 }
 
-const Checkout = ({ stripePromise }: PageProps) => {
+const Checkout = () => {
 	const router = useRouter()
 	const [postcode, setPostcode] = useState('')
 	const [user, setUser] = useCheckoutInformation()
@@ -124,16 +123,6 @@ const Checkout = ({ stripePromise }: PageProps) => {
 			</Form.Group>
 		</Form>
 	)
-}
-
-export const getStaticProps: GetStaticProps<PageProps> = async () => {
-	const loadedStripe = await loadStripe(process.env.TEST_STRIPE_TOKEN)
-	console.log('loadedStr', loadedStripe)
-	return {
-		props: {
-			stripePromise: loadedStripe,
-		},
-	}
 }
 
 export default Checkout
