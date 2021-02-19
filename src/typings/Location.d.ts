@@ -1,5 +1,5 @@
 export interface LocationDB {
-	location_id: string
+	location_id: number
 	name: string
 	postcode: string
 	latitude: number

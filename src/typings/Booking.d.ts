@@ -1,6 +1,5 @@
 export interface BookingDB {
-	tubID: number
-	startDate: string
-	endDate: string
-	address: string
+	booking_id: number
+	tub_id: number
+	bookings_duration: string
 }
