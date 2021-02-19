@@ -1,49 +1,30 @@
-import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import {
-	CalendarDay,
-	CalendarDayShape,
-	DateRangePicker,
-	FocusedInputShape,
-} from 'react-dates'
+import { DateRangePicker } from 'react-dates'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
+import { CalendarInterface } from '../hooks/useCalendar'
 
-const MAX_NIGHTS = 7
-
-interface ComponentProps {
-	isStudent: boolean
-	blockedDates?: moment.Moment[]
+interface ComponentProps extends CalendarInterface {
+	isStudent?: boolean
 }
 
-const Calendar = ({ isStudent, blockedDates = [] }: ComponentProps) => {
-	const [startDate, setStartDate] = useState<moment.Moment>()
-	const [endDate, setEndDate] = useState<moment.Moment>()
-	const [focused, setFocused] = useState<FocusedInputShape>(null)
-	const [showModal, setShowModal] = useState<boolean>(false)
-
-	const isDayBlocked = (day: moment.Moment): boolean => {
-		return (
-			blockedDates.some((blockedDate) => blockedDate.isSame(day, 'D')) ||
-			isWeekend(day)
-		)
-	}
-
-	const renderCalendarDay = (props: CalendarDayShape) => {
-		if (startDate && endDate) {
-			// TODO check if range contains date and change render.
-		}
-		return <CalendarDay {...props} />
-	}
-
+const Calendar = ({
+	isStudent = false,
+	isTooLong,
+	startDate,
+	endDate,
+	focused,
+	updateFocus,
+	updateDates,
+	resetDates,
+	isDayBlocked,
+}: ComponentProps) => {
+	const [showModal, setShowModal] = useState(false)
 	useEffect(() => {
 		if (isTooLong(startDate, endDate) && !showModal) {
 			setShowModal(true)
-			setEndDate(null)
-			// const delta = endDate?.diff(startDate, 'days') - MAX_NIGHTS
-			// const newEndDate = endDate.clone().subtract(delta, 'days')
-			// setEndDate(newEndDate)
+			resetDates()
 		}
 	}, [startDate, endDate])
 
@@ -51,19 +32,14 @@ const Calendar = ({ isStudent, blockedDates = [] }: ComponentProps) => {
 		<React.Fragment>
 			<DateRangePicker
 				startDate={startDate}
-				startDateId='ad'
+				startDateId='startDate'
 				endDate={endDate}
-				endDateId=''
-				onDatesChange={({ startDate: nextStartDate, endDate: nextEndDate }) => {
-					if (nextStartDate) setStartDate(nextStartDate)
-
-					if (nextEndDate) setEndDate(nextEndDate)
-				}}
+				endDateId='endDate'
+				onDatesChange={updateDates}
 				focusedInput={focused}
-				onFocusChange={setFocused}
+				onFocusChange={updateFocus}
 				isDayBlocked={isDayBlocked}
 				minimumNights={isStudent ? 2 : 3}
-				renderCalendarDay={renderCalendarDay}
 			/>
 			<Modal show={showModal} onHide={() => setShowModal(false)}>
 				<Modal.Header closeButton>
@@ -80,11 +56,5 @@ const Calendar = ({ isStudent, blockedDates = [] }: ComponentProps) => {
 		</React.Fragment>
 	)
 }
-
-const isTooLong = (startDate: moment.Moment, endDate: moment.Moment): boolean =>
-	endDate?.diff(startDate, 'days') > MAX_NIGHTS
-
-const isWeekend = (date: moment.Moment): boolean =>
-	date.day() == 0 || date.day() == 6
 
 export default Calendar

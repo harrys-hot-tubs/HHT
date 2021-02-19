@@ -1,28 +1,77 @@
-import React from 'react'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import Calendar from '../components/Calendar'
+import HotTub from '../components/HotTub'
 import PostcodeField from '../components/PostcodeField'
-import useAsyncValidatedInput from '../hooks/useAsyncValidatedInput'
-import { validatePostcode } from '../utils/validators'
+import useCalendar from '../hooks/useCalendar'
+import usePostcode from '../hooks/usePostcode'
+import {
+	AvailabilityRequest,
+	AvailabilityResponse,
+} from '../typings/api/Availability'
+import { TubDB } from '../typings/Tub'
+import { getClosestDispatcher } from '../utils/postcode'
+import { displayableTubs } from '../utils/tubs'
 
 const Hire = () => {
-	const postcode = useAsyncValidatedInput<string>(validatePostcode)
+	const router = useRouter()
+	const calendar = useCalendar()
+	const postcode = usePostcode()
+	const [tubs, setTubs] = useState<TubDB[]>(null)
+
+	const onSubmit: React.FormEventHandler<HTMLFormElement> = async (
+		event: React.FormEvent
+	) => {
+		event.preventDefault()
+		event.stopPropagation()
+
+		const params: AvailabilityRequest = {
+			closest: await getClosestDispatcher(postcode.value),
+			startDate: calendar.startDate.toISOString(),
+			endDate: calendar.endDate.toISOString(),
+		}
+		const { data } = await axios.post<AvailabilityResponse>(
+			'/api/availability',
+			params
+		)
+		if (data.available) setTubs(data.tubs)
+		else setTubs([])
+	}
+
+	const onSelectTub = (id: number) => {
+		// TODO workout how to store this data clientside
+		router.push(`/checkout?tub_id=${id}`)
+		console.log('id', id)
+	}
+
 	return (
-		<Form>
-			<Calendar isStudent={false} />
-			<PostcodeField
-				loading={postcode.loading}
-				isInvalid={postcode.valid == false}
-				isValid={postcode.valid}
-				onChange={postcode.setValue}
-				invalidMessage={postcode.message}
-				onValidate={postcode.validate}
-			/>
-			<Button type='submit'>Submit</Button>
-		</Form>
+		<div>
+			<Form onSubmit={onSubmit}>
+				<Calendar {...calendar} />
+				<PostcodeField
+					loading={postcode.loading}
+					postcode={postcode.value}
+					isInvalid={postcode.valid == false}
+					isValid={postcode.valid}
+					onChange={postcode.setValue}
+					invalidMessage={postcode.message}
+					onValidate={postcode.validate}
+				/>
+				<Button type='submit' disabled={!postcode.valid || !calendar.isValid()}>
+					Submit
+				</Button>
+			</Form>
+			{tubs?.length > 0 ? (
+				<div>
+					{displayableTubs(tubs).map((tub) => {
+						const props = { ...tub, onClick: onSelectTub }
+						return <HotTub {...props} key={tub.tub_id} />
+					})}
+				</div>
+			) : null}
+		</div>
 	)
 }
-
-// TODO on submit display all hot tubs that match criteria
-//TODO when selected go straight to checkout
 export default Hire
