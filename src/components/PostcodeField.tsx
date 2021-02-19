@@ -4,6 +4,7 @@ import SpinnerButton from './SpinnerButton'
 
 interface ComponentProps {
 	loading: boolean
+	postcode: string
 	onChange?: (value: string) => void
 	isInvalid: boolean
 	isValid: boolean
@@ -13,12 +14,14 @@ interface ComponentProps {
 
 const PostcodeField = ({
 	loading,
+	postcode,
 	onChange,
 	isInvalid,
 	isValid,
 	invalidMessage,
 	onValidate,
 }: ComponentProps) => {
+	console.log('postcode', postcode)
 	return (
 		<InputGroup className='mb-3'>
 			<FormControl
@@ -26,6 +29,7 @@ const PostcodeField = ({
 				autoComplete='postal-code'
 				isInvalid={isInvalid}
 				isValid={isValid}
+				value={postcode}
 				onChange={(e) => onChange(e.target.value)}
 			/>
 			<InputGroup.Append>
