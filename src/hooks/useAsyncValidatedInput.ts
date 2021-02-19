@@ -1,9 +1,23 @@
 import { useState } from 'react'
+import useStoredState, { UseStoredStateArgs } from './useStoredState'
 
-const useAsyncValidatedInput = <T>(
+interface HookArgs<T> extends UseStoredStateArgs<T> {
 	validator: (value: T) => Promise<[boolean, string]>
-) => {
-	const [value, setValue] = useState<T>(undefined)
+}
+
+const useAsyncValidatedInput = <T>({
+	validator,
+	name,
+	fallback,
+	toString,
+	fromString,
+}: HookArgs<T>) => {
+	const [value, setValue] = useStoredState<T>({
+		fallback,
+		name,
+		toString,
+		fromString,
+	})
 	const [loading, setLoading] = useState(false)
 	const [valid, setValid] = useState<boolean>(undefined)
 	const [message, setMessage] = useState<string>(undefined)
