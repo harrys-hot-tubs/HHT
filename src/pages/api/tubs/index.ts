@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { TubDB } from '../../typings/Tub'
-import db from '../../utils/db'
+import { TubDB } from '../../../typings/Tub'
+import db from '../../../utils/db'
 
 export default async function handler(
 	req: NextApiRequest,

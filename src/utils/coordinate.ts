@@ -12,7 +12,7 @@ export class Coordinate {
 		return this.distance(c) < 30 * 1609.334
 	}
 
-	private distance(location: Coordinate) {
+	distance(location: Coordinate) {
 		const lat1 = this.latitude
 		const long1 = this.longitude
 		const { latitude: lat2, longitude: long2 } = location

@@ -1,6 +1,10 @@
-import moment from 'moment'
 import { NextApiRequest, NextApiResponse } from 'next'
+import {
+	AvailabilityRequest,
+	AvailabilityResponse,
+} from '../../typings/api/Availability'
 import { BookingDB } from '../../typings/Booking'
+import { TubDB } from '../../typings/Tub'
 import db from '../../utils/db'
 
 export default async function handler(
@@ -8,40 +12,39 @@ export default async function handler(
 	res: NextApiResponse
 ) {
 	switch (req.method) {
-		case 'GET':
-			return await get(req, res)
+		case 'POST':
+			return await post(req, res)
 	}
 }
 
-const get = async (req: NextApiRequest, res: NextApiResponse<string[]>) => {
-	try {
-		const { id } = req.body
-		const bookings = await db<BookingDB>('bookings')
-			.select()
-			.where('tubID', '=', id)
-		const unavailableDates = findUnavailabilities(bookings)
-		return res.status(200).json(unavailableDates)
-	} catch (e) {
-		return res.status(400).json(e)
+const post = async (
+	req: NextApiRequest,
+	res: NextApiResponse<AvailabilityResponse>
+) => {
+	const tubs = await findAvailableTubs(req.body)
+	if (tubs.length > 0) {
+		return res.status(200).json({
+			available: true,
+			tubs,
+		})
+	} else {
+		return res.status(200).json({
+			available: false,
+		})
 	}
 }
 
-const findUnavailabilities = (bookings: BookingDB[]): string[] => {
-	const unavailableDates: string[] = []
-	bookings.forEach((booking) => {
-		const dates = enumerateDates(booking.startDate, booking.endDate)
-		unavailableDates.push(...dates)
-	})
-	return unavailableDates
-}
-
-const enumerateDates = (start: string, end: string): string[] => {
-	let startDate = moment(start)
-	const endDate = moment(end)
-	const dates: string[] = []
-	while (!startDate.isAfter(endDate, 'D')) {
-		dates.push(startDate.toISOString())
-		startDate = moment(startDate).add(1, 'days')
-	}
-	return dates
+const findAvailableTubs = async ({
+	closest,
+	startDate,
+	endDate,
+}: AvailabilityRequest): Promise<TubDB[]> => {
+	return await db<TubDB>('tubs')
+		.select()
+		.whereNotIn('tub_id', function () {
+			this.select('tub_id')
+				.from<BookingDB>('bookings')
+				.where('booking_duration', '&&', `[${startDate},${endDate})`)
+		})
+		.andWhere('location_id', '=', closest)
 }
