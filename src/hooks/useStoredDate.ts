@@ -1,5 +1,5 @@
+import useStoredState from '@hooks/useStoredState'
 import moment from 'moment'
-import useStoredState from './useStoredState'
 
 const useStoredDate = (
 	name: string

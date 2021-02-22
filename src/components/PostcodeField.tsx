@@ -1,6 +1,6 @@
+import SpinnerButton from '@components/SpinnerButton'
 import React from 'react'
 import { FormControl, InputGroup } from 'react-bootstrap'
-import SpinnerButton from './SpinnerButton'
 
 interface ComponentProps {
 	loading: boolean
@@ -21,7 +21,6 @@ const PostcodeField = ({
 	invalidMessage,
 	onValidate,
 }: ComponentProps) => {
-	console.log('postcode', postcode)
 	return (
 		<InputGroup className='mb-3'>
 			<FormControl
@@ -38,10 +37,11 @@ const PostcodeField = ({
 					status={loading}
 					type='button'
 					variant='outline-primary'
-					passiveText='Validate'
 					activeText='Validating...'
 					onClick={onValidate}
-				/>
+				>
+					Validate
+				</SpinnerButton>
 			</InputGroup.Append>
 			<FormControl.Feedback type='invalid'>
 				{invalidMessage}

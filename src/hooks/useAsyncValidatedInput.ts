@@ -1,5 +1,5 @@
+import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
 import { useState } from 'react'
-import useStoredState, { UseStoredStateArgs } from './useStoredState'
 
 interface HookArgs<T> extends UseStoredStateArgs<T> {
 	validator: (value: T) => Promise<[boolean, string]>

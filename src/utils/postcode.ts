@@ -1,6 +1,6 @@
+import { RangeResponse } from '@typings/api/Locations'
+import { Coordinate } from '@utils/coordinate'
 import axios from 'axios'
-import { RangeResponse } from '../typings/api/Locations'
-import { Coordinate } from './coordinate'
 
 interface ValidationResponse {
 	status: number

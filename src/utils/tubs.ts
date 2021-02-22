@@ -1,5 +1,5 @@
+import { TubDB } from '@typings/Tub'
 import _ from 'lodash'
-import { TubDB } from '../typings/Tub'
 
 export const displayableTubs = (tubs: TubDB[]) => {
 	const shuffled = _.shuffle(tubs)

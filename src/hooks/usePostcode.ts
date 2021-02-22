@@ -1,5 +1,5 @@
-import { validatePostcode } from '../utils/validators'
-import useAsyncValidatedInput from './useAsyncValidatedInput'
+import useAsyncValidatedInput from '@hooks/useAsyncValidatedInput'
+import { validatePostcode } from '@utils/validators'
 
 const usePostcode = () => ({
 	...useAsyncValidatedInput<string>({

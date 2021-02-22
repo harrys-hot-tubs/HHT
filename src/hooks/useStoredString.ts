@@ -1,4 +1,4 @@
-import useStoredState from './useStoredState'
+import useStoredState from '@hooks/useStoredState'
 
 const useStoredString = (name: string): [string, (value: string) => void] => [
 	...useStoredState({

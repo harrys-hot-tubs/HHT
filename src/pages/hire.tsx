@@ -1,19 +1,19 @@
+import Calendar from '@components/Calendar'
+import HotTub from '@components/HotTub'
+import PostcodeField from '@components/PostcodeField'
+import useCalendar from '@hooks/useCalendar'
+import usePostcode from '@hooks/usePostcode'
+import {
+	AvailabilityRequest,
+	AvailabilityResponse,
+} from '@typings/api/Availability'
+import { TubDB } from '@typings/Tub'
+import { getClosestDispatcher } from '@utils/postcode'
+import { displayableTubs } from '@utils/tubs'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import Calendar from '../components/Calendar'
-import HotTub from '../components/HotTub'
-import PostcodeField from '../components/PostcodeField'
-import useCalendar from '../hooks/useCalendar'
-import usePostcode from '../hooks/usePostcode'
-import {
-	AvailabilityRequest,
-	AvailabilityResponse,
-} from '../typings/api/Availability'
-import { TubDB } from '../typings/Tub'
-import { getClosestDispatcher } from '../utils/postcode'
-import { displayableTubs } from '../utils/tubs'
 
 const Hire = () => {
 	const router = useRouter()
@@ -41,9 +41,8 @@ const Hire = () => {
 	}
 
 	const onSelectTub = (id: number) => {
-		// TODO workout how to store this data clientside
+		localStorage.setItem('tub', id.toString())
 		router.push(`/checkout?tub_id=${id}`)
-		console.log('id', id)
 	}
 
 	return (

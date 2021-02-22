@@ -1,4 +1,4 @@
-import { getCoordinates, getInRange, isPostcode } from './postcode'
+import { getCoordinates, getInRange, isPostcode } from '@utils/postcode'
 
 export const validatePostcode = async (
 	postcode: string

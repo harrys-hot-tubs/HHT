@@ -1,9 +1,9 @@
+import { CalendarInterface } from '@hooks/useCalendar'
 import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { DateRangePicker } from 'react-dates'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
-import { CalendarInterface } from '../hooks/useCalendar'
 
 interface ComponentProps extends CalendarInterface {
 	isStudent?: boolean

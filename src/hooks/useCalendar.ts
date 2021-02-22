@@ -1,11 +1,12 @@
+import useStoredDate from '@hooks/useStoredDate'
 import moment from 'moment'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { FocusedInputShape } from 'react-dates'
-import useStoredDate from './useStoredDate'
 
 const MAX_NIGHTS = 7
 
 const useCalendar = (): CalendarInterface => {
+	moment.locale('en-GB')
 	const [startDate, setStartDate] = useStoredDate('startDate')
 	const [endDate, setEndDate] = useStoredDate('endDate')
 	const [focused, setFocused] = useState<FocusedInputShape | null>(null)

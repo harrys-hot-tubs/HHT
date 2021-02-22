@@ -1,6 +1,6 @@
+import { TubDB } from '@typings/Tub'
 import React from 'react'
 import { Button, Card } from 'react-bootstrap'
-import { TubDB } from '../typings/Tub'
 
 interface ComponentProps extends TubDB {
 	onClick: (id: number) => void
