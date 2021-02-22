@@ -1,16 +1,34 @@
 import knex from 'knex'
+import { NextApiResponse } from 'next'
+import { ConnectedRequest } from '../typings/api/Request'
 
-let cachedConnection: knex
+let connection: knex
 
-const db = <T>(table: string) => {
-	if (cachedConnection) return cachedConnection<T>(table)
+const connector = () => {
+	return () => {
+		connection = knex({
+			client: 'pg',
+			connection: {
+				host: process.env.AWS_DB_ENDPOINT,
+				user: process.env.AWS_DB_USER,
+				password: process.env.AWS_DB_PASSWORD,
+			},
+		})
 
-	const connection = knex({
-		client: 'pg',
-		connection: process.env.DB_HOST,
-	})
-	cachedConnection = connection
-	return cachedConnection<T>(table)
+		return connection
+	}
+}
+
+const db = (...args: any[]) => {
+	return (fn: Function) => async (
+		req: ConnectedRequest,
+		res: NextApiResponse
+	) => {
+		req.db = connector()()
+		await fn(req, res)
+		await req.db.destroy()
+		return
+	}
 }
 
 export default db

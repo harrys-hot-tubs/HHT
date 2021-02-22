@@ -1,23 +1,25 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { RangeRequest, RangeResponse } from '../../typings/api/Locations'
-import { LocationDB } from '../../typings/Location'
-import { Coordinate } from '../../utils/coordinate'
-import db from '../../utils/db'
+import { RangeRequest, RangeResponse } from '@typings/api/Locations'
+import { ConnectedRequest } from '@typings/api/Request'
+import { LocationDB } from '@typings/Location'
+import { Coordinate } from '@utils/coordinate'
+import db from '@utils/db'
+import { NextApiResponse } from 'next'
 
-export default async function handler(
-	req: NextApiRequest,
-	res: NextApiResponse
-) {
+async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
 			return await post(req, res)
+		default:
+			res.setHeader('Allow', 'POST')
+			res.status(405).end('Method not allowed.')
 	}
 }
 
 const post = async (
-	req: NextApiRequest,
+	req: ConnectedRequest,
 	res: NextApiResponse<RangeResponse>
 ) => {
+	const { db } = req
 	const { latitude, longitude } = req.body as RangeRequest
 	const userLocation = new Coordinate(latitude, longitude)
 	const dispatchers = await db<LocationDB>('locations').select()
@@ -49,3 +51,5 @@ const post = async (
 
 const locationToCoordinate = (location: LocationDB) =>
 	new Coordinate(location.latitude, location.longitude)
+
+export default db()(handler)
