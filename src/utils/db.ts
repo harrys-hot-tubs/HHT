@@ -4,7 +4,7 @@ import { ConnectedRequest } from '../typings/api/Request'
 
 let connection: knex
 
-const connector = () => {
+export const connector = () => {
 	return () => {
 		connection = knex({
 			client: 'pg',

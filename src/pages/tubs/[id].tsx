@@ -1,5 +1,5 @@
 import { TubDB } from '@typings/Tub'
-import db from '@utils/db'
+import { connector } from '@utils/db'
 import { GetServerSideProps } from 'next'
 
 interface PageProps {
@@ -19,10 +19,13 @@ const Tub = ({ tub }: PageProps) => {
 export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	context
 ) => {
+	// TODO refactor connector so it can be used in getSSP
+	const db = connector()()
 	const tub = await db<TubDB>('tubs')
 		.select()
 		.first()
 		.where('tub_id', '=', context.params.id)
+	db.destroy()
 
 	if (!tub)
 		return {
