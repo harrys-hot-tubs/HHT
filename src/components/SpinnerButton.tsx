@@ -23,12 +23,12 @@ type Variant =
 type Type = 'button' | 'submit' | 'reset'
 
 interface ComponentProps {
-	id: string
+	id?: string
 	status: boolean
-	type: Type
+	type?: Type
 	value?: string
-	variant: Variant
-	passiveText: string
+	variant?: Variant
+	children: React.ReactNode
 	activeText: string
 	disabled?: boolean
 	onClick?: React.MouseEventHandler<HTMLElement>
@@ -37,10 +37,10 @@ interface ComponentProps {
 const SpinnerButton = ({
 	id,
 	status,
-	type,
+	type = 'button',
 	value,
-	variant,
-	passiveText,
+	variant = 'primary',
+	children,
 	activeText,
 	disabled,
 	onClick,
@@ -59,7 +59,7 @@ const SpinnerButton = ({
 				<span>{activeText}</span>
 			</>
 		) : (
-			<>{passiveText}</>
+			<>{children}</>
 		)}
 	</Button>
 )

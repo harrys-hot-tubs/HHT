@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import useStoredState from '@hooks/useStoredState'
+import { Dispatch, SetStateAction } from 'react'
 
 export interface CheckoutInformation {
 	firstName: string
@@ -15,7 +16,12 @@ const useCheckoutInformation = (): [
 	CheckoutInformation,
 	Dispatch<SetStateAction<CheckoutInformation>>
 ] => {
-	const [checkoutInformation, setCheckoutInformation] = useState(fallback)
+	const [checkoutInformation, setCheckoutInformation] = useStoredState({
+		name: 'checkoutInformation',
+		fallback,
+		toString: (v) => JSON.stringify(v),
+		fromString: (v) => JSON.parse(v) as CheckoutInformation,
+	})
 
 	return [checkoutInformation, setCheckoutInformation]
 }
