@@ -1,6 +1,6 @@
+import { TubDB } from '@typings/Tub'
+import db from '@utils/db'
 import { GetServerSideProps } from 'next'
-import { TubDB } from '../../typings/Tub'
-import db from '../../utils/db'
 
 interface PageProps {
 	tub: TubDB
