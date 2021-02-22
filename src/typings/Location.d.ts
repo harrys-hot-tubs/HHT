@@ -4,4 +4,6 @@ export interface LocationDB {
 	postcode: string
 	latitude: number
 	longitude: number
+	initial_price: number
+	night_price: number
 }
