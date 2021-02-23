@@ -2,25 +2,36 @@ import { TubDB } from '@typings/Tub'
 import React from 'react'
 import { Button, Card } from 'react-bootstrap'
 
-interface ComponentProps extends TubDB {
+interface ComponentProps extends DisplayableTub {
 	onClick: (id: number) => void
 }
 
-const HotTub = ({ tub_id, max_capacity, onClick }: ComponentProps) => {
+export interface DisplayableTub extends TubDB {
+	price: number
+}
+
+const HotTub = ({ tub_id, max_capacity, price, onClick }: ComponentProps) => {
 	return (
-		<Card>
-			<Card.Img variant='top' src={getImageHREF(max_capacity)} />
+		<Card className='tub-card'>
+			<Card.Img
+				variant='top'
+				src={getImageHREF(max_capacity)}
+				className='thumbnail'
+			/>
 			<Card.Body>
-				<Card.Text>Sample text goes here.</Card.Text>
-				<Button variant='primary' onClick={() => onClick(tub_id)}>
+				<Card.Text className='tub-text'>{max_capacity}-person tub</Card.Text>
+				<Card.Text>Price: £{price}</Card.Text>
+				<Button
+					variant='primary'
+					onClick={() => onClick(tub_id)}
+					className='tub-hire-button'
+				>
 					Hire
 				</Button>
 			</Card.Body>
 		</Card>
 	)
 }
-
-export default HotTub
 
 const getImageHREF = (capacity: number) => {
 	switch (capacity) {
@@ -34,3 +45,5 @@ const getImageHREF = (capacity: number) => {
 			return ''
 	}
 }
+
+export default HotTub

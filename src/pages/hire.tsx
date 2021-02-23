@@ -1,5 +1,4 @@
 import Calendar from '@components/Calendar'
-import HotTub from '@components/HotTub'
 import PostcodeField from '@components/PostcodeField'
 import useCalendar from '@hooks/useCalendar'
 import usePostcode from '@hooks/usePostcode'
@@ -9,21 +8,22 @@ import {
 } from '@typings/api/Availability'
 import { TubDB } from '@typings/Tub'
 import { getClosestDispatcher } from '@utils/postcode'
-import { displayableTubs } from '@utils/tubs'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
+import HotTubs from '../components/HotTubs'
+import SpinnerButton from '../components/SpinnerButton'
 
 const Hire = () => {
-	const router = useRouter()
 	const calendar = useCalendar()
 	const postcode = usePostcode()
+	const [loading, setLoading] = useState(false)
 	const [tubs, setTubs] = useState<TubDB[]>(null)
 
 	const onSubmit: React.FormEventHandler<HTMLFormElement> = async (
 		event: React.FormEvent
 	) => {
+		setLoading(true)
 		event.preventDefault()
 		event.stopPropagation()
 
@@ -38,16 +38,13 @@ const Hire = () => {
 		)
 		if (data.available) setTubs(data.tubs)
 		else setTubs([])
-	}
-
-	const onSelectTub = (id: number) => {
-		localStorage.setItem('tub', id.toString())
-		router.push(`/checkout?tub_id=${id}`)
+		setLoading(false)
 	}
 
 	return (
-		<div>
-			<Form onSubmit={onSubmit}>
+		<div className='hire-container'>
+			<h1>Hire a hot tub</h1>
+			<Form onSubmit={onSubmit} className='hire-form'>
 				<Calendar {...calendar} />
 				<PostcodeField
 					loading={postcode.loading}
@@ -58,18 +55,21 @@ const Hire = () => {
 					invalidMessage={postcode.message}
 					onValidate={postcode.validate}
 				/>
-				<Button type='submit' disabled={!postcode.valid || !calendar.isValid()}>
+				<SpinnerButton
+					type='submit'
+					status={loading}
+					disabled={!postcode.valid || !calendar.isValid()}
+					className='hire-submit'
+					activeText='Loading... '
+				>
 					Submit
-				</Button>
+				</SpinnerButton>
 			</Form>
-			{tubs?.length > 0 ? (
-				<div>
-					{displayableTubs(tubs).map((tub) => {
-						const props = { ...tub, onClick: onSelectTub }
-						return <HotTub {...props} key={tub.tub_id} />
-					})}
-				</div>
-			) : null}
+			<HotTubs
+				tubs={tubs}
+				startDate={calendar.startDate?.toISOString()}
+				endDate={calendar.endDate?.toISOString()}
+			/>
 		</div>
 	)
 }
