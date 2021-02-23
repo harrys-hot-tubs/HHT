@@ -10,14 +10,19 @@ const Home = () => {
 	}, [])
 
 	return (
-		<div className='container'>
-			<div>
-				<h1>Harry's Hot Tubs</h1>
-				<Button onClick={(e) => router.push('/hire')}>Hire a Hot Tub</Button>
+		<div>
+			<div className='lead-container'>
+				<h1 className='title'>Harry's Hot Tubs</h1>
+				<Button
+					onClick={(e) => router.push('/hire')}
+					className='call-to-action'
+				>
+					Hire a Hot Tub
+				</Button>
 			</div>
-			<div className='lozenge' />
-			<div>
-				<p>
+			<div className='details-container'>
+				<p className='background-text'>Harry's Hot Tubs</p>
+				<p className='introduction'>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in
 					nulla aliquet libero lacinia hendrerit id nec metus. Quisque gravida.
 				</p>

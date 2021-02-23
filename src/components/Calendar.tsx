@@ -31,6 +31,7 @@ const Calendar = ({
 	return (
 		<React.Fragment>
 			<DateRangePicker
+				numberOfMonths={1}
 				startDate={startDate}
 				startDateId='startDate'
 				endDate={endDate}

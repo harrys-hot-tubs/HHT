@@ -83,7 +83,13 @@ const CheckoutForm = ({
 	}
 
 	return (
-		<Form noValidate validated={validated} onSubmit={handleSubmit}>
+		<Form
+			noValidate
+			validated={validated}
+			onSubmit={handleSubmit}
+			className='checkout-form'
+		>
+			<h1>Checkout</h1>
 			<h2>Contact Details</h2>
 			<Form.Row>
 				<Form.Group as={Col}>
@@ -233,7 +239,12 @@ const CheckoutForm = ({
 			<Form.Text muted>
 				These dates were taken from the previous page and cannot be changed.
 			</Form.Text>
-			<SpinnerButton status={loading} type='submit' activeText='Loading...'>
+			<SpinnerButton
+				status={loading}
+				type='submit'
+				activeText='Loading...'
+				className='checkout-button'
+			>
 				Submit
 			</SpinnerButton>
 		</Form>

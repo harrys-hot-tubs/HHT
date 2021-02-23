@@ -10,9 +10,7 @@ class HHTDoc extends Document {
 					<link rel='icon' href='/favicon.ico' />
 				</Head>
 				<body>
-					<div className='root'>
-						<Main />
-					</div>
+					<Main />
 					<NextScript />
 				</body>
 			</Html>

@@ -7,7 +7,7 @@ const useStoredDate = (
 	...useStoredState<moment.Moment>({
 		name,
 		fallback: null,
-		toString: (v) => v.toISOString(),
+		toString: (v) => v?.toISOString(),
 		fromString: (v) => moment(v),
 	}),
 ]

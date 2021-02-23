@@ -1,6 +1,13 @@
 @import '~react-dates/lib/css/_datepicker.css';
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import './pages/home';
+@import './pages/hire';
+@import './pages/success';
+@import './components/hot_tub';
+@import './components/postcode_field';
+@import './components/calendar';
+@import './components/checkout_form';
+@import 'generics.scss';
 
 html,
 body {
@@ -22,6 +29,15 @@ a {
 
 body::-webkit-scrollbar {
 	display: none;
+}
+
+.container {
+	min-height: 100vh;
+	padding: 0 0.5rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 #__next {

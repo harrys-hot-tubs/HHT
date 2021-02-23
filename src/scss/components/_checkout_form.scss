@@ -1,0 +1,11 @@
+@import '../variables.scss';
+
+.checkout-form {
+	padding: 1em;
+	background: linear-gradient(30deg, $primary-pink, $primary-blue);
+}
+
+.checkout-button {
+	@extend .button;
+	margin-top: 1em;
+}

@@ -54,6 +54,7 @@ const post = async (
 
 		res.status(200).json(checkoutSession)
 	} catch (e) {
+		console.error(e.message)
 		res.status(500).json({ statusCode: 500, message: e.message })
 	}
 }

@@ -22,7 +22,7 @@ const PostcodeField = ({
 	onValidate,
 }: ComponentProps) => {
 	return (
-		<InputGroup className='mb-3'>
+		<InputGroup className='postcode-field'>
 			<FormControl
 				placeholder='Postcode'
 				autoComplete='postal-code'
@@ -39,6 +39,7 @@ const PostcodeField = ({
 					variant='outline-primary'
 					activeText='Validating...'
 					onClick={onValidate}
+					className='postcode-validate-button'
 				>
 					Validate
 				</SpinnerButton>

@@ -2,18 +2,31 @@ import { GetServerSideProps } from 'next'
 import React from 'react'
 import { Button } from 'react-bootstrap'
 import Stripe from 'stripe'
+import FacebookIcon from '../components/FacebookIcon'
+import InstagramIcon from '../components/InstagramIcon'
 
-// TODO format total price as string
 interface PageProps {
-	totalPrice: number
+	totalPrice: string
 }
 
 const Success = ({ totalPrice }: PageProps) => {
 	return (
-		<div>
+		<div className='success-container'>
 			<h1>Thank you!</h1>
-			<h2>Your order for {totalPrice} has been accepted.</h2>
-			<Button href='/'>Home</Button>
+			<h3>
+				Your order for £{totalPrice} has been accepted and your order has been
+				confirmed.
+			</h3>
+			<p>We will contact you soon to with an accurate delivery time.</p>
+			<h3>In the meantime, check out our social media:</h3>
+			<div className='social-media'>
+				<FacebookIcon />
+				<InstagramIcon />
+			</div>
+
+			<Button href='/' className='home-button'>
+				Home
+			</Button>
 		</div>
 	)
 }
@@ -34,7 +47,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	if (!session_id) {
 		return redirectHome()
 	} else {
-		// TODO setup link with stripe https://stripe.com/docs/payments/checkout/custom-success-page
 		const stripe = new Stripe(process.env.TEST_STRIPE_SECRET, {
 			apiVersion: '2020-08-27',
 		})
@@ -44,13 +56,18 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 			)
 			return {
 				props: {
-					totalPrice: session.amount_total,
+					totalPrice: priceToString(session.amount_total),
 				},
 			}
 		} catch (err) {
 			return redirectHome()
 		}
 	}
+}
+
+const priceToString = (price: number) => {
+	const rawString = String(price)
+	return rawString.slice(0, -2) + '.' + rawString.slice(-2)
 }
 
 export default Success

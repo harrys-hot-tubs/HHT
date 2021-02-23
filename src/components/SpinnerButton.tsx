@@ -24,6 +24,7 @@ type Type = 'button' | 'submit' | 'reset'
 
 interface ComponentProps {
 	id?: string
+	className?: string
 	status: boolean
 	type?: Type
 	value?: string
@@ -36,6 +37,7 @@ interface ComponentProps {
 
 const SpinnerButton = ({
 	id,
+	className,
 	status,
 	type = 'button',
 	value,
@@ -52,11 +54,12 @@ const SpinnerButton = ({
 		value={value}
 		disabled={disabled || status}
 		onClick={onClick}
+		className={className}
 	>
 		{status ? (
 			<>
-				<Spinner as='span' animation='border' size='sm' role='status' />
 				<span>{activeText}</span>
+				<Spinner as='span' animation='border' size='sm' role='status' />
 			</>
 		) : (
 			<>{children}</>

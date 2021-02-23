@@ -1,7 +1,7 @@
 import { TubDB } from '@typings/Tub'
 import _ from 'lodash'
 
-export const displayableTubs = (tubs: TubDB[]) => {
+export const displayableTubs = (tubs: TubDB[]): TubDB[] => {
 	const shuffled = _.shuffle(tubs)
 	const displayable = []
 	shuffled.forEach((tub) => {
