@@ -122,6 +122,10 @@ const sendEmailNotification = async (
 							Email: 'bridges.wood@gmail.com',
 							Name: 'Max Wood',
 						},
+						{
+							Email: 'harry@harryshottubs.com',
+							Name: 'Harry Strudwick',
+						},
 					],
 					Subject: `Order ${order.id}`,
 					TextPart: `
