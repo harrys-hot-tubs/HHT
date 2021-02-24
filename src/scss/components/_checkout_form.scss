@@ -1,11 +1,21 @@
-@import '../variables.scss';
+.checkout-border {
+	@extend .border;
+	height: fit-content;
+	display: flex;
+	justify-content: center;
+}
 
 .checkout-form {
 	padding: 1em;
-	background: linear-gradient(30deg, $primary-pink, $primary-blue);
+	background-color: white;
+	border-radius: 5px;
 }
 
 .checkout-button {
 	@extend .button;
 	margin-top: 1em;
+	width: 7em;
+	color: $primary-light;
+	background-color: $secondary-blue;
+	font-weight: bold;
 }

@@ -30,14 +30,16 @@ const Checkout = ({ tubID }: PageProps) => {
 	}, [])
 
 	return (
-		<CheckoutForm
-			tubID={tubID}
-			postcode={postcode}
-			startDate={startDate}
-			endDate={endDate}
-			user={user}
-			setUser={setUser}
-		/>
+		<div className='checkout-border'>
+			<CheckoutForm
+				tubID={tubID}
+				postcode={postcode}
+				startDate={startDate}
+				endDate={endDate}
+				user={user}
+				setUser={setUser}
+			/>
+		</div>
 	)
 }
 

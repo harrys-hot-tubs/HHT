@@ -8,7 +8,7 @@
 }
 
 .tub-card {
-	margin: 1rem;
+	max-width: 100%;
 	flex-basis: 45%;
 	padding: 1.5rem;
 	text-align: left;
@@ -19,24 +19,14 @@
 	transition: color 0.15s ease, border-color 0.15s ease;
 }
 
+.thumbnail {
+	width: 100%;
+}
+
 .tub-text {
 	font-weight: 400;
 }
 
 .tub-hire-button {
-	width: fit-content;
-	color: #084b83;
-	font-weight: bold;
-	background-color: #78d4f7;
-	border-color: #78d4f7;
-	border-width: 1px;
-	height: min-content;
-	line-height: 0.8;
-}
-
-@media (max-width: 600px) {
-	.grid {
-		width: 100%;
-		flex-direction: column;
-	}
+	@extend .button;
 }

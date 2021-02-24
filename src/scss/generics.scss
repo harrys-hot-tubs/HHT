@@ -1,16 +1,35 @@
+.border {
+	min-height: 100vh;
+	position: relative;
+	background: linear-gradient(30deg, $primary-pink, $primary-blue);
+	padding: max(10px, 1%);
+}
+
 .button {
-	width: fit-content;
-	color: #084b83;
-	font-weight: bold;
-	background-color: #78d4f7;
-	border-color: #78d4f7;
-	border-width: 1px;
-	height: min-content;
-	line-height: 0.8;
+	transition-property: background background-color color;
+	transition: ease-in-out 0.25s;
+	min-width: fit-content;
+	border: none;
+	border-radius: 0.25rem;
+	min-height: 2em;
+}
+
+.button:disabled {
+	background: none;
+	background-color: #ccc;
+	color: #666;
+}
+
+.button:hover {
+	filter: drop-shadow();
 }
 
 .icon {
 	height: 2em;
 	width: 2em;
 	margin: 10px;
+}
+
+.spinner-custom {
+	height: 2em;
 }

@@ -32,12 +32,17 @@ body::-webkit-scrollbar {
 }
 
 .container {
-	min-height: 100vh;
-	padding: 0 0.5rem;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+
+.page-border {
+	height: 100vh;
+	position: relative;
+	background: linear-gradient(30deg, $primary-pink, $primary-blue);
+	padding: 1%;
 }
 
 #__next {

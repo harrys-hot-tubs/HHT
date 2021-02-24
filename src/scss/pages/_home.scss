@@ -24,7 +24,6 @@
 }
 
 .main {
-	padding: 5rem 0;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -49,15 +48,16 @@
 }
 
 .call-to-action {
-	width: fit-content;
+	@extend .button;
+	width: 10em;
 	color: $primary-dark;
-	font-size: 16pt;
+	font-size: 20pt;
 	font-weight: bold;
 	margin-left: 0.5em;
-	background-color: #ffffff99;
-	border-color: $primary-pink;
-	border-width: 7px;
-	border-radius: 100px;
+	background: none !important;
+	background-color: $primary-pink !important;
+	border-width: 0px;
+	border-radius: 100px !important;
 }
 
 .call-to-action:active {
@@ -76,7 +76,10 @@
 .background-text {
 	margin: 0 20px 0 20px;
 	position: absolute;
-	filter: opacity(10%);
+	background-image: linear-gradient(45deg, $primary-pink, $primary-blue);
+	background-clip: text;
+	color: transparent;
+	filter: opacity(30%);
 	overflow: hidden;
 	line-height: 0.9;
 	font-size: 80pt;
@@ -91,7 +94,6 @@
 	height: 100%;
 	width: 6px;
 	background-color: $primary-pink;
-	border-color: $primary-pink;
 	border-radius: 3px;
 }
 
@@ -126,10 +128,42 @@
 	height: 1em;
 }
 
-@media (max-width: 600px) {
-	.grid {
-		width: 100%;
-		flex-direction: column;
+@media (max-width: 350px) {
+	.lead-container::after {
+		background: none;
+	}
+
+	.title {
+		background-image: linear-gradient(45deg, $primary-pink, $primary-blue);
+		background-clip: text;
+		color: transparent;
+	}
+}
+
+@media (min-width: 800px) {
+	.main {
+		flex-direction: row;
+	}
+	.lead-container {
+		height: 100vh;
+	}
+
+	.details-container {
+		height: 100vh;
+	}
+
+	.background-text {
+		font-size: 80pt;
+	}
+
+	.introduction::before {
+		background-color: $secondary-blue;
+	}
+
+	.lead-container::after {
+		background-size: cover;
+		position: absolute;
+		top: -300px;
 	}
 }
 

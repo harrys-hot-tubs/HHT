@@ -54,12 +54,12 @@ const SpinnerButton = ({
 		value={value}
 		disabled={disabled || status}
 		onClick={onClick}
-		className={className}
+		bsPrefix={className}
 	>
 		{status ? (
 			<>
 				<span>{activeText}</span>
-				<Spinner as='span' animation='border' size='sm' role='status' />
+				<Spinner as='span' animation='border' role='status' size='sm' />
 			</>
 		) : (
 			<>{children}</>

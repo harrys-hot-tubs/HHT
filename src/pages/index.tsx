@@ -10,13 +10,10 @@ const Home = () => {
 	}, [])
 
 	return (
-		<div>
+		<div className='main'>
 			<div className='lead-container'>
 				<h1 className='title'>Harry's Hot Tubs</h1>
-				<Button
-					onClick={(e) => router.push('/hire')}
-					className='call-to-action'
-				>
+				<Button onClick={(e) => router.push('/hire')} bsPrefix='call-to-action'>
 					Hire a Hot Tub
 				</Button>
 			</div>

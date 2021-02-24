@@ -42,34 +42,36 @@ const Hire = () => {
 	}
 
 	return (
-		<div className='hire-container'>
-			<h1>Hire a hot tub</h1>
-			<Form onSubmit={onSubmit} className='hire-form'>
-				<Calendar {...calendar} />
-				<PostcodeField
-					loading={postcode.loading}
-					postcode={postcode.value}
-					isInvalid={postcode.valid == false}
-					isValid={postcode.valid}
-					onChange={postcode.setValue}
-					invalidMessage={postcode.message}
-					onValidate={postcode.validate}
+		<div className='hire-border'>
+			<div className='hire-container'>
+				<h1>Hire a hot tub</h1>
+				<Form onSubmit={onSubmit} className='hire-form'>
+					<Calendar {...calendar} />
+					<PostcodeField
+						loading={postcode.loading}
+						postcode={postcode.value}
+						isInvalid={postcode.valid == false}
+						isValid={postcode.valid}
+						onChange={postcode.setValue}
+						invalidMessage={postcode.message}
+						onValidate={postcode.validate}
+					/>
+					<SpinnerButton
+						type='submit'
+						status={loading}
+						disabled={!postcode.valid || !calendar.isValid()}
+						className='hire-submit'
+						activeText='Loading... '
+					>
+						Submit
+					</SpinnerButton>
+				</Form>
+				<HotTubs
+					tubs={tubs}
+					startDate={calendar.startDate?.toISOString()}
+					endDate={calendar.endDate?.toISOString()}
 				/>
-				<SpinnerButton
-					type='submit'
-					status={loading}
-					disabled={!postcode.valid || !calendar.isValid()}
-					className='hire-submit'
-					activeText='Loading... '
-				>
-					Submit
-				</SpinnerButton>
-			</Form>
-			<HotTubs
-				tubs={tubs}
-				startDate={calendar.startDate?.toISOString()}
-				endDate={calendar.endDate?.toISOString()}
-			/>
+			</div>
 		</div>
 	)
 }

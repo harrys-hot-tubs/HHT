@@ -30,4 +30,35 @@
 
 .hire-submit {
 	@extend .button;
+	font-weight: bold;
+	font-size: 16pt;
+	background-color: $secondary-blue;
+	color: $primary-light;
+	width: 6em;
+}
+
+@media (min-width: 800px) {
+	.hire-container::after {
+		top: -350px;
+		left: 0;
+	}
+}
+
+@media (min-width: 1080px) {
+	.hire-container::after {
+		background: transparent;
+	}
+
+	.hire-container {
+		background-color: white;
+		border-radius: 10px;
+		height: 100%;
+	}
+
+	.hire-border {
+		height: 100vh;
+		position: relative;
+		background: linear-gradient(30deg, $primary-pink, $primary-blue);
+		padding: 1%;
+	}
 }
