@@ -24,6 +24,7 @@ const PostcodeField = ({
 	return (
 		<InputGroup className='postcode-field'>
 			<FormControl
+				id='postcode'
 				placeholder='Postcode'
 				autoComplete='postal-code'
 				isInvalid={isInvalid}
@@ -36,7 +37,6 @@ const PostcodeField = ({
 					id='postcode-validator'
 					status={loading}
 					type='button'
-					variant='outline-primary'
 					activeText='Validating...'
 					onClick={onValidate}
 					className='postcode-validate-button'

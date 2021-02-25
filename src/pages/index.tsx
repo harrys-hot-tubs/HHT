@@ -12,6 +12,7 @@ const Home = () => {
 	return (
 		<div className='main'>
 			<div className='lead-container'>
+				<img src='lead1.jpg' className='hero-image' />
 				<h1 className='title'>Harry's Hot Tubs</h1>
 				<Button onClick={(e) => router.push('/hire')} bsPrefix='call-to-action'>
 					Hire a Hot Tub
@@ -20,8 +21,8 @@ const Home = () => {
 			<div className='details-container'>
 				<p className='background-text'>Harry's Hot Tubs</p>
 				<p className='introduction'>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in
-					nulla aliquet libero lacinia hendrerit id nec metus. Quisque gravida.
+					Boasting 5* reviews from over 800 hires, we are proud to be the Number
+					One Hot Tub Rental Company in the UK!
 				</p>
 			</div>
 		</div>

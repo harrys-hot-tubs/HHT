@@ -9,13 +9,19 @@
 @import './components/checkout_form';
 @import 'generics.scss';
 
-html,
-body {
+html {
 	height: 100%;
-	padding: 0;
-	margin: 0;
+	min-height: 100vh;
+	width: 100%;
+	min-width: 100vw;
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
 		Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+body {
+	position: relative;
+	height: 100%;
+	width: 100%;
 }
 
 a {
@@ -31,22 +37,11 @@ body::-webkit-scrollbar {
 	display: none;
 }
 
-.container {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-.page-border {
-	height: 100vh;
-	position: relative;
-	background: linear-gradient(30deg, $primary-pink, $primary-blue);
-	padding: 1%;
-}
-
 #__next {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
+	background: linear-gradient(30deg, $primary-pink, $primary-blue);
+	padding: 2%;
+	height: 100%;
+	width: 100%;
+	border: none;
+	overflow: scroll;
 }

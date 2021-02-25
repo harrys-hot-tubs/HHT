@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { DateRangePicker } from 'react-dates'
 import 'react-dates/initialize'
-import 'react-dates/lib/css/_datepicker.css'
 
 interface ComponentProps extends CalendarInterface {
 	isStudent?: boolean

@@ -1,5 +1,4 @@
-.checkout-border {
-	@extend .border;
+.checkout-wrapper {
 	height: fit-content;
 	display: flex;
 	justify-content: center;
@@ -7,7 +6,7 @@
 
 .checkout-form {
 	padding: 1em;
-	background-color: white;
+	background-color: #ffffff;
 	border-radius: 5px;
 }
 

@@ -2,23 +2,33 @@
 
 .hire-container {
 	@extend .container;
+	@extend .outer;
+	justify-content: space-between;
+	align-items: center;
+	background-color: transparent !important;
 }
 
-.hire-container::after {
-	content: '';
-	background-image: url('../../../public/hire.jpg');
+.hire-background {
+	padding: 2%;
+	height: 100%;
+	width: 100%;
 	filter: opacity(70%);
-	background-size: cover;
+	object-fit: cover;
 	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: -50px;
-	right: 0;
-	z-index: -1;
+	left: 50%;
+	transform: translateX(-50%);
+	border-radius: 20px;
 }
 
-.hire-container h1 {
+.primary-container {
+	z-index: 1;
+	margin: 1em;
+	min-width: 40%;
+}
+
+.primary-container h1 {
 	color: $primary-dark;
+	margin: 0.5em;
 }
 
 .hire-form {
@@ -37,28 +47,20 @@
 	width: 6em;
 }
 
-@media (min-width: 800px) {
-	.hire-container::after {
-		top: -350px;
-		left: 0;
-	}
-}
-
 @media (min-width: 1080px) {
-	.hire-container::after {
-		background: transparent;
-	}
-
 	.hire-container {
 		background-color: white;
 		border-radius: 10px;
 		height: 100%;
 	}
+}
 
-	.hire-border {
-		height: 100vh;
-		position: relative;
-		background: linear-gradient(30deg, $primary-pink, $primary-blue);
-		padding: 1%;
+@media screen and (orientation: landscape) {
+	.hire-container {
+		flex-direction: row !important;
+	}
+
+	.tub-list {
+		flex-direction: column !important;
 	}
 }

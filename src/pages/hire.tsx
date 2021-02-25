@@ -42,10 +42,11 @@ const Hire = () => {
 	}
 
 	return (
-		<div className='hire-border'>
-			<div className='hire-container'>
-				<h1>Hire a hot tub</h1>
+		<div className='hire-container'>
+			<img src='hire.jpg' className='hire-background' />
+			<div className='primary-container'>
 				<Form onSubmit={onSubmit} className='hire-form'>
+					<h1>Hire a hot tub</h1>
 					<Calendar {...calendar} />
 					<PostcodeField
 						loading={postcode.loading}
@@ -66,12 +67,12 @@ const Hire = () => {
 						Submit
 					</SpinnerButton>
 				</Form>
-				<HotTubs
-					tubs={tubs}
-					startDate={calendar.startDate?.toISOString()}
-					endDate={calendar.endDate?.toISOString()}
-				/>
 			</div>
+			<HotTubs
+				tubs={tubs}
+				startDate={calendar.startDate?.toISOString()}
+				endDate={calendar.endDate?.toISOString()}
+			/>
 		</div>
 	)
 }

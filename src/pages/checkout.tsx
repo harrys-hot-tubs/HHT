@@ -30,7 +30,7 @@ const Checkout = ({ tubID }: PageProps) => {
 	}, [])
 
 	return (
-		<div className='checkout-border'>
+		<div className='checkout-wrapper'>
 			<CheckoutForm
 				tubID={tubID}
 				postcode={postcode}

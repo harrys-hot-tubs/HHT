@@ -1,21 +1,20 @@
 .postcode-field {
-	width: 20em;
 	flex-basis: 45%;
 	z-index: 0;
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
 
+input#postcode {
+	width: 4em;
+}
+
 .postcode-validate-button {
 	@extend .button;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
 	background-color: $secondary-blue;
 	color: $primary-light;
 	font-weight: 500;
 	width: 8em;
-}
-
-.postcode-validate-button:active {
-	@extend .postcode-validate-button;
 }

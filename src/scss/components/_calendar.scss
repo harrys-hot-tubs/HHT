@@ -1,1 +1,17 @@
+.DateRangePicker_picker {
+	transform: translateX(-5%);
+	z-index: 2;
+}
 
+.CalendarDay__selected,
+.CalendarDay__selected:active,
+.CalendarDay__selected:hover {
+	background-color: $primary-pink;
+	font-weight: bold;
+	border: 1px solid #eceeee;
+}
+
+.CalendarDay__selected_span {
+	background-color: lighten($color: $primary-pink, $amount: 10%);
+	border: 1px solid #eceeee;
+}

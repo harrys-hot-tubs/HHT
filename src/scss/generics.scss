@@ -1,8 +1,13 @@
-.border {
-	min-height: 100vh;
-	position: relative;
-	background: linear-gradient(30deg, $primary-pink, $primary-blue);
-	padding: max(10px, 1%);
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.outer {
+	border-radius: 10px;
+	background-color: white;
+	height: 100%;
 }
 
 .button {
@@ -11,7 +16,6 @@
 	min-width: fit-content;
 	border: none;
 	border-radius: 0.25rem;
-	min-height: 2em;
 }
 
 .button:disabled {

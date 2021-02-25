@@ -38,7 +38,7 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 
 	if (tubs?.length === 0) return null
 	return (
-		<div className='tub_list'>
+		<div className='tub-list'>
 			{displayable.map((tub) => {
 				const props = {
 					...tub,

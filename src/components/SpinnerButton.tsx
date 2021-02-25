@@ -1,24 +1,5 @@
 import React from 'react'
-import { Button, Spinner } from 'react-bootstrap'
-
-type Variant =
-	| 'primary'
-	| 'secondary'
-	| 'success'
-	| 'danger'
-	| 'warning'
-	| 'info'
-	| 'dark'
-	| 'light'
-	| 'link'
-	| 'outline-primary'
-	| 'outline-secondary'
-	| 'outline-success'
-	| 'outline-danger'
-	| 'outline-warning'
-	| 'outline-info'
-	| 'outline-dark'
-	| 'outline-light'
+import { Spinner } from 'react-bootstrap'
 
 type Type = 'button' | 'submit' | 'reset'
 
@@ -28,7 +9,6 @@ interface ComponentProps {
 	status: boolean
 	type?: Type
 	value?: string
-	variant?: Variant
 	children: React.ReactNode
 	activeText: string
 	disabled?: boolean
@@ -41,30 +21,28 @@ const SpinnerButton = ({
 	status,
 	type = 'button',
 	value,
-	variant = 'primary',
 	children,
 	activeText,
 	disabled,
 	onClick,
 }: ComponentProps) => (
-	<Button
+	<button
 		id={id}
-		variant={variant}
 		type={type}
 		value={value}
 		disabled={disabled || status}
 		onClick={onClick}
-		bsPrefix={className}
+		className={className}
 	>
 		{status ? (
 			<>
-				<span>{activeText}</span>
-				<Spinner as='span' animation='border' role='status' size='sm' />
+				<span>{activeText} </span>
+				<Spinner animation='border' role='status' size='sm' />
 			</>
 		) : (
 			<>{children}</>
 		)}
-	</Button>
+	</button>
 )
 
 export default SpinnerButton
