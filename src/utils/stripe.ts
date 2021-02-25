@@ -4,7 +4,7 @@ let stripePromise: Promise<Stripe | null>
 
 export const getStripe = () => {
 	if (!stripePromise) {
-		stripePromise = loadStripe(process.env.TEST_STRIPE_TOKEN)
+		stripePromise = loadStripe(process.env.NEXT_PUBLIC_TEST_STRIPE_TOKEN)
 	}
 	return stripePromise
 }
