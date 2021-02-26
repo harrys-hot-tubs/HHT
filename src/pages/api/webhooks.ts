@@ -58,20 +58,24 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	console.log('Success: ', event.id)
 
 	if (event.type === 'payment_intent.succeeded') {
-		const paymentIntent = event.data.object as Stripe.PaymentIntent
-		const sessionID = await getCheckoutSessionID(paymentIntent.id)
-		const order = (
-			await db<OrderDB>('orders')
-				.update({
-					payment_intent_id: paymentIntent.id,
-					paid: true,
-				})
-				.where('id', sessionID)
-				.returning('*')
-		)[0]
+		try {
+			const paymentIntent = event.data.object as Stripe.PaymentIntent
+			const sessionID = await getCheckoutSessionID(paymentIntent.id)
+			const order = (
+				await db<OrderDB>('orders')
+					.update({
+						payment_intent_id: paymentIntent.id,
+						paid: true,
+					})
+					.where('id', sessionID)
+					.returning('*')
+			)[0]
 
-		await sendEmailNotification(order, db)
-		console.log('completion')
+			await sendEmailNotification(order, db)
+			console.log('completion')
+		} catch (err) {
+			console.log(err.message)
+		}
 	} else if (event.type === 'payment_intent.payment_failed') {
 		const paymentIntent = event.data.object as Stripe.PaymentIntent
 		const sessionID = await getCheckoutSessionID(paymentIntent.id)
@@ -92,6 +96,9 @@ const getCheckoutSessionID = async (paymentIntentID: string) => {
 	const checkoutSession = await stripe.checkout.sessions.list({
 		payment_intent: paymentIntentID,
 	})
+
+	if (!checkoutSession?.data[0]?.id)
+		throw new Error('Missing checkoutSession id.')
 	return checkoutSession.data[0].id
 }
 
