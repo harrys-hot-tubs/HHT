@@ -10,7 +10,7 @@ import mj from 'node-mailjet'
 import { Stripe } from 'stripe'
 import { LocationDB } from '../../typings/Location'
 
-const stripe: Stripe = new Stripe(process.env.TEST_STRIPE_SECRET, {
+const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
 })
 

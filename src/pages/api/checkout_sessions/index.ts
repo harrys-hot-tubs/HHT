@@ -5,7 +5,7 @@ import { formatAmount } from '@utils/stripe'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Stripe } from 'stripe'
 
-const stripe = new Stripe(process.env.TEST_STRIPE_SECRET, {
+const stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
 })
 

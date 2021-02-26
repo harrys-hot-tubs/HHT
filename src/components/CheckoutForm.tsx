@@ -294,7 +294,7 @@ const createOrder = async (
 	}
 
 	try {
-		const res = await axios.post('/api/order', params)
+		const res = await axios.post('/api/orders', params)
 		if (res.status !== 200) throw new Error('Order creation failed.')
 	} catch (error) {
 		console.log(error.message)

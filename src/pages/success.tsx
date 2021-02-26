@@ -48,7 +48,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	if (!session_id) {
 		return redirectHome()
 	} else {
-		const stripe = new Stripe(process.env.TEST_STRIPE_SECRET, {
+		const stripe = new Stripe(process.env.STRIPE_SECRET, {
 			apiVersion: '2020-08-27',
 		})
 		try {
