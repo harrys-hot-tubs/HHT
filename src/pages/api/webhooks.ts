@@ -5,7 +5,7 @@ import db from '@utils/db'
 import Knex from 'knex'
 import { buffer } from 'micro'
 import Cors from 'micro-cors'
-import { NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from 'next'
 import mj from 'node-mailjet'
 import { Stripe } from 'stripe'
 import { LocationDB } from '../../typings/Location'
@@ -26,7 +26,24 @@ const cors = Cors({
 	allowMethods: ['POST', 'HEAD'],
 })
 
+const runMiddleware = (
+	req: NextApiRequest,
+	res: NextApiResponse,
+	fn: Function
+) => {
+	return new Promise((resolve, reject) => {
+		fn(req, res, (result) => {
+			if (result instanceof Error) {
+				return reject(result)
+			}
+
+			return resolve(result)
+		})
+	})
+}
+
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
+	await runMiddleware(req, res, cors)
 	switch (req.method) {
 		case 'POST':
 			return await post(req, res)
