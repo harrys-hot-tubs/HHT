@@ -79,7 +79,7 @@
 	filter: opacity(30%);
 	overflow: hidden;
 	line-height: 0.9;
-	font-size: 5em;
+	font-size: 4.8em;
 }
 
 .introduction::before {
@@ -117,7 +117,7 @@
 	}
 }
 
-@media (min-width: 800px) {
+@media (min-width: 750px) {
 	.lead-container {
 		height: 100%;
 	}
@@ -128,5 +128,9 @@
 
 	.background-text {
 		font-size: 80pt;
+	}
+
+	.introduction {
+		font-size: 16pt;
 	}
 }

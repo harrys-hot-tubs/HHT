@@ -1,17 +1,19 @@
 import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
 import { useState } from 'react'
 
-interface HookArgs<T> extends UseStoredStateArgs<T> {
-	validator: (value: T) => Promise<[boolean, string]>
+type ValidationError = ''
+
+interface HookArgs<T, U> extends UseStoredStateArgs<T> {
+	validator: (value: T) => Promise<[boolean, U]>
 }
 
-const useAsyncValidatedInput = <T>({
+const useAsyncValidatedInput = <T, U>({
 	validator,
 	name,
 	fallback,
 	toString,
 	fromString,
-}: HookArgs<T>) => {
+}: HookArgs<T, U>) => {
 	const [value, setValue] = useStoredState<T>({
 		fallback,
 		name,
@@ -20,16 +22,16 @@ const useAsyncValidatedInput = <T>({
 	})
 	const [loading, setLoading] = useState(false)
 	const [valid, setValid] = useState<boolean>(undefined)
-	const [message, setMessage] = useState<string>(undefined)
+	const [reason, setReason] = useState<U>(undefined)
 
 	const makeValid = () => {
 		setValid(true)
-		setMessage(undefined)
+		setReason(undefined)
 	}
 
-	const makeInvalid = (message: string) => {
+	const makeInvalid = (message: U) => {
 		setValid(false)
-		setMessage(message)
+		setReason(message)
 	}
 
 	const validate = async () => {
@@ -41,11 +43,16 @@ const useAsyncValidatedInput = <T>({
 		setLoading(false)
 	}
 
+	const updateValue = (value: T) => {
+		setValid(undefined)
+		setValue(value)
+	}
+
 	return {
 		value,
-		setValue,
+		setValue: updateValue,
 		valid,
-		message,
+		message: reason,
 		validate,
 		makeValid,
 		makeInvalid,

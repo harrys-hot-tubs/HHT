@@ -36,7 +36,7 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 		router.push(`/checkout?tub_id=${id}`)
 	}
 
-	if (tubs?.length === 0) return null
+	if (!tubs?.length) return null
 	return (
 		<div className='tub-list'>
 			{displayable.map((tub) => {

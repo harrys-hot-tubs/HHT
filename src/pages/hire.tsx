@@ -9,7 +9,7 @@ import {
 import { TubDB } from '@typings/Tub'
 import { getClosestDispatcher } from '@utils/postcode'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import HotTubs from '../components/HotTubs'
 import SpinnerButton from '../components/SpinnerButton'
@@ -41,6 +41,10 @@ const Hire = () => {
 		setLoading(false)
 	}
 
+	useEffect(() => {
+		setTubs(null)
+	}, [calendar.startDate, calendar.endDate, postcode.value])
+
 	return (
 		<div className='hire-container'>
 			<img src='hire.jpg' className='hire-background' />
@@ -54,7 +58,7 @@ const Hire = () => {
 						isInvalid={postcode.valid == false}
 						isValid={postcode.valid}
 						onChange={postcode.setValue}
-						invalidMessage={postcode.message}
+						invalidReason={postcode.message}
 						onValidate={postcode.validate}
 					/>
 					<SpinnerButton

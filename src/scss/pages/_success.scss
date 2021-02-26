@@ -2,7 +2,8 @@
 
 .success-container {
 	@extend .container;
-	background: linear-gradient(45deg, $primary-pink, $primary-blue);
+	@extend .outer;
+	padding: 1em;
 }
 
 .social-media {
@@ -23,6 +24,21 @@
 	fill: #e4405f;
 }
 
-.home-button {
-	@extend .button;
+.home-text {
+	color: grey;
+}
+
+.home-link {
+	@extend .home-text;
+}
+
+.home-link:hover {
+	color: lighten($color: grey, $amount: 20%);
+	text-decoration: none;
+}
+
+@media screen and (orientation: landscape) {
+	// .success-container {
+	// 	flex-direction: row !important;
+	// }
 }

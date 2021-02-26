@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next'
 import React from 'react'
-import { Button } from 'react-bootstrap'
 import Stripe from 'stripe'
 import FacebookIcon from '../components/FacebookIcon'
 import InstagramIcon from '../components/InstagramIcon'
@@ -13,20 +12,22 @@ const Success = ({ totalPrice }: PageProps) => {
 	return (
 		<div className='success-container'>
 			<h1>Thank you!</h1>
-			<h3>
-				Your order for £{totalPrice} has been accepted and your order has been
-				confirmed.
-			</h3>
+			<h3>Your order for £{totalPrice} has been accepted and confirmed.</h3>
 			<p>We will contact you soon to with an accurate delivery time.</p>
-			<h3>In the meantime, check out our social media:</h3>
-			<div className='social-media'>
-				<FacebookIcon />
-				<InstagramIcon />
+			<div className='exit-card'>
+				<h3>Check out our social media:</h3>
+				<div className='social-media'>
+					<FacebookIcon />
+					<InstagramIcon />
+				</div>
+				<span className='home-text'>
+					Back to{' '}
+					<a href='/' className='home-link'>
+						home
+					</a>
+					.
+				</span>
 			</div>
-
-			<Button href='/' className='home-button'>
-				Home
-			</Button>
 		</div>
 	)
 }

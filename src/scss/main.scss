@@ -3,6 +3,7 @@
 @import './pages/home';
 @import './pages/hire';
 @import './pages/success';
+@import './pages/failure';
 @import './components/hot_tub';
 @import './components/postcode_field';
 @import './components/calendar';
@@ -44,4 +45,8 @@ body::-webkit-scrollbar {
 	width: 100%;
 	border: none;
 	overflow: scroll;
+}
+
+#__next::-webkit-scrollbar {
+	display: none;
 }
