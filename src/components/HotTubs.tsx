@@ -37,7 +37,6 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 		router.push(`/checkout?tub_id=${id}`)
 	}
 
-	console.log('tubs', tubs)
 	if (tubs === null) return null
 	if (tubs.length === 0) return <NoAvailabilities />
 	return (

@@ -1,9 +1,8 @@
 import SpinnerButton from '@components/SpinnerButton'
 import { PostcodeError } from '@utils/validators'
-import React, { useEffect, useState } from 'react'
-import { FormControl, InputGroup, Modal } from 'react-bootstrap'
-import FacebookIcon from './FacebookIcon'
-import InstagramIcon from './InstagramIcon'
+import React from 'react'
+import { FormControl, InputGroup } from 'react-bootstrap'
+import PostcodeModal from './postcode_modals/PostcodeModal'
 
 interface ComponentProps {
 	loading: boolean
@@ -24,14 +23,6 @@ const PostcodeField = ({
 	invalidReason,
 	onValidate,
 }: ComponentProps) => {
-	const [showModal, setShowModal] = useState(false)
-
-	useEffect(() => {
-		if (invalidReason === 'range') {
-			setShowModal(true)
-		}
-	}, [invalidReason])
-
 	return (
 		<>
 			<InputGroup className='postcode-field'>
@@ -60,19 +51,7 @@ const PostcodeField = ({
 					{generateFeedback(invalidReason)}
 				</FormControl.Feedback>
 			</InputGroup>
-			<Modal show={showModal} onHide={() => setShowModal(false)}>
-				<Modal.Header closeButton>
-					<Modal.Title>Oh no!</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					Sadly we don't currently offer deliveries in your area. While we
-					expand our delivery capacity, check out our social media below.
-				</Modal.Body>
-				<Modal.Footer>
-					<FacebookIcon />
-					<InstagramIcon />
-				</Modal.Footer>
-			</Modal>
+			<PostcodeModal invalidReason={invalidReason} />
 		</>
 	)
 }
@@ -85,6 +64,8 @@ const generateFeedback = (invalidReason: PostcodeError) => {
 			return 'Postcode is required.'
 		case 'range':
 			return 'Postcode is not in delivery range.'
+		case 'blocked':
+			return 'Delivery at this location is subject to change.'
 		case 'other':
 			return 'An unknown error occurred.'
 	}

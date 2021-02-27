@@ -1,12 +1,14 @@
 import { getCoordinates, getInRange, isPostcode } from '@utils/postcode'
 
-export type PostcodeError = 'missing' | 'format' | 'range' | 'other'
+export type PostcodeError = 'missing' | 'format' | 'range' | 'other' | 'blocked'
 
 export const validatePostcode = async (
 	postcode: string
 ): Promise<[boolean, PostcodeError]> => {
 	try {
 		if (!postcode) return [false, 'missing']
+
+		if (isBlocked(postcode)) return [false, 'blocked']
 
 		const [valid, formatError] = await isPostcode(postcode)
 		if (formatError) return [false, 'format']
@@ -22,3 +24,12 @@ export const validatePostcode = async (
 		return [false, 'other']
 	}
 }
+
+const isBlocked = (postcode: string) => {
+	const formattedPostcode = postcode.toUpperCase()
+	return BLOCKED_POSTCODES.some((blocked) => {
+		return formattedPostcode.startsWith(blocked)
+	})
+}
+
+const BLOCKED_POSTCODES = ['EC1', 'EC2', 'EC3', 'SE1', 'WC2', 'WC1', 'EC4']
