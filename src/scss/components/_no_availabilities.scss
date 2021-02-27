@@ -1,0 +1,13 @@
+.no-availabilities {
+	background-color: white;
+	z-index: 1;
+	padding: 1em;
+	margin: 1em;
+	border-radius: 10px;
+}
+
+@media screen and (orientation: landscape) {
+	.no-availabilities {
+		max-width: 40%;
+	}
+}

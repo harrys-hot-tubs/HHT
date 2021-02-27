@@ -6,7 +6,6 @@
 	justify-content: space-between;
 	align-items: center;
 	background-color: transparent !important;
-	margin-bottom: 20px;
 }
 
 .hire-background {
@@ -28,7 +27,7 @@
 }
 
 .primary-container h1 {
-	color: $primary-dark;
+	color: white;
 	margin: 0.5em;
 }
 
@@ -59,6 +58,7 @@
 @media screen and (orientation: landscape) {
 	.hire-container {
 		flex-direction: row !important;
+		margin-bottom: 20px;
 	}
 
 	.tub-list {

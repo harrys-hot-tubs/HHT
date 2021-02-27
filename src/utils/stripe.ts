@@ -24,3 +24,8 @@ export const formatAmount = (amount: number) => {
 	}
 	return zeroDecimalCurrency ? amount : Math.round(amount * 100)
 }
+
+export const priceToString = (price: number) => {
+	const rawString = String(price)
+	return rawString.slice(0, -2) + '.' + rawString.slice(-2)
+}

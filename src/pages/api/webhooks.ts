@@ -1,6 +1,7 @@
 import { OrderDB } from '@typings/api/Order'
 import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/Booking'
+import { LocationDB } from '@typings/Location'
 import db from '@utils/db'
 import Cors from 'cors'
 import Knex from 'knex'
@@ -8,7 +9,7 @@ import { buffer } from 'micro'
 import { NextApiRequest, NextApiResponse } from 'next'
 import mj from 'node-mailjet'
 import { Stripe } from 'stripe'
-import { LocationDB } from '../../typings/Location'
+import { priceToString } from '../../utils/stripe'
 
 const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
@@ -88,8 +89,8 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 					.returning('*')
 			)[0]
 
-			await sendEmailNotification(order, db)
-			console.log('completion')
+			await sendEmailNotification(order, db, paymentIntent)
+			console.log('Notification sent.')
 		} catch (err) {
 			console.log(err.message)
 		}
@@ -103,7 +104,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 				.returning('booking_id')
 		)[0]
 		await db<BookingDB>('bookings').del().where('booking_id', booking_id)
-		console.log('deletion')
+		console.log('Booking deleted.')
 	}
 
 	res.status(200).json({ received: true })
@@ -122,18 +123,17 @@ const getCheckoutSessionID = async (paymentIntentID: string) => {
 const sendEmailNotification = async (
 	order: OrderDB,
 	db: Knex,
+	paymentIntent: Stripe.PaymentIntent,
 	success: boolean = true
 ) => {
 	try {
-		const { name: locationName } = await db<LocationDB>('locations')
-			.select('name')
+		const { name, booking_duration, tub_id } = await db<LocationDB>('locations')
 			.join('tubs', 'tubs.location_id', 'locations.location_id')
 			.join('bookings', 'bookings.tub_id', 'tubs.tub_id')
 			.join('orders', 'orders.booking_id', 'bookings.booking_id')
 			.where('orders.id', order.id)
+			.select('locations.name', 'bookings.booking_duration', 'tubs.tub_id')
 			.first()
-		console.log('locationName', locationName)
-
 		await mailjet.post('send', { version: 'v3.1' }).request({
 			Messages: [
 				{
@@ -152,27 +152,54 @@ const sendEmailNotification = async (
 						},
 					],
 					Subject: `Order ${order.id}`,
-					TextPart: `
-						Payment ${success ? 'succeeded' : 'failed'}.
-						Customer: ${order.first_name} ${order.last_name}
-						Address:
-							${order.address_line_1}
-							${order.address_line_2}
-							${order.address_line_3}
-							${order.postcode}
-						Contact number:
-							${order.telephone_number}
-						Special requests:
-							${order.special_requests}
-						To be delivered from:
-							${locationName}
-					`,
+					htmlPart: emailTemplate(
+						order,
+						paymentIntent,
+						name,
+						booking_duration,
+						tub_id,
+						success
+					),
 				},
 			],
 		})
 	} catch (e) {
 		console.log('e', e)
 	}
+}
+
+const emailTemplate = (
+	order: OrderDB,
+	paymentIntent: Stripe.PaymentIntent,
+	name: string,
+	booking_duration: string,
+	tub_id: number,
+	success: boolean,
+	origin: string = 'Stripe'
+) => `<h1>Payment ${success ? 'Succeeded' : 'Failed'}.</h1>
+	<p>£${priceToString(paymentIntent.amount)} paid via ${origin}</p>
+	<section>
+		<h2>Delivery Information</h2>
+		<p>${order.address_line_1}</p>
+		<p>${order.address_line_2}</p>
+		<p>${order.address_line_3}</p>
+		<p>${order.postcode}</p>
+		<p>Order duration: ${formatDuration(booking_duration)}</p>
+	</section>
+	<section>
+		<h2>Customer Information</h2>
+		<p>Name: ${order.first_name} ${order.last_name}</p>
+		<p>Contact Number: ${order.telephone_number}</p>
+		<p>Special Requests: ${order.special_requests}</p>
+	</section>
+	<section>
+		<h2>Inventory Information</h2>
+		<p>To be delivered from: ${name}</p>
+		<p>Hot tub id: ${tub_id}</p>
+	</section> `
+
+const formatDuration = (duration: string) => {
+	return `${duration.slice(1, 11)} to ${duration.slice(12, -1)}`
 }
 
 export default db()(handler)
