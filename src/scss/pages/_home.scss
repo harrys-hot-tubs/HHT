@@ -5,19 +5,20 @@
 	@extend .outer;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	height: inherit;
+	justify-content: space-evenly;
+	flex: 1;
 }
 
 .lead-container {
+	flex: 1;
 	position: relative;
-	height: 90%;
+	height: 100%;
 	min-width: 50%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	padding: 1em;
 }
 
 .hero-image {
@@ -58,7 +59,8 @@
 }
 
 .details-container {
-	height: 50%;
+	flex: 1;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -109,6 +111,7 @@
 @media screen and (orientation: landscape) {
 	.main {
 		flex-direction: row;
+		align-items: center;
 	}
 }
 
