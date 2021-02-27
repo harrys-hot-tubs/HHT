@@ -67,7 +67,11 @@ const Hire = () => {
 							<a href='/docs/FAQs.pdf' target='_blank'>
 								here
 							</a>{' '}
-							or get in touch <a href='mailto:harry@harryshottubs.com'>here</a>.
+							or get in touch{' '}
+							<a href='mailto:harry@harryshottubs.com' target='_blank'>
+								here
+							</a>
+							.
 						</p>
 					</div>
 					<div className='active-components'>
