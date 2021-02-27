@@ -2,6 +2,7 @@ import FacebookIcon from '@components/FacebookIcon'
 import InstagramIcon from '@components/InstagramIcon'
 import { priceToString } from '@utils/stripe'
 import { GetServerSideProps } from 'next'
+import { Head } from 'next/document'
 import React from 'react'
 import Stripe from 'stripe'
 
@@ -12,6 +13,9 @@ interface PageProps {
 const Success = ({ totalPrice }: PageProps) => {
 	return (
 		<div className='success-container'>
+			<Head>
+				<title>Successful Payment</title>
+			</Head>
 			<h1>Thank you!</h1>
 			<h3>Your order for £{totalPrice} has been accepted and confirmed.</h3>
 			<p>We will contact you soon to with an accurate delivery time.</p>

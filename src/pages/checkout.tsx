@@ -2,6 +2,7 @@ import CheckoutForm from '@components/CheckoutForm'
 import useCheckoutInformation from '@hooks/useCheckoutInformation'
 import moment from 'moment'
 import { GetServerSideProps } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
@@ -31,6 +32,9 @@ const Checkout = ({ tubID }: PageProps) => {
 
 	return (
 		<div className='checkout-wrapper'>
+			<Head>
+				<title>Checkout</title>
+			</Head>
 			<CheckoutForm
 				tubID={tubID}
 				postcode={postcode}

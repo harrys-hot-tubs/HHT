@@ -11,6 +11,7 @@ import {
 import { TubDB } from '@typings/Tub'
 import { getClosestDispatcher } from '@utils/postcode'
 import axios from 'axios'
+import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 
@@ -47,6 +48,9 @@ const Hire = () => {
 
 	return (
 		<div className='hire-container'>
+			<Head>
+				<title>Hire a Hot Tub</title>
+			</Head>
 			<img src='hire.jpg' className='hire-background' />
 			<div className='primary-container'>
 				<Form onSubmit={onSubmit} className='hire-form'>
