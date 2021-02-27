@@ -54,26 +54,43 @@ const Hire = () => {
 			<img src='hire.jpg' className='hire-background' />
 			<div className='primary-container'>
 				<Form onSubmit={onSubmit} className='hire-form'>
-					<h1>Hire a hot tub</h1>
-					<Calendar {...calendar} />
-					<PostcodeField
-						loading={postcode.loading}
-						postcode={postcode.value}
-						isInvalid={postcode.valid == false}
-						isValid={postcode.valid}
-						onChange={postcode.setValue}
-						invalidReason={postcode.message}
-						onValidate={postcode.validate}
-					/>
-					<SpinnerButton
-						type='submit'
-						status={loading}
-						disabled={!postcode.valid || !calendar.isValid()}
-						className='hire-submit'
-						activeText='Loading... '
-					>
-						Submit
-					</SpinnerButton>
+					<div className='description'>
+						<h1>Hire a hot tub</h1>
+						<p>
+							The process is simple!... Our team will provide everything you
+							need for the setup, from hoses to chemicals. We just need access
+							to water and electricity. Outdoor taps are not essential - we have
+							adaptors to get water from inside the property.
+						</p>
+						<p>
+							For more information view our FAQ{' '}
+							<a href='/docs/FAQs.pdf' target='_blank'>
+								here
+							</a>{' '}
+							or get in touch <a href='mailto:harry@harryshottubs.com'>here</a>.
+						</p>
+					</div>
+					<div className='active-components'>
+						<Calendar {...calendar} />
+						<PostcodeField
+							loading={postcode.loading}
+							postcode={postcode.value}
+							isInvalid={postcode.valid == false}
+							isValid={postcode.valid}
+							onChange={postcode.setValue}
+							invalidReason={postcode.message}
+							onValidate={postcode.validate}
+						/>
+						<SpinnerButton
+							type='submit'
+							status={loading}
+							disabled={!postcode.valid || !calendar.isValid()}
+							className='hire-submit'
+							activeText='Loading... '
+						>
+							Submit
+						</SpinnerButton>
+					</div>
 				</Form>
 			</div>
 			<HotTubs

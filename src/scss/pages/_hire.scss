@@ -3,20 +3,18 @@
 .hire-container {
 	@extend .container;
 	@extend .outer;
-	justify-content: space-between;
 	align-items: center;
 	background-color: transparent !important;
 }
 
 .hire-background {
-	padding: 2%;
-	height: 100%;
-	width: 100%;
-	filter: opacity(60%);
+	height: 96%;
+	width: 96%;
+	filter: opacity(80%) brightness(20%);
 	object-fit: cover;
 	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
+	top: 2%;
+	left: 2%;
 	border-radius: 20px;
 }
 
@@ -24,18 +22,31 @@
 	z-index: 1;
 	margin: 1em;
 	min-width: 40%;
+	height: 100%;
 }
 
 .primary-container h1 {
 	color: white;
-	margin: 0.5em;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 .hire-form {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-around;
+}
+
+.description p {
+	flex-basis: 45%;
+	color: white;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.description a {
+	color: $secondary-blue;
 }
 
 .hire-submit {
@@ -49,16 +60,25 @@
 
 @media (min-width: 1080px) {
 	.hire-container {
-		background-color: white;
 		border-radius: 10px;
 		height: 100%;
 	}
 }
 
+// TODO move hiring information to center and use row on large screens.
 @media screen and (orientation: landscape) {
 	.hire-container {
+		margin-top: 20px;
+	}
+
+	.hire-form {
+		margin-top: 20px;
 		flex-direction: row !important;
 		margin-bottom: 20px;
+	}
+
+	.description {
+		max-width: 45%;
 	}
 
 	.tub-list {
