@@ -1,7 +1,7 @@
 import SpinnerButton from '@components/SpinnerButton'
+import { PostcodeError } from '@utils/validators'
 import React, { useEffect, useState } from 'react'
 import { FormControl, InputGroup, Modal } from 'react-bootstrap'
-import { PostcodeError } from '../utils/validators'
 import FacebookIcon from './FacebookIcon'
 import InstagramIcon from './InstagramIcon'
 

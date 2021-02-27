@@ -1,8 +1,9 @@
+import FacebookIcon from '@components/FacebookIcon'
+import InstagramIcon from '@components/InstagramIcon'
+import { priceToString } from '@utils/stripe'
 import { GetServerSideProps } from 'next'
 import React from 'react'
 import Stripe from 'stripe'
-import FacebookIcon from '../components/FacebookIcon'
-import InstagramIcon from '../components/InstagramIcon'
 
 interface PageProps {
 	totalPrice: string
@@ -64,11 +65,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 			return redirectHome()
 		}
 	}
-}
-
-const priceToString = (price: number) => {
-	const rawString = String(price)
-	return rawString.slice(0, -2) + '.' + rawString.slice(-2)
 }
 
 export default Success

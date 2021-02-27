@@ -1,5 +1,7 @@
 import Calendar from '@components/Calendar'
+import HotTubs from '@components/HotTubs'
 import PostcodeField from '@components/PostcodeField'
+import SpinnerButton from '@components/SpinnerButton'
 import useCalendar from '@hooks/useCalendar'
 import usePostcode from '@hooks/usePostcode'
 import {
@@ -11,8 +13,6 @@ import { getClosestDispatcher } from '@utils/postcode'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
-import HotTubs from '../components/HotTubs'
-import SpinnerButton from '../components/SpinnerButton'
 
 const Hire = () => {
 	const calendar = useCalendar()
