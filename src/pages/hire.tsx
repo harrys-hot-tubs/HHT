@@ -58,9 +58,9 @@ const Hire = () => {
 						<h1>Hire a hot tub</h1>
 						<p>
 							The process is simple!... Our team will provide everything you
-							need for the setup, from hoses to chemicals. We just need access
-							to water and electricity. Outdoor taps are not essential - we have
-							adaptors to get water from inside the property.
+							need for the setup - we just need access to water and electricity.
+							Outdoor taps are not essential. We have adaptors to get water from
+							inside taps. All you have to do is book yourself in and enjoy!
 						</p>
 						<p>
 							For more information view our FAQ{' '}

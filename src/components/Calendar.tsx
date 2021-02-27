@@ -9,7 +9,7 @@ interface ComponentProps extends CalendarInterface {
 }
 
 const Calendar = ({
-	isStudent = false,
+	isStudent = true,
 	isTooLong,
 	startDate,
 	endDate,
