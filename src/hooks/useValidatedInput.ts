@@ -1,13 +1,11 @@
 import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
 import { useState } from 'react'
 
-type ValidationError = ''
-
 interface HookArgs<T, U> extends UseStoredStateArgs<T> {
-	validator: (value: T) => Promise<[boolean, U]>
+	validator: (value: T) => [boolean, U]
 }
 
-const useAsyncValidatedInput = <T, U>({
+const useValidatedInput = <T, U>({
 	validator,
 	name,
 	fallback,
@@ -20,7 +18,6 @@ const useAsyncValidatedInput = <T, U>({
 		toString,
 		fromString,
 	})
-	const [loading, setLoading] = useState(false)
 	const [valid, setValid] = useState<boolean>(undefined)
 	const [reason, setReason] = useState<U>(undefined)
 
@@ -34,13 +31,10 @@ const useAsyncValidatedInput = <T, U>({
 		setReason(message)
 	}
 
-	const validate = async () => {
-		setLoading(true)
-		const [valid, error] = await validator(value)
+	const validate = () => {
+		const [valid, error] = validator(value)
 		if (valid) makeValid()
 		else makeInvalid(error)
-
-		setLoading(false)
 	}
 
 	const updateValue = (value: T) => {
@@ -56,8 +50,7 @@ const useAsyncValidatedInput = <T, U>({
 		validate,
 		makeValid,
 		makeInvalid,
-		loading,
 	}
 }
 
-export default useAsyncValidatedInput
+export default useValidatedInput

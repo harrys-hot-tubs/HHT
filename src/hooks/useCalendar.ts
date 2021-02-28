@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { FocusedInputShape } from 'react-dates'
 
 const MAX_NIGHTS = 7
+const MIN_NIGHTS = 2
 
 const useCalendar = (): CalendarInterface => {
 	moment.locale('en-GB')
@@ -21,8 +22,20 @@ const useCalendar = (): CalendarInterface => {
 		startDate: moment.Moment
 		endDate: moment.Moment
 	}) => {
-		if (newStartDate) setStartDate(newStartDate)
-		if (newEndDate) setEndDate(newEndDate)
+		// TODO cleanup these conditions
+		if (endDate) {
+			if (newStartDate && endDate.diff(newStartDate, 'days') >= MIN_NIGHTS)
+				setStartDate(newStartDate)
+		} else {
+			setStartDate(newStartDate)
+		}
+
+		if (startDate) {
+			if (newEndDate && newEndDate.diff(startDate, 'days') >= MIN_NIGHTS)
+				setEndDate(newEndDate)
+		} else {
+			setEndDate(newEndDate)
+		}
 	}
 
 	const resetDates = () => {

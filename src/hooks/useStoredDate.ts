@@ -8,7 +8,18 @@ const useStoredDate = (
 		name,
 		fallback: null,
 		toString: (v) => v?.toISOString(),
-		fromString: (v) => moment(v),
+		fromString: (v) => {
+			const date = moment(v, true)
+			try {
+				if (date.format() === 'Invalid date') {
+					throw new Error('Failed to parse date.')
+				} else {
+					return date
+				}
+			} catch (error) {
+				return null
+			}
+		},
 	}),
 ]
 

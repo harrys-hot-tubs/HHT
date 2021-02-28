@@ -3,7 +3,7 @@ import React from 'react'
 
 const InstagramIcon = () => (
 	<Link href='https://www.instagram.com/harryshottubs'>
-		<a>
+		<a target='_blank'>
 			<svg
 				role='img'
 				viewBox='0 0 24 24'

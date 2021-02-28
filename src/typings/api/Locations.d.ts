@@ -1,4 +1,4 @@
-import { LocationDB } from '../Location'
+import { LocationDB } from '@typings/Location'
 
 export type RangeResponse =
 	| {

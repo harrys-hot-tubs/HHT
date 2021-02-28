@@ -5,7 +5,7 @@ import { formatAmount } from '@utils/stripe'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Stripe } from 'stripe'
 
-const stripe = new Stripe(process.env.TEST_STRIPE_SECRET, {
+const stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
 })
 
@@ -32,6 +32,7 @@ const post = async (
 		const parsedEndDate = stringToMoment(endDate)
 
 		const params: Stripe.Checkout.SessionCreateParams = {
+			mode: 'payment',
 			submit_type: 'pay',
 			payment_method_types: ['card'],
 			line_items: [
@@ -43,9 +44,16 @@ const post = async (
 					currency: process.env.STRIPE_CURRENCY,
 					quantity: 1,
 				},
+				{
+					name: `Refundable Security Deposit`,
+					amount: formatAmount(70),
+					currency: process.env.STRIPE_CURRENCY,
+					quantity: 1,
+				},
 			],
 			success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${req.headers.origin}/failure`,
+			allow_promotion_codes: true,
 		}
 
 		const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(

@@ -4,7 +4,7 @@ let stripePromise: Promise<Stripe | null>
 
 export const getStripe = () => {
 	if (!stripePromise) {
-		stripePromise = loadStripe(process.env.NEXT_PUBLIC_TEST_STRIPE_TOKEN)
+		stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_TOKEN)
 	}
 	return stripePromise
 }
@@ -23,4 +23,9 @@ export const formatAmount = (amount: number) => {
 		}
 	}
 	return zeroDecimalCurrency ? amount : Math.round(amount * 100)
+}
+
+export const priceToString = (price: number) => {
+	const rawString = String(price)
+	return rawString.slice(0, -2) + '.' + rawString.slice(-2)
 }

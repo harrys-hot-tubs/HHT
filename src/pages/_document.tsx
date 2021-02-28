@@ -5,7 +5,7 @@ class HHTDoc extends Document {
 	render() {
 		return (
 			<Html>
-				<title>Create Next App</title>
+				<title>Hire a Hot Tub</title>
 				<Head>
 					<link rel='icon' href='/favicon.ico' />
 				</Head>

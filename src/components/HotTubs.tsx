@@ -1,10 +1,11 @@
+import { PriceRequest, PriceResponse } from '@typings/api/Checkout'
+import { TubDB } from '@typings/Tub'
+import { displayableTubs } from '@utils/tubs'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { PriceRequest, PriceResponse } from '../typings/api/Checkout'
-import { TubDB } from '../typings/Tub'
-import { displayableTubs } from '../utils/tubs'
 import HotTub, { DisplayableTub } from './HotTub'
+import NoAvailabilities from './NoAvailabilities'
 
 interface ComponentProps {
 	tubs: TubDB[]
@@ -36,7 +37,8 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 		router.push(`/checkout?tub_id=${id}`)
 	}
 
-	if (tubs?.length === 0) return null
+	if (tubs === null) return null
+	if (tubs.length === 0) return <NoAvailabilities />
 	return (
 		<div className='tub-list'>
 			{displayable.map((tub) => {

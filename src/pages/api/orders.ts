@@ -6,7 +6,7 @@ import moment from 'moment'
 import { NextApiResponse } from 'next'
 import Stripe from 'stripe'
 
-const stripe: Stripe = new Stripe(process.env.TEST_STRIPE_SECRET, {
+const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
 })
 
@@ -71,6 +71,7 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 		)
 			.del()
 			.where('created_at', '<', maxAge.toISOString())
+			.andWhere('paid', false)
 			.returning(['booking_id', 'id'])
 		await db<BookingDB>('bookings')
 			.del()

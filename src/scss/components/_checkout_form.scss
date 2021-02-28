@@ -18,3 +18,7 @@
 	background-color: $secondary-blue;
 	font-weight: bold;
 }
+
+.checkout-button:disabled {
+	background-color: grey;
+}

@@ -35,12 +35,12 @@ const CheckoutForm = ({
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		setLoading(true)
-		event.preventDefault()
 		const form = event.currentTarget
+		event.preventDefault()
+		event.stopPropagation()
 		if (form.checkValidity() === false) {
-			event.stopPropagation()
-		} else {
 			setValidated(true)
+		} else {
 			const price = await getPrice({
 				id: tubID,
 				startDate: startDate.toISOString(),
@@ -60,17 +60,24 @@ const CheckoutForm = ({
 
 			if (res.status !== 200) {
 				console.error('Checkout request failed.')
+				setLoading(false)
 				return
 			} else {
 				const { id } = res.data
-				await createOrder(
-					user,
-					postcode,
-					startDate.toISOString(),
-					endDate.toISOString(),
-					id,
-					tubID
-				)
+				try {
+					await createOrder(
+						user,
+						postcode,
+						startDate.toISOString(),
+						endDate.toISOString(),
+						id,
+						tubID
+					)
+				} catch (error) {
+					setLoading(false)
+					return
+				}
+
 				const stripe = await getStripe()
 				const { error } = await stripe!.redirectToCheckout({
 					sessionId: id,
@@ -79,6 +86,7 @@ const CheckoutForm = ({
 				console.warn(error.message)
 			}
 		}
+
 		setLoading(false)
 	}
 
@@ -211,13 +219,6 @@ const CheckoutForm = ({
 					}
 				/>
 			</Form.Group>
-			<Form.Group>
-				<Form.Label>Discount code</Form.Label>
-				<Form.Control disabled />
-				<Form.Text muted>
-					There are currently no active discount codes.
-				</Form.Text>
-			</Form.Group>
 			<Form.Row>
 				<Form.Group as={Col}>
 					<Form.Label>Start date</Form.Label>
@@ -292,13 +293,8 @@ const createOrder = async (
 		special_requests: user.specialRequests,
 		postcode,
 	}
-
-	try {
-		const res = await axios.post('/api/order', params)
-		if (res.status !== 200) throw new Error('Order creation failed.')
-	} catch (error) {
-		console.log(error.message)
-	}
+	const res = await axios.post('/api/orders', params)
+	if (res.status !== 200) throw new Error('Order creation failed.')
 }
 
 export default CheckoutForm

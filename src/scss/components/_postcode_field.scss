@@ -3,10 +3,12 @@
 	z-index: 0;
 	margin-top: 1em;
 	margin-bottom: 1em;
+	max-width: 20em;
 }
 
 input#postcode {
 	width: 4em;
+	height: 100%;
 }
 
 .postcode-validate-button {
@@ -16,5 +18,5 @@ input#postcode {
 	background-color: $secondary-blue;
 	color: $primary-light;
 	font-weight: 500;
-	width: 8em;
+	width: 9em;
 }

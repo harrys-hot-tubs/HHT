@@ -1,0 +1,5 @@
+.failure-container {
+	@extend .outer;
+	@extend .container;
+	padding: 1em;
+}

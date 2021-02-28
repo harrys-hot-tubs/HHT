@@ -1,6 +1,6 @@
+import { ConnectedRequest } from '@typings/api/Request'
 import knex from 'knex'
 import { NextApiResponse } from 'next'
-import { ConnectedRequest } from '../typings/api/Request'
 
 let connection: knex
 
@@ -12,6 +12,7 @@ export const connector = () => {
 				host: process.env.AWS_DB_ENDPOINT,
 				user: process.env.AWS_DB_USER,
 				password: process.env.AWS_DB_PASSWORD,
+				database: process.env.AWS_DB,
 			},
 		})
 

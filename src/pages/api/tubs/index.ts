@@ -1,7 +1,7 @@
+import { ConnectedRequest } from '@typings/api/Request'
 import { TubDB } from '@typings/Tub'
+import db from '@utils/db'
 import { NextApiResponse } from 'next'
-import { ConnectedRequest } from '../../../typings/api/Request'
-import db from '../../../utils/db'
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {

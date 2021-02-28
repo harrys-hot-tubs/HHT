@@ -1,9 +1,10 @@
+import FacebookIcon from '@components/FacebookIcon'
+import InstagramIcon from '@components/InstagramIcon'
+import { priceToString } from '@utils/stripe'
 import { GetServerSideProps } from 'next'
+import { Head } from 'next/document'
 import React from 'react'
-import { Button } from 'react-bootstrap'
 import Stripe from 'stripe'
-import FacebookIcon from '../components/FacebookIcon'
-import InstagramIcon from '../components/InstagramIcon'
 
 interface PageProps {
 	totalPrice: string
@@ -12,21 +13,26 @@ interface PageProps {
 const Success = ({ totalPrice }: PageProps) => {
 	return (
 		<div className='success-container'>
+			<Head>
+				<title>Successful Payment</title>
+			</Head>
 			<h1>Thank you!</h1>
-			<h3>
-				Your order for £{totalPrice} has been accepted and your order has been
-				confirmed.
-			</h3>
+			<h3>Your order for £{totalPrice} has been accepted and confirmed.</h3>
 			<p>We will contact you soon to with an accurate delivery time.</p>
-			<h3>In the meantime, check out our social media:</h3>
-			<div className='social-media'>
-				<FacebookIcon />
-				<InstagramIcon />
+			<div className='exit-card'>
+				<h3>Check out our social media:</h3>
+				<div className='social-media'>
+					<FacebookIcon />
+					<InstagramIcon />
+				</div>
+				<span className='home-text'>
+					Back to{' '}
+					<a href='/' className='home-link'>
+						home
+					</a>
+					.
+				</span>
 			</div>
-
-			<Button href='/' className='home-button'>
-				Home
-			</Button>
 		</div>
 	)
 }
@@ -47,7 +53,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	if (!session_id) {
 		return redirectHome()
 	} else {
-		const stripe = new Stripe(process.env.TEST_STRIPE_SECRET, {
+		const stripe = new Stripe(process.env.STRIPE_SECRET, {
 			apiVersion: '2020-08-27',
 		})
 		try {
@@ -63,11 +69,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 			return redirectHome()
 		}
 	}
-}
-
-const priceToString = (price: number) => {
-	const rawString = String(price)
-	return rawString.slice(0, -2) + '.' + rawString.slice(-2)
 }
 
 export default Success

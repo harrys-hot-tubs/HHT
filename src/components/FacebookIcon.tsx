@@ -3,7 +3,7 @@ import React from 'react'
 
 const FacebookIcon = () => (
 	<Link href='https://www.facebook.com/Harrys-Hot-Tubs-107531397505058'>
-		<a>
+		<a target='_blank'>
 			<svg
 				className='facebook-icon'
 				role='img'

@@ -3,6 +3,8 @@
 @import './pages/home';
 @import './pages/hire';
 @import './pages/success';
+@import './pages/failure';
+@import './components/no_availabilities';
 @import './components/hot_tub';
 @import './components/postcode_field';
 @import './components/calendar';
@@ -19,7 +21,6 @@ html {
 }
 
 body {
-	position: relative;
 	height: 100%;
 	width: 100%;
 }
@@ -38,10 +39,18 @@ body::-webkit-scrollbar {
 }
 
 #__next {
+	position: relative;
 	background: linear-gradient(30deg, $primary-pink, $primary-blue);
 	padding: 2%;
-	height: 100%;
-	width: 100%;
+	min-height: 100%;
+	min-width: 100%;
 	border: none;
-	overflow: scroll;
+	overflow: visible;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+#__next::-webkit-scrollbar {
+	display: none;
 }
