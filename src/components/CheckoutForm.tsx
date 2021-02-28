@@ -36,9 +36,10 @@ const CheckoutForm = ({
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		setLoading(true)
 		const form = event.currentTarget
+		event.preventDefault()
+		event.stopPropagation()
 		if (form.checkValidity() === false) {
-			event.preventDefault()
-			event.stopPropagation()
+			setValidated(true)
 		} else {
 			const price = await getPrice({
 				id: tubID,
@@ -78,7 +79,7 @@ const CheckoutForm = ({
 				console.warn(error.message)
 			}
 		}
-		setValidated(true)
+
 		setLoading(false)
 	}
 

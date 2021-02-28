@@ -32,6 +32,7 @@ const post = async (
 		const parsedEndDate = stringToMoment(endDate)
 
 		const params: Stripe.Checkout.SessionCreateParams = {
+			mode: 'payment',
 			submit_type: 'pay',
 			payment_method_types: ['card'],
 			line_items: [
@@ -40,6 +41,12 @@ const post = async (
 						parsedStartDate
 					)} to ${momentToString(parsedEndDate)}.`,
 					amount: formatAmount(price),
+					currency: process.env.STRIPE_CURRENCY,
+					quantity: 1,
+				},
+				{
+					name: `Security Deposit`,
+					amount: formatAmount(70),
 					currency: process.env.STRIPE_CURRENCY,
 					quantity: 1,
 				},

@@ -24,7 +24,7 @@ const HotTub = ({ tub_id, max_capacity, price, onClick }: ComponentProps) => {
 const getImageHREF = (capacity: number) => {
 	switch (capacity) {
 		case 4:
-			return '/tubs/b-palace.jpeg'
+			return '/tubs/capacity4.jpeg'
 		case 6:
 			return '/tubs/capacity6.jpeg'
 		case 8:
