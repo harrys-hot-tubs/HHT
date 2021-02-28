@@ -59,8 +59,11 @@ const Hire = () => {
 						<p>
 							The process is simple!... Our team will provide everything you
 							need for the setup - we just need access to water and electricity.
-							Outdoor taps are not essential. We have adaptors to get water from
-							inside taps. All you have to do is book yourself in and enjoy!
+							All you have to do is book yourself in and enjoy!
+						</p>
+						<p>
+							(Outside taps are not essential! We have adaptors to get water
+							from inside taps)
 						</p>
 						<p>
 							For more information view our FAQ{' '}

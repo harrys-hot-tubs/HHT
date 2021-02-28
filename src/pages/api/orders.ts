@@ -56,6 +56,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 
 		res.status(200).json({ added: true })
 	} catch (e) {
+		console.log('e', e)
 		res.status(400).json(e)
 	}
 }
