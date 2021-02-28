@@ -151,7 +151,7 @@ const sendEmailNotification = async (
 							Name: 'Harry Strudwick',
 						},
 					],
-					Subject: `Order ${order.id}`,
+					Subject: `Online Booking`,
 					htmlPart: emailTemplate(
 						order,
 						paymentIntent,
