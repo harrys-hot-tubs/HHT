@@ -78,3 +78,14 @@ const BLOCKED_POSTCODES = [
 	'E17',
 	'E18',
 ]
+
+export type PromoCodeError = 'invalid' | 'dead'
+
+export const validatePromoCode = (
+	promoCode: string
+): [boolean, PromoCodeError] => {
+	if (VALID_CODES.includes(promoCode)) return [true, null]
+	else return [false, 'invalid']
+}
+
+const VALID_CODES = ['FREE2020']

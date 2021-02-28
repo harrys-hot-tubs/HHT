@@ -53,6 +53,7 @@ const post = async (
 			],
 			success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${req.headers.origin}/failure`,
+			allow_promotion_codes: true,
 		}
 
 		const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(

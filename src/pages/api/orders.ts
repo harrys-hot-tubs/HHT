@@ -71,6 +71,7 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 		)
 			.del()
 			.where('created_at', '<', maxAge.toISOString())
+			.andWhere('paid', false)
 			.returning(['booking_id', 'id'])
 		await db<BookingDB>('bookings')
 			.del()

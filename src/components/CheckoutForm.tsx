@@ -219,13 +219,6 @@ const CheckoutForm = ({
 					}
 				/>
 			</Form.Group>
-			<Form.Group>
-				<Form.Label>Discount code</Form.Label>
-				<Form.Control disabled />
-				<Form.Text muted>
-					There are currently no active discount codes.
-				</Form.Text>
-			</Form.Group>
 			<Form.Row>
 				<Form.Group as={Col}>
 					<Form.Label>Start date</Form.Label>
