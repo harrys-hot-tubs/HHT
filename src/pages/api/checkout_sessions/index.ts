@@ -45,7 +45,7 @@ const post = async (
 					quantity: 1,
 				},
 				{
-					name: `Security Deposit`,
+					name: `Refundable Security Deposit`,
 					amount: formatAmount(70),
 					currency: process.env.STRIPE_CURRENCY,
 					quantity: 1,
