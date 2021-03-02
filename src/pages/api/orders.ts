@@ -62,10 +62,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 }
 
 const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
-	// TODO add authentication to this request!!!
 	try {
 		const { db } = req
-		const maxAge = moment(new Date()).subtract(3, 'hours')
+		const maxAge = moment(new Date()).subtract(10, 'minutes')
 		const orders: Pick<OrderDB, 'booking_id' | 'id'>[] = await db<OrderDB>(
 			'orders'
 		)
