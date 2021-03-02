@@ -21,10 +21,12 @@ const Success = ({ totalPrice }: PageProps) => {
 			<p>We will contact you soon to with an accurate delivery time.</p>
 			<div className='exit-card'>
 				<h3>Check out our social media:</h3>
+
 				<div className='social-media'>
 					<FacebookIcon />
 					<InstagramIcon />
 				</div>
+				<hr />
 				<span className='home-text'>
 					Back to{' '}
 					<a href='/' className='home-link'>
