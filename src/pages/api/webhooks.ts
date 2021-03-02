@@ -97,13 +97,13 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	} else if (event.type === 'payment_intent.payment_failed') {
 		const paymentIntent = event.data.object as Stripe.PaymentIntent
 		const sessionID = await getCheckoutSessionID(paymentIntent.id)
-		const booking_id = (
+		const { booking_id } = (
 			await db<OrderDB>('orders')
 				.del()
 				.where('id', sessionID)
 				.returning(['booking_id'])
 		)[0]
-		await db<BookingDB>('bookings').del().where('booking_id', booking_id)
+		await db<BookingDB>('bookings').del().where('booking_id', '=', booking_id)
 		console.log('Booking deleted.')
 	}
 
