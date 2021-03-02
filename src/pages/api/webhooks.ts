@@ -3,13 +3,13 @@ import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/Booking'
 import { LocationDB } from '@typings/Location'
 import db from '@utils/db'
+import { priceToString } from '@utils/stripe'
 import Cors from 'cors'
 import Knex from 'knex'
 import { buffer } from 'micro'
 import { NextApiRequest, NextApiResponse } from 'next'
 import mj from 'node-mailjet'
 import { Stripe } from 'stripe'
-import { priceToString } from '../../utils/stripe'
 
 const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
@@ -101,7 +101,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			await db<OrderDB>('orders')
 				.del()
 				.where('id', sessionID)
-				.returning('booking_id')
+				.returning(['booking_id'])
 		)[0]
 		await db<BookingDB>('bookings').del().where('booking_id', booking_id)
 		console.log('Booking deleted.')
