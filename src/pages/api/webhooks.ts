@@ -103,7 +103,13 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 				.where('id', sessionID)
 				.returning(['booking_id'])
 		)[0]
-		console.log('order', order)
+
+		if (order === undefined)
+			return res.status(200).json({
+				received: true,
+				message: 'Order already removed.',
+			})
+
 		await db<BookingDB>('bookings')
 			.del()
 			.where('booking_id', '=', order.booking_id)
