@@ -80,7 +80,12 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 			)
 		orders.forEach(async (o) => await cancelPaymentIntent(o.id))
 
-		res.status(200).send({ completed: true })
+		res.status(200).send({
+			received: true,
+			message: {
+				removed: orders,
+			},
+		})
 	} catch (error) {
 		res.status(500).send(error.message)
 	}
