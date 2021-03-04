@@ -69,8 +69,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 		)
 	} catch (err) {
 		console.log(err.message)
-		res.status(400).json({ error: `Webhook Error: ${err.message}` })
-		return
+		return res.status(400).json({ error: `Webhook Error: ${err.message}` })
 	}
 
 	console.log('Success: ', event.id)
@@ -101,8 +100,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			return
 		} catch (err) {
 			console.log(err.message)
-			res.status(500).json({ error: err.message })
-			return
+			return res.status(200).json({ received: true, error: err.message })
 		}
 	} else if (event.type === 'payment_intent.payment_failed') {
 		const paymentIntent = event.data.object as Stripe.PaymentIntent
@@ -115,11 +113,10 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 		)[0]
 
 		if (order === undefined) {
-			res.status(200).json({
+			return res.status(200).json({
 				received: true,
 				message: 'Order already removed.',
 			})
-			return
 		}
 
 		await db<BookingDB>('bookings')
@@ -127,10 +124,12 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			.where('booking_id', '=', order.booking_id)
 
 		console.log('Booking deleted.')
-		res.status(200).json({
+		return res.status(200).json({
 			received: true,
 			message: { id: order.id, booking_id: order.booking_id, deleted: true },
 		})
+	} else {
+		return res.status(200).json({ received: true })
 	}
 }
 
