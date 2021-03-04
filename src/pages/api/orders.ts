@@ -96,9 +96,16 @@ const cancelPaymentIntent = async (checkoutSessionID: string) => {
 		const { payment_intent } = await stripe.checkout.sessions.retrieve(
 			checkoutSessionID
 		)
-		await stripe.paymentIntents.cancel(payment_intent as string, {
+		let id: string
+		if (typeof payment_intent == 'string') {
+			id = payment_intent
+		} else {
+			id = payment_intent.id
+		}
+		await stripe.paymentIntents.cancel(id, {
 			cancellation_reason: 'abandoned',
 		})
+		console.log('Deleted', id)
 	} catch (err) {
 		console.log('err', err.message)
 	}
