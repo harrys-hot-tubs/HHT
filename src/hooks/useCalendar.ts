@@ -24,14 +24,22 @@ const useCalendar = (): CalendarInterface => {
 	}) => {
 		// TODO cleanup these conditions
 		if (endDate) {
-			if (newStartDate && endDate.diff(newStartDate, 'days') >= MIN_NIGHTS)
+			if (
+				newStartDate &&
+				endDate.diff(newStartDate, 'days') >= MIN_NIGHTS &&
+				!isWeekend(newStartDate)
+			)
 				setStartDate(newStartDate)
 		} else {
 			setStartDate(newStartDate)
 		}
 
 		if (startDate) {
-			if (newEndDate && newEndDate.diff(startDate, 'days') >= MIN_NIGHTS)
+			if (
+				newEndDate &&
+				newEndDate.diff(startDate, 'days') >= MIN_NIGHTS &&
+				!isWeekend(newEndDate)
+			)
 				setEndDate(newEndDate)
 		} else {
 			setEndDate(newEndDate)
