@@ -90,7 +90,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			)[0]
 
 			await sendEmailNotification(order, db, paymentIntent)
-			return res.status(200).json({
+			res.status(200).json({
 				received: true,
 				message: {
 					id: order.id,
@@ -98,9 +98,11 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 					paid: order.paid,
 				},
 			})
+			return
 		} catch (err) {
 			console.log(err.message)
-			return res.status(500).json({ error: err.message })
+			res.status(500).json({ error: err.message })
+			return
 		}
 	} else if (event.type === 'payment_intent.payment_failed') {
 		const paymentIntent = event.data.object as Stripe.PaymentIntent
@@ -112,18 +114,20 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 				.returning(['booking_id', 'id'])
 		)[0]
 
-		if (order === undefined)
-			return res.status(200).json({
+		if (order === undefined) {
+			res.status(200).json({
 				received: true,
 				message: 'Order already removed.',
 			})
+			return
+		}
 
 		await db<BookingDB>('bookings')
 			.del()
 			.where('booking_id', '=', order.booking_id)
 
 		console.log('Booking deleted.')
-		return res.status(200).json({
+		res.status(200).json({
 			received: true,
 			message: { id: order.id, booking_id: order.booking_id, deleted: true },
 		})
