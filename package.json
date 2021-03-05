@@ -29,6 +29,7 @@
 		"stripe": "^8.137.0"
 	},
 	"devDependencies": {
+		"@svgr/webpack": "^5.5.0",
 		"@types/lodash": "^4.14.168",
 		"@types/micro": "^7.3.3",
 		"@types/micro-cors": "^0.1.1",

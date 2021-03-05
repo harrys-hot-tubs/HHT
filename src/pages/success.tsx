@@ -1,5 +1,5 @@
-import FacebookIcon from '@components/FacebookIcon'
-import InstagramIcon from '@components/InstagramIcon'
+import FacebookIcon from '@components/icons/FacebookIcon'
+import InstagramIcon from '@components/icons/InstagramIcon'
 import { priceToString } from '@utils/stripe'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'

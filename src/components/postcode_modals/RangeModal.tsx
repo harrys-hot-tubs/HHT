@@ -1,5 +1,5 @@
-import FacebookIcon from '@components/FacebookIcon'
-import InstagramIcon from '@components/InstagramIcon'
+import FacebookIcon from '@components/icons/FacebookIcon'
+import InstagramIcon from '@components/icons/InstagramIcon'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { PostcodeModalProps } from './PostcodeModal'
