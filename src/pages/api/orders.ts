@@ -69,9 +69,9 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 			'orders'
 		)
 			.del()
+			.returning(['booking_id', 'id'])
 			.where('created_at', '<', maxAge.toISOString())
 			.andWhere('paid', false)
-			.returning(['booking_id', 'id'])
 		await db<BookingDB>('bookings')
 			.del()
 			.whereIn(
@@ -92,23 +92,19 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 }
 
 const cancelPaymentIntent = async (checkoutSessionID: string) => {
-	try {
-		const { payment_intent } = await stripe.checkout.sessions.retrieve(
-			checkoutSessionID
-		)
-		let id: string
-		if (typeof payment_intent == 'string') {
-			id = payment_intent
-		} else {
-			id = payment_intent.id
-		}
-		await stripe.paymentIntents.cancel(id, {
-			cancellation_reason: 'abandoned',
-		})
-		console.log('Deleted', id)
-	} catch (err) {
-		console.log('err', err.message)
+	const { payment_intent } = await stripe.checkout.sessions.retrieve(
+		checkoutSessionID
+	)
+	let id: string
+	if (typeof payment_intent == 'string') {
+		id = payment_intent
+	} else {
+		id = payment_intent.id
 	}
+	await stripe.paymentIntents.cancel(id, {
+		cancellation_reason: 'abandoned',
+	})
+	console.log('Deleted', id)
 }
 
 export default db()(handler)
