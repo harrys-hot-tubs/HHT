@@ -78,7 +78,8 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 				'booking_id',
 				orders.map((o) => o.booking_id)
 			)
-		orders.forEach(async (o) => await cancelPaymentIntent(o.id))
+
+		await cancelPaymentIntents(orders)
 
 		res.status(200).send({
 			received: true,
@@ -88,6 +89,14 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 		})
 	} catch (error) {
 		res.status(500).send(error.message)
+	}
+}
+
+const cancelPaymentIntents = async (
+	orders: Pick<OrderDB, 'booking_id' | 'id'>[]
+) => {
+	for (let index = 0; index < orders.length; index++) {
+		await cancelPaymentIntent(orders[index].id)
 	}
 }
 
