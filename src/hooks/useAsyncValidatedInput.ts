@@ -1,5 +1,5 @@
 import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type ValidationError = ''
 
@@ -14,15 +14,20 @@ const useAsyncValidatedInput = <T, U>({
 	toString,
 	fromString,
 }: HookArgs<T, U>) => {
-	const [value, setValue] = useStoredState<T>({
+	const [storedValue, setStoredValue] = useStoredState<T>({
 		fallback,
 		name,
 		toString,
 		fromString,
 	})
+	const [workingValue, setWorkingValue] = useState(storedValue)
 	const [loading, setLoading] = useState(false)
 	const [valid, setValid] = useState<boolean>(undefined)
 	const [reason, setReason] = useState<U>(undefined)
+
+	useEffect(() => {
+		setWorkingValue(storedValue)
+	}, [storedValue])
 
 	const makeValid = () => {
 		setValid(true)
@@ -36,20 +41,22 @@ const useAsyncValidatedInput = <T, U>({
 
 	const validate = async () => {
 		setLoading(true)
-		const [valid, error] = await validator(value)
-		if (valid) makeValid()
-		else makeInvalid(error)
+		const [valid, error] = await validator(workingValue)
+		if (valid) {
+			makeValid()
+			setStoredValue(workingValue)
+		} else makeInvalid(error)
 
 		setLoading(false)
 	}
 
 	const updateValue = (value: T) => {
 		setValid(undefined)
-		setValue(value)
+		setWorkingValue(value)
 	}
 
 	return {
-		value,
+		value: workingValue,
 		setValue: updateValue,
 		valid,
 		message: reason,

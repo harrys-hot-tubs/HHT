@@ -23,7 +23,6 @@ const useStoredState = <T>({
 	useEffect(() => {
 		const storedString = localStorage.getItem(name)
 		if (storedString !== null) {
-			console.log('storedString', storedString)
 			setState(fromString(storedString))
 		}
 	}, [])
