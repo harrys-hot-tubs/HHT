@@ -29,7 +29,7 @@ const post = async (
 		dispatcherCoordinates.map((location) => userLocation.journeyTime(location))
 	)
 
-	const inRange = ranges.some((r) => r < 75)
+	const inRange = ranges.some((r) => r < 90)
 	if (inRange) {
 		let minDuration = Infinity
 		let closest = null
