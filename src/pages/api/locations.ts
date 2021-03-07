@@ -25,16 +25,19 @@ const post = async (
 	const dispatchers = await db<LocationDB>('locations').select()
 
 	const dispatcherCoordinates = dispatchers.map(locationToCoordinate)
-	const inRange = dispatcherCoordinates.some((c) => userLocation.isInRange(c))
+	const ranges = await Promise.all(
+		dispatcherCoordinates.map((location) => userLocation.journeyTime(location))
+	)
+
+	const inRange = ranges.some((r) => r < 75)
 	if (inRange) {
-		let minDistance = Infinity
+		let minDuration = Infinity
 		let closest = null
 
-		dispatcherCoordinates.forEach((dispatcher) => {
-			const distance = userLocation.distance(dispatcher)
-			if (distance < minDistance) {
-				minDistance = distance
-				closest = dispatchers[dispatcherCoordinates.indexOf(dispatcher)]
+		ranges.forEach((range) => {
+			if (range < minDuration) {
+				minDuration = range
+				closest = dispatchers[ranges.indexOf(range)]
 			}
 		})
 
