@@ -5,6 +5,7 @@ import db from '@utils/db'
 import moment from 'moment'
 import { NextApiResponse } from 'next'
 import Stripe from 'stripe'
+import { forEachAsync } from '../../utils/index'
 
 const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
@@ -79,7 +80,7 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 				orders.map((o) => o.booking_id)
 			)
 
-		await cancelPaymentIntents(orders)
+		await forEachAsync(orders, (order) => cancelPaymentIntent(order.id))
 
 		res.status(200).send({
 			received: true,
@@ -89,14 +90,6 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 		})
 	} catch (error) {
 		res.status(500).send(error.message)
-	}
-}
-
-const cancelPaymentIntents = async (
-	orders: Pick<OrderDB, 'booking_id' | 'id'>[]
-) => {
-	for (let index = 0; index < orders.length; index++) {
-		await cancelPaymentIntent(orders[index].id)
 	}
 }
 
