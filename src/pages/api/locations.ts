@@ -28,6 +28,7 @@ const post = async (
 	const ranges = await Promise.all(
 		dispatcherCoordinates.map((location) => userLocation.journeyTime(location))
 	)
+
 	const inRange = ranges.some((r) => r < 75)
 	if (inRange) {
 		let minDuration = Infinity

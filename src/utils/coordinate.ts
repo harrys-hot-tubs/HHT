@@ -12,7 +12,7 @@ export class Coordinate {
 	}
 
 	async isInTimeRange(c: Coordinate) {
-		return (await this.isInTimeRange(c)) < 75
+		return (await this.isInTimeRange(c)) < 90
 	}
 
 	/**
@@ -29,7 +29,7 @@ export class Coordinate {
 	 * Calculates the distance between this and another point using the
 	 * {@link https://en.wikipedia.org/wiki/Haversine_formula, Haversine Formula}.
 	 *
-	 * @deprecated Since the change to GoogleMaps
+	 * @deprecated
 	 * @param location The coordinate to be compared.
 	 * @returns The distance between the two coordinates in m.
 	 */
@@ -71,13 +71,17 @@ export class Coordinate {
 					language: 'en-GB',
 				},
 			})
-
-			return Number(response.data.rows[0].elements[0].duration) / 60
+			return Number(response.data.rows[0].elements[0].duration.value) / 60
 		} catch (e) {
 			console.error(e.message)
 		}
 	}
 
+	/**
+	 * Changes the format of a given angle from degrees to radians.
+	 * @param x An angle in degrees.
+	 * @returns x in radians.
+	 */
 	private toRads(x: number) {
 		return (x * Math.PI) / 180
 	}
