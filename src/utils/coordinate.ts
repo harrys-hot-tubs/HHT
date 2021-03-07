@@ -9,7 +9,7 @@ export class Coordinate {
 	}
 
 	isInRange(c: Coordinate) {
-		return this.distance(c) < 30 * 1609.334
+		return this.distance(c) < 45 * 1609.334
 	}
 
 	distance(location: Coordinate) {
