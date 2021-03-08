@@ -215,10 +215,13 @@ const CheckoutForm = ({
 					<option>Facebook</option>
 					<option>Instagram</option>
 					<option>Recommendation</option>
-					<option>Influencer - please enter who.</option>
+					<option>Influencer - Please Enter Name!</option>
 					<option>Search Engine</option>
 					<option>Other</option>
 				</datalist>
+				<Form.Control.Feedback type='invalid'>
+					This field is required.
+				</Form.Control.Feedback>
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Special requests</Form.Label>
