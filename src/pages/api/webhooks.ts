@@ -214,6 +214,7 @@ const emailTemplate = (
 		<p>Name: ${order.first_name} ${order.last_name}</p>
 		<p>Contact Number: ${order.telephone_number}</p>
 		<p>Special Requests: ${order.special_requests}</p>
+		<p>Referee: ${order.referee}</p>
 	</section>
 	<section>
 		<h2>Inventory Information</h2>

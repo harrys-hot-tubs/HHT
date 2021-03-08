@@ -11,6 +11,7 @@ export interface CreateOrderRequest {
 	address_line_2: string
 	address_line_3: string
 	special_requests: string
+	referee: string
 	postcode: string
 }
 
@@ -35,5 +36,6 @@ export interface OrderDB {
 	address_line_3: string
 	special_requests: string
 	postcode: string
+	referee: string
 	created_at: string
 }
