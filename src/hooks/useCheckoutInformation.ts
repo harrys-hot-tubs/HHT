@@ -9,6 +9,7 @@ export interface CheckoutInformation {
 	addressLine1: string
 	addressLine2: string
 	addressLine3: string
+	referee: string
 	specialRequests: string
 }
 
@@ -34,6 +35,7 @@ const fallback: CheckoutInformation = {
 	addressLine1: '',
 	addressLine2: '',
 	addressLine3: '',
+	referee: '',
 	specialRequests: '',
 }
 

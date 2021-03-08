@@ -209,6 +209,18 @@ const CheckoutForm = ({
 			<hr />
 			<h2>Additional Information</h2>
 			<Form.Group>
+				<Form.Label>Where did you hear about us?</Form.Label>
+				<Form.Control required list='referees' />
+				<datalist id='referees'>
+					<option>Facebook</option>
+					<option>Instagram</option>
+					<option>Recommendation</option>
+					<option>Influencer - please enter who.</option>
+					<option>Search Engine</option>
+					<option>Other</option>
+				</datalist>
+			</Form.Group>
+			<Form.Group>
 				<Form.Label>Special requests</Form.Label>
 				<Form.Control
 					as='textarea'
@@ -290,6 +302,7 @@ const createOrder = async (
 		address_line_1: user.addressLine1,
 		address_line_2: user.addressLine2,
 		address_line_3: user.addressLine3,
+		referee: user.referee,
 		special_requests: user.specialRequests,
 		postcode,
 	}

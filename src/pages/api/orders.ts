@@ -52,6 +52,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			address_line_2: orderDetails.address_line_2,
 			address_line_3: orderDetails.address_line_3,
 			special_requests: orderDetails.special_requests,
+			referee: orderDetails.referee,
 			postcode: orderDetails.postcode,
 		})
 
