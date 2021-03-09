@@ -210,7 +210,12 @@ const CheckoutForm = ({
 			<h2>Additional Information</h2>
 			<Form.Group>
 				<Form.Label>Where did you hear about us?</Form.Label>
-				<Form.Control required list='referees' />
+				<Form.Control
+					required
+					list='referees'
+					value={user.referee}
+					onChange={(e) => setUser({ ...user, referee: e.target.value })}
+				/>
 				<datalist id='referees'>
 					<option>Facebook</option>
 					<option>Instagram</option>
