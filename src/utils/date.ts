@@ -1,8 +1,8 @@
 import moment from 'moment'
 
 export const stringToMoment = (date: string): moment.Moment => {
-	const formattedDate = moment(date)
-	if (!formattedDate) throw new Error('Malformed date.')
+	const formattedDate = moment.utc(date, 'YYYY-MM-DD')
+	if (!formattedDate.isValid()) throw new Error('Malformed date.')
 	else return formattedDate
 }
 

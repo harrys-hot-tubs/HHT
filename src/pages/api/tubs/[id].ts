@@ -74,8 +74,10 @@ const getPrice = async ({
 	endDate: moment.Moment
 	db: Knex
 }): Promise<number> => {
-	const difference = endDate.diff(startDate, 'days')
-	if (difference > 7 || difference < 2) throw new Error('Duration is invalid.')
+	const booking_duration = moment.duration(endDate.diff(startDate))
+	const nights = booking_duration.days()
+
+	if (nights > 7 || nights < 2) throw new Error('Duration is invalid.')
 
 	const { initial_price, night_price } = await db<LocationDB>('locations')
 		.select('initial_price', 'night_price')
@@ -83,8 +85,7 @@ const getPrice = async ({
 		.join('tubs', 'tubs.location_id', '=', 'locations.location_id')
 		.where('tubs.tub_id', '=', tubID)
 
-	const finalPrice =
-		Number(initial_price) + (difference - 2) * Number(night_price)
+	const finalPrice = Number(initial_price) + (nights - 2) * Number(night_price)
 	return finalPrice
 }
 

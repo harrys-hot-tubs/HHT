@@ -2,10 +2,10 @@ import { CreateOrderRequest, OrderDB } from '@typings/api/Order'
 import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/Booking'
 import db from '@utils/db'
+import { forEachAsync } from '@utils/index'
 import moment from 'moment'
 import { NextApiResponse } from 'next'
 import Stripe from 'stripe'
-import { forEachAsync } from '../../utils/index'
 
 const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
 	apiVersion: '2020-08-27',
