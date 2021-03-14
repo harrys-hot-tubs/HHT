@@ -1,7 +1,7 @@
 import { RangeRequest, RangeResponse } from '@typings/api/Locations'
 import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/Location'
-import { Coordinate } from '@utils/coordinate'
+import Coordinate from '@utils/coordinate'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'
 
@@ -26,7 +26,7 @@ const post = async (
 
 	const dispatcherCoordinates = dispatchers.map(locationToCoordinate)
 	const ranges = await Promise.all(
-		dispatcherCoordinates.map((location) => userLocation.journeyTime(location))
+		dispatcherCoordinates.map((location) => userLocation.timeTo(location))
 	)
 
 	const inRange = ranges.some((r) => r < 90)

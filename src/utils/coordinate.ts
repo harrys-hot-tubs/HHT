@@ -1,6 +1,6 @@
 import { Client } from '@googlemaps/google-maps-services-js'
 
-export class Coordinate {
+export default class Coordinate {
 	static R = 6371e3
 	static client = new Client({})
 	public latitude: number
@@ -11,18 +11,23 @@ export class Coordinate {
 		this.longitude = longitude
 	}
 
-	async isInTimeRange(c: Coordinate) {
-		return (await this.isInTimeRange(c)) < 90
+	/**
+	 * Determines whether or not two coordinates are within 90 minutes of each other.
+	 * @param c The coordinate to be assessed.
+	 * @returns True if the coordinates are within 90 minutes of each other.
+	 */
+	async isInTimeRangeOf(c: Coordinate) {
+		return (await this.timeTo(c)) < 90
 	}
 
 	/**
 	 * Calculates whether or not two coordinates are within 30 miles.
 	 * @deprecated
 	 * @param c The coordinate to be assessed.
-	 * @returns Whether or not the coordinates are within 30 miles of each other.
+	 * @returns True if the coordinates are within 30 miles of each other.
 	 */
-	isInRange(c: Coordinate) {
-		return this.distance(c) < 45 * 1609.334
+	isInRangeOf(c: Coordinate) {
+		return this.distanceTo(c) < 30 * 1609.334
 	}
 
 	/**
@@ -33,7 +38,9 @@ export class Coordinate {
 	 * @param location The coordinate to be compared.
 	 * @returns The distance between the two coordinates in m.
 	 */
-	distance(location: Coordinate) {
+	distanceTo(location: Coordinate) {
+		if (this === location) return 0
+
 		const lat1 = this.latitude
 		const long1 = this.longitude
 		const { latitude: lat2, longitude: long2 } = location
@@ -51,7 +58,7 @@ export class Coordinate {
 				Math.sin(delta_lambda / 2) *
 				Math.sin(delta_lambda / 2)
 
-		const c = 2 * Math.atan(Math.sqrt(a))
+		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 		const d = Coordinate.R * c
 
 		return d
@@ -61,7 +68,8 @@ export class Coordinate {
 	 * Calculates the journey time in minutes from this to another location.
 	 * @param location The coordinate to be compared.
 	 */
-	async journeyTime(location: Coordinate) {
+	async timeTo(location: Coordinate) {
+		if (this == location) return 0
 		try {
 			const response = await Coordinate.client.distancematrix({
 				params: {

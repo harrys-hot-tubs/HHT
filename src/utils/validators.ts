@@ -25,14 +25,14 @@ export const validatePostcode = async (
 	}
 }
 
-const isBlocked = (postcode: string) => {
+const isBlocked = (postcode: string, blocked: string[] = blockedOutcodes) => {
 	const formattedPostcode = postcode.toUpperCase()
-	return BLOCKED_POSTCODES.some((blocked) => {
-		return formattedPostcode.startsWith(blocked)
+	return blocked.some((outcode) => {
+		return formattedPostcode.startsWith(outcode)
 	})
 }
 
-const BLOCKED_POSTCODES = [
+const blockedOutcodes = [
 	'EC',
 	'SE1',
 	'WC',

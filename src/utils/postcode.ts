@@ -1,22 +1,17 @@
 import { RangeResponse } from '@typings/api/Locations'
-import { Coordinate } from '@utils/coordinate'
+import { LocationResponse, ValidationResponse } from '@typings/api/Postcode'
+import Coordinate from '@utils/coordinate'
 import axios from 'axios'
 
-interface ValidationResponse {
-	status: number
-	result: boolean
-}
-
-interface LocationResponse {
-	result: {
-		latitude: number
-		longitude: number
-	}
-}
-
+/**
+ * Checks if a postcode is valid, and exists in the UK.
+ * @param postcode The postcode to be validated.
+ * @returns True if the postcode is valid.
+ */
 export const isPostcode = async (
 	postcode: string
 ): Promise<[boolean, string]> => {
+	if (!postcode) return [false, 'Null is not a valid postcode']
 	const {
 		data: { result: isValid },
 	} = await axios.get<ValidationResponse>(

@@ -18,7 +18,8 @@
 			"@components/*": ["components/*"],
 			"@hooks/*": ["hooks/*"],
 			"@typings/*": ["typings/*"],
-			"@utils/*": ["utils/*"]
+			"@utils/*": ["utils/*"],
+			"@test/*": ["test/*"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
