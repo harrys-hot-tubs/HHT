@@ -4,37 +4,45 @@ import { LocationDB } from '@typings/Location'
 import { TubDB } from '@typings/Tub'
 import knex from 'knex'
 
-let connection: knex
+// TODO fix database connection interference
+export let connection = knex({
+	client: 'pg',
+	connection: {
+		host: process.env.AWS_DB_ENDPOINT,
+		user: process.env.AWS_DB_USER,
+		password: process.env.AWS_DB_PASSWORD,
+		database: process.env.AWS_DB,
+	},
+})
 
-export const db = !connection
-	? knex({
+export const cleanupDatabase = async (db: knex) => {
+	try {
+		await resetTables(db)
+		await resetSequences(db)
+		await connection.destroy()
+	} catch (error) {
+		console.error(error)
+	} finally {
+		connection = knex({
 			client: 'pg',
 			connection: {
 				host: process.env.AWS_DB_ENDPOINT,
 				user: process.env.AWS_DB_USER,
 				password: process.env.AWS_DB_PASSWORD,
-				database: 'test',
+				database: process.env.AWS_DB,
 			},
-	  })
-	: connection
-
-export const onStartup = async () => {
-	try {
-		await resetTables()
-		await resetSequences()
-	} catch (error) {
-		console.log(`error`, error)
+		})
 	}
 }
 
-export const resetTables = async () => {
+export const resetTables = async (db: knex) => {
 	await db<OrderDB>('orders').del()
 	await db<BookingDB>('bookings').del()
 	await db<TubDB>('tubs').del()
 	await db<LocationDB>('locations').del()
 }
 
-export const resetSequences = async () => {
+export const resetSequences = async (db: knex) => {
 	await db.raw('ALTER SEQUENCE bookings_booking_id_seq RESTART WITH 1')
 	await db.raw('ALTER SEQUENCE locations_locationid_seq RESTART WITH 1')
 	await db.raw('ALTER SEQUENCE tubs_tubid_seq RESTART WITH 1')

@@ -1,7 +1,8 @@
 import { LocationDB } from '@typings/Location'
 
-export const LOCATIONS: Omit<LocationDB, 'location_id'>[] = [
+export const LOCATIONS: LocationDB[] = [
 	{
+		location_id: 1,
 		name: 'Birmingham',
 		postcode: 'B29',
 		latitude: 52.4376542402022,

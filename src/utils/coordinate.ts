@@ -81,7 +81,7 @@ export default class Coordinate {
 			})
 			return Number(response.data.rows[0].elements[0].duration.value) / 60
 		} catch (e) {
-			console.error(e.message)
+			return Infinity
 		}
 	}
 
