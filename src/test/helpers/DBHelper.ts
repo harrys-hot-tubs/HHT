@@ -2,36 +2,19 @@ import { OrderDB } from '@typings/api/Order'
 import { BookingDB } from '@typings/Booking'
 import { LocationDB } from '@typings/Location'
 import { TubDB } from '@typings/Tub'
+import { connector } from '@utils/db'
 import knex from 'knex'
 
 // TODO fix database connection interference
-export let connection = knex({
-	client: 'pg',
-	connection: {
-		host: process.env.AWS_DB_ENDPOINT,
-		user: process.env.AWS_DB_USER,
-		password: process.env.AWS_DB_PASSWORD,
-		database: process.env.AWS_DB,
-	},
-})
+export let connection = connector()()
 
 export const cleanupDatabase = async (db: knex) => {
 	try {
 		await resetTables(db)
 		await resetSequences(db)
-		await connection.destroy()
+		await db.destroy()
 	} catch (error) {
 		console.error(error)
-	} finally {
-		connection = knex({
-			client: 'pg',
-			connection: {
-				host: process.env.AWS_DB_ENDPOINT,
-				user: process.env.AWS_DB_USER,
-				password: process.env.AWS_DB_PASSWORD,
-				database: process.env.AWS_DB,
-			},
-		})
 	}
 }
 

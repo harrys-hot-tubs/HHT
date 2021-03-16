@@ -101,7 +101,6 @@ describe('post', () => {
 	})
 })
 
-afterAll(async (done) => {
+afterAll(async () => {
 	await cleanupDatabase(connection)
-	done()
 })

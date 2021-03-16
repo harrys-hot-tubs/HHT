@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"test": "jest -i",
+		"test": "JEST_WORKERS=4 jest -w JEST_WORKERS",
 		"build": "next build",
 		"start": "next start"
 	},
