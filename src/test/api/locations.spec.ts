@@ -44,6 +44,7 @@ describe('get', () => {
 			method: 'POST',
 			body: { latitude: ESB.latitude, longitude: ESB.longitude },
 		})
+
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
 		expect(JSON.parse(res._getData())).toEqual(
