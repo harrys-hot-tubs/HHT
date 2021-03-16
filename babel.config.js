@@ -8,7 +8,8 @@ module.exports = {
     },
     "development": {
       "presets": [
-        "next/babel"
+        "next/babel",
+        "@babel/preset-react"
       ]
     }
   }
