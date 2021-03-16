@@ -1,4 +1,8 @@
 module.exports = {
+  "presets": [
+    "next/babel",
+    "@babel/preset-react"
+  ],
   "env": {
     "test": {
       "presets": [
@@ -6,10 +10,6 @@ module.exports = {
         "next/babel"
       ]
     },
-    "development": {
-      "presets": [
-        "next/babel"
-      ]
-    }
-  }
+  },
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }

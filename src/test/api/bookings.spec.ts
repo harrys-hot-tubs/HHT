@@ -1,4 +1,4 @@
-import handler from '@pages/api/tubs'
+import handler from '@pages/api/bookings'
 import { BOOKINGS } from '@test/fixtures/bookingFixtures'
 import { LOCATIONS } from '@test/fixtures/locationFixtures'
 import { MIXED_SIZES } from '@test/fixtures/tubsFixtures'
@@ -26,11 +26,10 @@ describe('get', () => {
 		})
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
-		expect(JSON.parse(res._getData())).toEqual(MIXED_SIZES)
+		expect(JSON.parse(res._getData())).toEqual(BOOKINGS)
 	})
 })
 
-afterAll(async (done) => {
+afterAll(async () => {
 	await cleanupDatabase(connection)
-	done()
 })

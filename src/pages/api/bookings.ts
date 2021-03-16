@@ -19,8 +19,8 @@ const get = async (
 ) => {
 	try {
 		const { db } = req
-		const tubs = await db<BookingDB>('bookings').select()
-		return res.status(200).json(tubs)
+		const bookings = await db<BookingDB>('bookings').select()
+		return res.status(200).json(bookings)
 	} catch (e) {
 		return res.status(400).json(e)
 	}
