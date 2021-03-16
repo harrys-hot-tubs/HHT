@@ -5,7 +5,6 @@ import { TubDB } from '@typings/Tub'
 import { connector } from '@utils/db'
 import knex from 'knex'
 
-// TODO fix database connection interference
 export let connection = connector()()
 
 export const cleanupDatabase = async (db: knex) => {

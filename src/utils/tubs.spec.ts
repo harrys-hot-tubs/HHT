@@ -1,8 +1,4 @@
-import {
-	DIFFERENT_SIZES,
-	MIXED_SIZES,
-	SAME_SIZES,
-} from '@test/fixtures/tubsFixtures'
+import { differentSizes, mixedSizes, sameSize } from '@fixtures/tubsFixtures'
 import { displayableTubs } from '@utils/tubs'
 
 expect.extend({
@@ -27,20 +23,25 @@ declare global {
 
 describe('displayableTubs', () => {
 	it('should return only one tub of each size', () => {
-		const forDisplay = displayableTubs(SAME_SIZES)
+		const forDisplay = displayableTubs(sameSize)
 		expect(forDisplay.length).toBe(1)
-		expect(forDisplay).toContainNOf(SAME_SIZES)
+		expect(forDisplay).toContainNOf(sameSize)
 	})
 
 	it('displays all tubs of different sizes', () => {
-		const forDisplay = displayableTubs(DIFFERENT_SIZES)
-		expect(forDisplay.length).toBe(DIFFERENT_SIZES.length)
-		expect(forDisplay).toEqual(expect.arrayContaining(DIFFERENT_SIZES))
+		const forDisplay = displayableTubs(differentSizes)
+		expect(forDisplay.length).toBe(differentSizes.length)
+		expect(forDisplay).toEqual(expect.arrayContaining(differentSizes))
 	})
 
 	it('reduces the number of tubs displayed if multiple have the same capacity', () => {
-		const forDisplay = displayableTubs(MIXED_SIZES)
-		expect(forDisplay.length).toBe(DIFFERENT_SIZES.length + 1)
-		expect(forDisplay).toContainNOf(SAME_SIZES, 1)
+		const forDisplay = displayableTubs(mixedSizes)
+		expect(forDisplay.length).toBe(differentSizes.length + 1)
+		expect(forDisplay).toContainNOf(sameSize, 1)
+	})
+
+	it('returns an empty array when no tubs are passed', () => {
+		const forDisplay = displayableTubs([])
+		expect(forDisplay).toEqual([])
 	})
 })

@@ -1,65 +1,65 @@
 import {
-	BIR,
-	BP,
-	CLT,
-	CMB,
-	CRW,
-	ESB,
-	GLG,
-	SHF,
-	WLV,
-} from '@test/fixtures/coordinateFixtures'
+	bir,
+	bp,
+	clt,
+	cmb,
+	crw,
+	esb,
+	glg,
+	shf,
+	wlv,
+} from '@fixtures/coordinateFixtures'
 
 describe('isInTimeRange', () => {
 	it('correctly detects locations in range', () => {
-		CRW.isInTimeRangeOf(CRW).then((res) => expect(res).toBeTruthy())
-		WLV.isInTimeRangeOf(BIR).then((res) => expect(res).toBeTruthy())
+		crw.isInTimeRangeOf(crw).then((res) => expect(res).toBeTruthy())
+		wlv.isInTimeRangeOf(bir).then((res) => expect(res).toBeTruthy())
 	})
 
 	it('correctly detects locations out of range', () => {
-		expect(GLG.isInRangeOf(CMB)).toBeFalsy()
-		expect(SHF.isInRangeOf(CLT)).toBeFalsy()
+		expect(glg.isInRangeOf(cmb)).toBeFalsy()
+		expect(shf.isInRangeOf(clt)).toBeFalsy()
 	})
 })
 
 describe('isInRange', () => {
 	it('correctly detects locations in range', () => {
-		expect(CRW.isInRangeOf(CRW)).toBeTruthy()
-		expect(WLV.isInRangeOf(BIR)).toBeTruthy()
+		expect(crw.isInRangeOf(crw)).toBeTruthy()
+		expect(wlv.isInRangeOf(bir)).toBeTruthy()
 	})
 
 	it('correctly detects locations out of range', () => {
-		expect(GLG.isInRangeOf(CMB)).toBeFalsy()
-		expect(SHF.isInRangeOf(CLT)).toBeFalsy()
+		expect(glg.isInRangeOf(cmb)).toBeFalsy()
+		expect(shf.isInRangeOf(clt)).toBeFalsy()
 	})
 })
 
 describe('distance', () => {
 	it('is close to the true distance', () => {
-		expect(ESB.distanceTo(BP) / 1e3).toBeCloseTo(5566, 0)
-		expect(GLG.distanceTo(SHF) / 1e3).toBeCloseTo(331.9, 0)
-		expect(CRW.distanceTo(BIR) / 1e3).toBeCloseTo(74.48, 0)
+		expect(esb.distanceTo(bp) / 1e3).toBeCloseTo(5566, 0)
+		expect(glg.distanceTo(shf) / 1e3).toBeCloseTo(331.9, 0)
+		expect(crw.distanceTo(bir) / 1e3).toBeCloseTo(74.48, 0)
 	})
 
 	it('calculates distance reversibly', () => {
-		expect(ESB.distanceTo(BP)).toBe(BP.distanceTo(ESB))
-		expect(SHF.distanceTo(CMB)).toBe(CMB.distanceTo(SHF))
+		expect(esb.distanceTo(bp)).toBe(bp.distanceTo(esb))
+		expect(shf.distanceTo(cmb)).toBe(cmb.distanceTo(shf))
 	})
 
 	it('gives the distance to the same point to be 0', () => {
-		expect(ESB.distanceTo(ESB)).toBe(0)
-		expect(BP.distanceTo(BP)).toBe(0)
+		expect(esb.distanceTo(esb)).toBe(0)
+		expect(bp.distanceTo(bp)).toBe(0)
 	})
 })
 
 describe('journeyTime', () => {
 	it('calculates journey times greater than 0', () => {
-		SHF.timeTo(CMB).then((time) => expect(time).toBeGreaterThan(0))
-		CLT.timeTo(WLV).then((time) => expect(time).toBeGreaterThan(0))
+		shf.timeTo(cmb).then((time) => expect(time).toBeGreaterThan(0))
+		clt.timeTo(wlv).then((time) => expect(time).toBeGreaterThan(0))
 	})
 
 	it('gives the journey time to the same point to be 0', () => {
-		ESB.timeTo(ESB).then((time) => expect(time).toBe(0))
-		GLG.timeTo(GLG).then((time) => expect(time).toBe(0))
+		esb.timeTo(esb).then((time) => expect(time).toBe(0))
+		glg.timeTo(glg).then((time) => expect(time).toBe(0))
 	})
 })

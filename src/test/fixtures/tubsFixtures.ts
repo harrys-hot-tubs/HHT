@@ -1,6 +1,6 @@
 import { TubDB } from '@typings/Tub'
 
-export const SAME_SIZES: TubDB[] = [
+export const sameSize: TubDB[] = [
 	{
 		location_id: 1,
 		max_capacity: 2,
@@ -18,7 +18,7 @@ export const SAME_SIZES: TubDB[] = [
 	},
 ]
 
-export const DIFFERENT_SIZES: TubDB[] = [
+export const differentSizes: TubDB[] = [
 	{
 		location_id: 1,
 		max_capacity: 4,
@@ -31,4 +31,4 @@ export const DIFFERENT_SIZES: TubDB[] = [
 	},
 ]
 
-export const MIXED_SIZES: TubDB[] = SAME_SIZES.concat(DIFFERENT_SIZES)
+export const mixedSizes: TubDB[] = sameSize.concat(differentSizes)

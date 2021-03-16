@@ -32,7 +32,7 @@ const isBlocked = (postcode: string, blocked: string[] = blockedOutcodes) => {
 	})
 }
 
-const blockedOutcodes = [
+export const blockedOutcodes = [
 	'EC',
 	'SE1',
 	'WC',
@@ -84,8 +84,8 @@ export type PromoCodeError = 'invalid' | 'dead'
 export const validatePromoCode = (
 	promoCode: string
 ): [boolean, PromoCodeError] => {
-	if (VALID_CODES.includes(promoCode)) return [true, null]
+	if (validPromoCodes.includes(promoCode)) return [true, null]
 	else return [false, 'invalid']
 }
 
-const VALID_CODES = ['FREE2020']
+export const validPromoCodes = ['FREE2020']

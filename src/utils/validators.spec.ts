@@ -1,12 +1,15 @@
 import {
-	BIRMINGHAM,
-	FailedRangeResponse,
-	SuccessfulRangeResponse,
-} from '@test/fixtures/postcodeFixtures'
+	birmingham,
+	failedRangeResponse,
+	successfulRangeResponse,
+} from '@fixtures/postcodeFixtures'
 import {
+	blockedOutcodes,
 	PostcodeError,
+	PromoCodeError,
 	validatePostcode,
 	validatePromoCode,
+	validPromoCodes,
 } from '@utils/validators'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
@@ -19,20 +22,39 @@ describe('validatePostcode', () => {
 	})
 
 	it('identifies valid postcodes', async () => {
-		mock.onPost('/api/locations').reply(200, SuccessfulRangeResponse)
+		mock.onPost('/api/locations').reply(200, successfulRangeResponse)
 
-		const response = await validatePostcode(BIRMINGHAM)
+		const response = await validatePostcode(birmingham)
 		expect(response).toEqual([true, null])
 	})
 
-	it('identifies missing postcodes', async () => {
+	it('identifies valid lowercase postcodes', async () => {
+		mock.onPost('/api/locations').reply(200, successfulRangeResponse)
+
+		const response = await validatePostcode(birmingham.toLowerCase())
+		expect(response).toEqual([true, null])
+	})
+
+	it('identifies null postcodes', async () => {
 		const response = await validatePostcode(null)
 		expect(response[0]).toBe(false)
 		expect(response[1]).toBe<PostcodeError>('missing')
 	})
 
+	it('identifies undefined postcodes', async () => {
+		const response = await validatePostcode(undefined)
+		expect(response[0]).toBe(false)
+		expect(response[1]).toBe<PostcodeError>('missing')
+	})
+
+	it('identifies empty postcodes', async () => {
+		const response = await validatePostcode('')
+		expect(response[0]).toBe(false)
+		expect(response[1]).toBe<PostcodeError>('missing')
+	})
+
 	it('identifies blocked postcodes', async () => {
-		const response = await validatePostcode('SE1 1AB')
+		const response = await validatePostcode(`${blockedOutcodes[0]}1 2AB`)
 		expect(response[0]).toBe(false)
 		expect(response[1]).toBe<PostcodeError>('blocked')
 	})
@@ -44,9 +66,9 @@ describe('validatePostcode', () => {
 	})
 
 	it('identifies out of range postcodes', async () => {
-		mock.onPost('/api/locations').reply(200, FailedRangeResponse)
+		mock.onPost('/api/locations').reply(200, failedRangeResponse)
 
-		const response = await validatePostcode(BIRMINGHAM)
+		const response = await validatePostcode(birmingham)
 		expect(response[0]).toBe(false)
 		expect(response[1]).toBe<PostcodeError>('range')
 	})
@@ -54,10 +76,30 @@ describe('validatePostcode', () => {
 
 describe('validatePromoCode', () => {
 	it('accepts valid promo codes', () => {
-		expect(validatePromoCode('FREE2020')).toEqual([true, null])
+		expect(validatePromoCode(validPromoCodes[0])).toEqual<
+			[boolean, PromoCodeError]
+		>([true, null])
 	})
 
 	it('rejects invalid promo codes', () => {
-		expect(validatePromoCode('TEST')).toEqual([false, 'invalid'])
+		expect(validatePromoCode('TEST')).toEqual<[boolean, PromoCodeError]>([
+			false,
+			'invalid',
+		])
+	})
+
+	it('rejects falsy promo codes', () => {
+		expect(validatePromoCode(undefined)).toEqual<[boolean, PromoCodeError]>([
+			false,
+			'invalid',
+		])
+		expect(validatePromoCode(null)).toEqual<[boolean, PromoCodeError]>([
+			false,
+			'invalid',
+		])
+		expect(validatePromoCode('')).toEqual<[boolean, PromoCodeError]>([
+			false,
+			'invalid',
+		])
 	})
 })

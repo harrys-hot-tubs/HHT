@@ -1,14 +1,14 @@
 import {
-	NEW_MILLENNIUM_DATE,
-	NEW_MILLENNIUM_MOMENT,
-	RANDOM_DATE,
-} from '@test/fixtures/dateFixtures'
+	newMillenniumDate,
+	newMillenniumMoment,
+	randomDate,
+} from '@fixtures/dateFixtures'
 import { momentToString, stringToMoment } from '@utils/date'
 import { FormatError } from './errors'
 
 describe('stringToMoment', () => {
 	it('correctly parses valid dates', () => {
-		const newMillenniumMoment = stringToMoment(NEW_MILLENNIUM_DATE)
+		const newMillenniumMoment = stringToMoment(newMillenniumDate)
 
 		expect(newMillenniumMoment.isValid()).toBeTruthy()
 		expect(newMillenniumMoment.dayOfYear()).toBe(1)
@@ -16,7 +16,7 @@ describe('stringToMoment', () => {
 		expect(newMillenniumMoment.year()).toBe(2000)
 		expect(newMillenniumMoment.month() + 1).toBe(1)
 
-		const randomMoment = stringToMoment(RANDOM_DATE)
+		const randomMoment = stringToMoment(randomDate)
 
 		expect(randomMoment.isValid()).toBeTruthy()
 		expect(randomMoment.dayOfYear()).toBe(351)
@@ -37,7 +37,7 @@ describe('stringToMoment', () => {
 
 describe('momentToString', () => {
 	it('parses dates to british format', () => {
-		expect(momentToString(NEW_MILLENNIUM_MOMENT)).toBe('1/1/2000')
+		expect(momentToString(newMillenniumMoment)).toBe('1/1/2000')
 	})
 
 	it('does not parse invalid dates', () => {

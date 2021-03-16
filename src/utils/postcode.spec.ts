@@ -1,17 +1,17 @@
-import { BIR, ESB } from '@test/fixtures/coordinateFixtures'
+import { bir, esb } from '@fixtures/coordinateFixtures'
 import {
-	BATH,
-	BIRMINGHAM,
-	CENTRAL_LONDON,
-	CHESTER,
-	DURHAM,
-	EDINBURGH,
-	FailedRangeResponse,
-	LIVERPOOL,
-	NEWCASTLE,
-	SHEFFIELD,
-	SuccessfulRangeResponse,
-} from '@test/fixtures/postcodeFixtures'
+	bath,
+	birmingham,
+	centralLondon,
+	chester,
+	durham,
+	edinburgh,
+	failedRangeResponse,
+	liverpool,
+	newcastle,
+	sheffield,
+	successfulRangeResponse,
+} from '@fixtures/postcodeFixtures'
 import {
 	getClosestDispatcher,
 	getCoordinates,
@@ -29,15 +29,15 @@ describe('isPostcode', () => {
 	})
 
 	it('identifies valid postcodes', () => {
-		isPostcode(CHESTER).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(LIVERPOOL).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(SHEFFIELD).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(BIRMINGHAM).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(CENTRAL_LONDON).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(NEWCASTLE).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(DURHAM).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(BATH).then((res) => expect(res[0]).toBeTruthy())
-		isPostcode(EDINBURGH).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(chester).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(liverpool).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(sheffield).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(birmingham).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(centralLondon).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(newcastle).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(durham).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(bath).then((res) => expect(res[0]).toBeTruthy())
+		isPostcode(edinburgh).then((res) => expect(res[0]).toBeTruthy())
 	})
 
 	it('identifies invalid postcodes', () => {
@@ -45,11 +45,18 @@ describe('isPostcode', () => {
 			expect(res[0]).toBeFalsy()
 			expect(res[1]).toBeTruthy()
 		})
+
 		isPostcode('').then((res) => {
 			expect(res[0]).toBeFalsy()
 			expect(res[1]).toBeTruthy()
 		})
+
 		isPostcode(null).then((res) => {
+			expect(res[0]).toBeFalsy()
+			expect(res[1]).toBeTruthy()
+		})
+
+		isPostcode(undefined).then((res) => {
 			expect(res[0]).toBeFalsy()
 			expect(res[1]).toBeTruthy()
 		})
@@ -62,7 +69,7 @@ describe('getCoordinates', () => {
 	})
 
 	it('determines latitude and longitude of a valid postcode', () => {
-		getCoordinates(BATH).then((res) => {
+		getCoordinates(bath).then((res) => {
 			expect(res.latitude).toBe(51.379324)
 			expect(res.longitude).toBe(-2.327157)
 		})
@@ -75,16 +82,14 @@ describe('getInRange', () => {
 	})
 
 	it('responds with correct response if the postcode is in range', async () => {
-		mock.onPost('/api/locations').reply(200, SuccessfulRangeResponse)
-
-		const received = await getInRange(BIR)
-		expect(received).toEqual([true, null])
+		mock.onPost('/api/locations').reply(200, successfulRangeResponse)
+		await expect(getInRange(bir)).resolves.toEqual([true, null])
 	})
 
 	it('responds with correct response if the postcode is not in range', async () => {
-		mock.onPost('/api/locations').reply(200, FailedRangeResponse)
+		mock.onPost('/api/locations').reply(200, failedRangeResponse)
 
-		const received = await getInRange(ESB)
+		const received = await getInRange(esb)
 		expect(received[0]).toBe(false)
 		expect(received[1]).toBeDefined()
 	})
@@ -96,16 +101,17 @@ describe('getClosestDispatcher', () => {
 	})
 
 	it('responds with closest location if postcode is in range', async () => {
-		mock.onPost('/api/locations').reply(200, SuccessfulRangeResponse)
+		mock.onPost('/api/locations').reply(200, successfulRangeResponse)
 
-		const received = await getClosestDispatcher(BIRMINGHAM)
-		expect(received).toBe(SuccessfulRangeResponse.closest.location_id)
+		await expect(getClosestDispatcher(birmingham)).resolves.toBe(
+			successfulRangeResponse.closest.location_id
+		)
 	})
 
 	it('throws error if the postcode is not in range', async () => {
-		mock.onPost('/api/locations').reply(200, FailedRangeResponse)
+		mock.onPost('/api/locations').reply(200, failedRangeResponse)
 
-		expect(getClosestDispatcher(EDINBURGH)).rejects.toThrow()
+		await expect(getClosestDispatcher(edinburgh)).rejects.toThrow()
 	})
 })
 

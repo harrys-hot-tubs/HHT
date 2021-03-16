@@ -1,7 +1,7 @@
+import { bookings } from '@fixtures/bookingFixtures'
+import { locations } from '@fixtures/locationFixtures'
+import { mixedSizes } from '@fixtures/tubsFixtures'
 import handler from '@pages/api/bookings'
-import { BOOKINGS } from '@test/fixtures/bookingFixtures'
-import { LOCATIONS } from '@test/fixtures/locationFixtures'
-import { MIXED_SIZES } from '@test/fixtures/tubsFixtures'
 import { cleanupDatabase, connection } from '@test/helpers/DBHelper'
 import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/Booking'
@@ -11,9 +11,9 @@ import { NextApiResponse } from 'next'
 import { createMocks } from 'node-mocks-http'
 
 beforeAll(async () => {
-	await connection<LocationDB>('locations').insert(LOCATIONS)
-	await connection<TubDB>('tubs').insert(MIXED_SIZES)
-	await connection<BookingDB>('bookings').insert(BOOKINGS)
+	await connection<LocationDB>('locations').insert(locations)
+	await connection<TubDB>('tubs').insert(mixedSizes)
+	await connection<BookingDB>('bookings').insert(bookings)
 })
 
 describe('get', () => {
@@ -26,7 +26,7 @@ describe('get', () => {
 		})
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
-		expect(JSON.parse(res._getData())).toEqual(BOOKINGS)
+		expect(JSON.parse(res._getData())).toEqual(bookings)
 	})
 })
 

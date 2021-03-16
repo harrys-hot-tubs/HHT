@@ -88,6 +88,7 @@ export default {
 		'@typings/(.*)$': '<rootDir>/src/typings/$1',
 		'@utils/(.*)$': '<rootDir>/src/utils/$1',
 		'@test/(.*)$': '<rootDir>/src/test/$1',
+		'@fixtures/(.*)$': '<rootDir>/src/test/fixtures/$1',
 	},
 
 	// An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

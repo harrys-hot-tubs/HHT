@@ -1,6 +1,6 @@
 import { LocationDB } from '@typings/Location'
 
-export const LOCATIONS: LocationDB[] = [
+export const locations: LocationDB[] = [
 	{
 		location_id: 1,
 		name: 'Birmingham',

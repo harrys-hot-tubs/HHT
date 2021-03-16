@@ -1,6 +1,6 @@
+import { locations } from '@fixtures/locationFixtures'
+import { mixedSizes } from '@fixtures/tubsFixtures'
 import handler from '@pages/api/tubs'
-import { LOCATIONS } from '@test/fixtures/locationFixtures'
-import { MIXED_SIZES } from '@test/fixtures/tubsFixtures'
 import { cleanupDatabase, connection } from '@test/helpers/DBHelper'
 import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/Location'
@@ -9,8 +9,8 @@ import { NextApiResponse } from 'next'
 import { createMocks } from 'node-mocks-http'
 
 beforeAll(async () => {
-	await connection<LocationDB>('locations').insert(LOCATIONS)
-	await connection<TubDB>('tubs').insert(MIXED_SIZES)
+	await connection<LocationDB>('locations').insert(locations)
+	await connection<TubDB>('tubs').insert(mixedSizes)
 })
 
 describe('get', () => {
@@ -23,7 +23,7 @@ describe('get', () => {
 		})
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
-		expect(JSON.parse(res._getData())).toEqual(MIXED_SIZES)
+		expect(JSON.parse(res._getData())).toEqual(mixedSizes)
 	})
 })
 

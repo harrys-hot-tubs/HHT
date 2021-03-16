@@ -20,7 +20,8 @@
 			"@hooks/*": ["hooks/*"],
 			"@typings/*": ["typings/*"],
 			"@utils/*": ["utils/*"],
-			"@test/*": ["test/*"]
+			"@test/*": ["test/*"],
+			"@fixtures/*": ["test/fixtures/*"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

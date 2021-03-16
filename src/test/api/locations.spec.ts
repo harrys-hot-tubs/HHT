@@ -1,8 +1,8 @@
+import { bookings } from '@fixtures/bookingFixtures'
+import { bir, esb } from '@fixtures/coordinateFixtures'
+import { locations } from '@fixtures/locationFixtures'
+import { mixedSizes } from '@fixtures/tubsFixtures'
 import handler from '@pages/api/locations'
-import { BOOKINGS } from '@test/fixtures/bookingFixtures'
-import { BIR, ESB } from '@test/fixtures/coordinateFixtures'
-import { LOCATIONS } from '@test/fixtures/locationFixtures'
-import { MIXED_SIZES } from '@test/fixtures/tubsFixtures'
 import { cleanupDatabase, connection } from '@test/helpers/DBHelper'
 import { RangeResponse } from '@typings/api/Locations'
 import { ConnectedRequest } from '@typings/api/Request'
@@ -13,9 +13,9 @@ import { NextApiResponse } from 'next'
 import { createMocks } from 'node-mocks-http'
 
 beforeAll(async () => {
-	await connection<LocationDB>('locations').insert(LOCATIONS)
-	await connection<TubDB>('tubs').insert(MIXED_SIZES)
-	await connection<BookingDB>('bookings').insert(BOOKINGS)
+	await connection<LocationDB>('locations').insert(locations)
+	await connection<TubDB>('tubs').insert(mixedSizes)
+	await connection<BookingDB>('bookings').insert(bookings)
 })
 
 describe('get', () => {
@@ -25,7 +25,7 @@ describe('get', () => {
 			NextApiResponse<RangeResponse[]>
 		>({
 			method: 'POST',
-			body: { latitude: BIR.latitude, longitude: BIR.longitude },
+			body: { latitude: bir.latitude, longitude: bir.longitude },
 		})
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
@@ -42,7 +42,7 @@ describe('get', () => {
 			NextApiResponse<RangeResponse[]>
 		>({
 			method: 'POST',
-			body: { latitude: ESB.latitude, longitude: ESB.longitude },
+			body: { latitude: esb.latitude, longitude: esb.longitude },
 		})
 
 		await handler(req, res)

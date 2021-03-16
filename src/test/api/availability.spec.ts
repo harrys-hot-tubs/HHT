@@ -1,10 +1,12 @@
+import {
+	closedBookingRequest,
+	openBookingRequest,
+} from '@fixtures/availabilityFixtures'
 import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { orderRequest, storedOrder } from '@fixtures/orderFixtures'
 import { mixedSizes } from '@fixtures/tubsFixtures'
-import handler from '@pages/api/orders'
+import handler from '@pages/api/availability'
 import { cleanupDatabase, connection } from '@test/helpers/DBHelper'
-import { OrderDB } from '@typings/api/Order'
 import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/Booking'
 import { LocationDB } from '@typings/Location'
@@ -15,36 +17,34 @@ import { createMocks } from 'node-mocks-http'
 beforeAll(async () => {
 	await connection<LocationDB>('locations').insert(locations)
 	await connection<TubDB>('tubs').insert(mixedSizes)
+	await connection<BookingDB>('bookings').insert(bookings)
 })
 
 describe('post', () => {
-	it('adds an order', async () => {
+	it('returns all tubs for expected location', async () => {
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'POST',
-			body: orderRequest,
+			body: openBookingRequest,
 		})
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
-		expect(JSON.parse(res._getData())).toEqual({ added: true })
+		expect(JSON.parse(res._getData())).toEqual({
+			available: true,
+			tubs: mixedSizes,
+		})
 	})
-})
 
-describe('delete', () => {
-	it('deletes outdated orders', async () => {
-		await connection<OrderDB[]>('orders').del()
-		await connection<BookingDB[]>('bookings').del()
-		await connection<BookingDB[]>('bookings').insert([bookings[0]])
-		await connection<OrderDB[]>('orders').insert([storedOrder])
+	it('returns no tubs for booking clash', async () => {
+		await connection<TubDB>('tubs').del().where('tub_id', '>', 1)
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
-			method: 'DELETE',
+			method: 'POST',
+			body: closedBookingRequest,
 		})
 		await handler(req, res)
-		expect(res._getStatusCode()).toBe(500)
-
-		const storedBookings = await connection<BookingDB[]>('bookings').select()
-		expect(storedBookings.length).toBe(0)
-		const storedOrders = await connection<OrderDB[]>('orders').select()
-		expect(storedOrders.length).toBe(0)
+		expect(res._getStatusCode()).toBe(200)
+		expect(JSON.parse(res._getData())).toEqual({
+			available: false,
+		})
 	})
 })
 
