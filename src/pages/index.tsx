@@ -16,7 +16,7 @@ const Home = () => {
 				<title>Harry's Hot Tubs</title>
 			</Head>
 			<div className='lead-container'>
-				<img src='lead1.jpg' className='hero-image' />
+				<img src='lead3.jpeg' className='hero-image' />
 				<h1 className='title'>Harry's Hot Tubs</h1>
 				<Button onClick={(e) => router.push('/hire')} bsPrefix='call-to-action'>
 					Hire a Hot Tub
