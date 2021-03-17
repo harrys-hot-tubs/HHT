@@ -24,7 +24,7 @@ export const config = {
 }
 
 const cors = Cors({
-	allowMethods: ['POST', 'HEAD'],
+	methods: ['POST', 'HEAD'],
 })
 
 const runMiddleware = (
