@@ -24,7 +24,9 @@ const post = async (
 	const userLocation = new Coordinate(latitude, longitude)
 	const dispatchers = await db<LocationDB>('locations').select()
 
-	const dispatcherCoordinates = dispatchers.map(locationToCoordinate)
+	const dispatcherCoordinates: Coordinate[] = dispatchers.map(
+		locationToCoordinate
+	)
 	const ranges = await Promise.all(
 		dispatcherCoordinates.map((location) => userLocation.timeTo(location))
 	)

@@ -46,6 +46,25 @@ describe('delete', () => {
 		const storedOrders = await connection<OrderDB[]>('orders').select()
 		expect(storedOrders.length).toBe(0)
 	})
+
+	it("doesn't delete in date orders", async () => {
+		await connection<OrderDB[]>('orders').del()
+		await connection<BookingDB[]>('bookings').del()
+		await connection<BookingDB[]>('bookings').insert([bookings[0]])
+		await connection<OrderDB[]>('orders').insert([
+			{ ...storedOrder, created_at: '3000-03-08 10:59:59' },
+		])
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'DELETE',
+		})
+		await handler(req, res)
+		expect(res._getStatusCode()).toBe(200)
+
+		const storedBookings = await connection<BookingDB[]>('bookings').select()
+		expect(storedBookings.length).toBe(1)
+		const storedOrders = await connection<OrderDB[]>('orders').select()
+		expect(storedOrders.length).toBe(1)
+	})
 })
 
 afterAll(async () => {

@@ -17,12 +17,16 @@ export default class Coordinate {
 	 * @returns True if the coordinates are within 90 minutes of each other.
 	 */
 	async isInTimeRangeOf(c: Coordinate) {
-		return (await this.timeTo(c)) < 90
+		if (this.isInRangeOf(c)) {
+			return true
+		} else {
+			return (await this.timeTo(c)) < 90
+		}
 	}
 
 	/**
 	 * Calculates whether or not two coordinates are within 30 miles.
-	 * @deprecated
+	 * @deprecated Superseded by isInTimeRangeOf
 	 * @param c The coordinate to be assessed.
 	 * @returns True if the coordinates are within 30 miles of each other.
 	 */
@@ -34,7 +38,7 @@ export default class Coordinate {
 	 * Calculates the distance between this and another point using the
 	 * {@link https://en.wikipedia.org/wiki/Haversine_formula, Haversine Formula}.
 	 *
-	 * @deprecated
+	 * @deprecated Superseded by timeTo
 	 * @param location The coordinate to be compared.
 	 * @returns The distance between the two coordinates in m.
 	 */

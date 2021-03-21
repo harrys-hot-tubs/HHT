@@ -96,6 +96,7 @@ const CheckoutForm = ({
 			validated={validated}
 			onSubmit={handleSubmit}
 			className='checkout-form'
+			role='main'
 		>
 			<h1>Checkout</h1>
 			<h2>Contact Details</h2>
@@ -103,6 +104,7 @@ const CheckoutForm = ({
 				<Form.Group as={Col}>
 					<Form.Label>First name</Form.Label>
 					<Form.Control
+						aria-label='first-name'
 						required
 						autoComplete='given-name'
 						value={user.firstName}
@@ -112,14 +114,20 @@ const CheckoutForm = ({
 								firstName: e.target.value,
 							})
 						}
+						aria-describedby='first-name-error'
 					/>
-					<Form.Control.Feedback type='invalid'>
+					<Form.Control.Feedback
+						type='invalid'
+						id='first-name-error'
+						role='alert'
+					>
 						This field is required.
 					</Form.Control.Feedback>
 				</Form.Group>
 				<Form.Group as={Col}>
 					<Form.Label>Last name</Form.Label>
 					<Form.Control
+						aria-label='last-name'
 						required
 						autoComplete='family-name'
 						value={user.lastName}
@@ -129,8 +137,13 @@ const CheckoutForm = ({
 								lastName: e.target.value,
 							})
 						}
+						aria-describedby='last-name-error'
 					/>
-					<Form.Control.Feedback type='invalid'>
+					<Form.Control.Feedback
+						type='invalid'
+						id='last-name-error'
+						role='alert'
+					>
 						This field is required.
 					</Form.Control.Feedback>
 				</Form.Group>
@@ -138,26 +151,30 @@ const CheckoutForm = ({
 			<Form.Group>
 				<Form.Label>Email address</Form.Label>
 				<Form.Control
+					aria-label='email'
 					required
 					autoComplete='email'
 					value={user.email}
 					onChange={(e) => setUser({ ...user, email: e.target.value })}
+					aria-describedby='email-error'
 				/>
-				<Form.Control.Feedback type='invalid'>
+				<Form.Control.Feedback type='invalid' id='email-error' role='alert'>
 					This field is required.
 				</Form.Control.Feedback>
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Telephone number</Form.Label>
 				<Form.Control
+					aria-label='telephone'
 					required
 					autoComplete='tel'
 					value={user.telephoneNumber}
 					onChange={(e) =>
 						setUser({ ...user, telephoneNumber: e.target.value })
 					}
+					aria-describedby='telephone-error'
 				/>
-				<Form.Control.Feedback type='invalid'>
+				<Form.Control.Feedback type='invalid' id='telephone-error' role='alert'>
 					This field is required.
 				</Form.Control.Feedback>
 			</Form.Group>
@@ -166,42 +183,65 @@ const CheckoutForm = ({
 			<Form.Group>
 				<Form.Label>Address line 1</Form.Label>
 				<Form.Control
+					aria-label='address1'
 					required
 					autoComplete='address-line1'
 					value={user.addressLine1}
 					onChange={(e) => setUser({ ...user, addressLine1: e.target.value })}
+					aria-describedby='address-line1-error'
 				/>
-				<Form.Control.Feedback type='invalid'>
+				<Form.Control.Feedback
+					type='invalid'
+					id='address-line1-error'
+					role='alert'
+				>
 					This field is required.
 				</Form.Control.Feedback>
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Address line 2</Form.Label>
 				<Form.Control
+					aria-label='address2'
 					required
 					autoComplete='address-line2'
 					value={user.addressLine2}
 					onChange={(e) => setUser({ ...user, addressLine2: e.target.value })}
+					aria-describedby='address-line2-error'
 				/>
-				<Form.Control.Feedback type='invalid'>
+				<Form.Control.Feedback
+					type='invalid'
+					id='address-line2-error'
+					role='alert'
+				>
 					This field is required.
 				</Form.Control.Feedback>
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Address line 3</Form.Label>
 				<Form.Control
+					aria-label='address3'
 					required
 					autoComplete='address-line3'
 					value={user.addressLine3}
 					onChange={(e) => setUser({ ...user, addressLine3: e.target.value })}
+					aria-describedby='address-line3-error'
 				/>
-				<Form.Control.Feedback type='invalid'>
+				<Form.Control.Feedback
+					type='invalid'
+					id='address-line3-error'
+					role='alert'
+				>
 					This field is required.
 				</Form.Control.Feedback>
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Postcode</Form.Label>
-				<Form.Control required placeholder={postcode} readOnly />
+				<Form.Control
+					aria-label='postcode'
+					required
+					placeholder={postcode}
+					readOnly
+				/>
 				<Form.Text muted>
 					This was taken from the previous page and cannot be changed.
 				</Form.Text>
@@ -211,26 +251,26 @@ const CheckoutForm = ({
 			<Form.Group>
 				<Form.Label>Where did you hear about us?</Form.Label>
 				<Form.Control
+					aria-label='referee'
 					required
 					list='referees'
 					value={user.referee}
 					onChange={(e) => setUser({ ...user, referee: e.target.value })}
+					aria-describedby='referee-error'
 				/>
-				<datalist id='referees'>
-					<option>Facebook</option>
-					<option>Instagram</option>
-					<option>Recommendation</option>
-					<option>Influencer - Please Enter Name!</option>
-					<option>Search Engine</option>
-					<option>Other</option>
+				<datalist id='referees' data-testid='referees'>
+					{RefereeOptions.map((referee, index) => (
+						<option key={index}>{referee}</option>
+					))}
 				</datalist>
-				<Form.Control.Feedback type='invalid'>
+				<Form.Control.Feedback type='invalid' id='referee-error' role='alert'>
 					This field is required.
 				</Form.Control.Feedback>
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Special requests</Form.Label>
 				<Form.Control
+					aria-label='requests'
 					as='textarea'
 					rows={3}
 					value={user.specialRequests}
@@ -243,17 +283,19 @@ const CheckoutForm = ({
 				<Form.Group as={Col}>
 					<Form.Label>Start date</Form.Label>
 					<Form.Control
+						aria-label='start-date'
 						required
 						disabled
-						placeholder={momentToString(startDate)}
+						placeholder={startDate ? momentToString(startDate) : null}
 					/>
 				</Form.Group>
 				<Form.Group as={Col}>
 					<Form.Label>End date</Form.Label>
 					<Form.Control
+						aria-label='end-date'
 						required
 						disabled
-						placeholder={momentToString(endDate)}
+						placeholder={endDate ? momentToString(endDate) : null}
 					/>
 				</Form.Group>
 			</Form.Row>
@@ -317,5 +359,14 @@ const createOrder = async (
 	const res = await axios.post('/api/orders', params)
 	if (res.status !== 200) throw new Error('Order creation failed.')
 }
+
+export const RefereeOptions = [
+	'Facebook',
+	'Instagram',
+	'Recommendation',
+	'Influencer - Please Enter Name!',
+	'Search Engine',
+	'Other',
+]
 
 export default CheckoutForm

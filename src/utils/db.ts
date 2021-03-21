@@ -1,8 +1,8 @@
 import { ConnectedRequest } from '@typings/api/Request'
-import knex from 'knex'
+import knex, { Knex } from 'knex'
 import { NextApiResponse } from 'next'
 
-let connection: knex
+let connection: Knex
 
 export const connector = () => {
 	return () => {

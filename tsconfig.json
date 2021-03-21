@@ -21,9 +21,16 @@
 			"@typings/*": ["typings/*"],
 			"@utils/*": ["utils/*"],
 			"@test/*": ["test/*"],
-			"@fixtures/*": ["test/fixtures/*"]
+			"@fixtures/*": ["test/fixtures/*"],
+			"@helpers/*": ["test/helpers/*"]
 		}
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"src/test/pages/failure.spec.ts",
+		"src/test/pages/failure.spec.jsx"
+	],
 	"exclude": ["node_modules"]
 }

@@ -6,6 +6,7 @@
     "datepicker",
     "distancematrix",
     "googlemaps",
+    "localstorage",
     "mailjet",
     "outcode"
   ]

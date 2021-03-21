@@ -4,7 +4,7 @@ import {
 	randomDate,
 } from '@fixtures/dateFixtures'
 import { momentToString, stringToMoment } from '@utils/date'
-import { FormatError } from './errors'
+import { FormatError } from '@utils/errors'
 
 describe('stringToMoment', () => {
 	it('correctly parses valid dates', () => {

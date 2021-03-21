@@ -19,7 +19,7 @@ const useCheckoutInformation = (): [
 ] => {
 	const [checkoutInformation, setCheckoutInformation] = useStoredState({
 		name: 'checkoutInformation',
-		fallback,
+		fallback: Fallback,
 		toString: (v) => JSON.stringify(v),
 		fromString: (v) => JSON.parse(v) as CheckoutInformation,
 	})
@@ -27,7 +27,7 @@ const useCheckoutInformation = (): [
 	return [checkoutInformation, setCheckoutInformation]
 }
 
-const fallback: CheckoutInformation = {
+export const Fallback: CheckoutInformation = {
 	firstName: '',
 	lastName: '',
 	email: '',
