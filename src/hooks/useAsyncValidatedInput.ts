@@ -1,8 +1,6 @@
 import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
 import { useEffect, useState } from 'react'
 
-type ValidationError = ''
-
 interface HookArgs<T, U> extends UseStoredStateArgs<T> {
 	validator: (value: T) => Promise<[boolean, U]>
 }
