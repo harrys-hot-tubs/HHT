@@ -12,3 +12,14 @@ jobs:
         run: yarn install
       - name: Run tests
         run: yarn test
+    env:
+      AWS_DB: ${{ secrets.AWS_DB }}
+      AWS_DB_ENDPOINT: ${{ secrets.AWS_DB_ENDPOINT }}
+      AWS_DB_PASSWORD: ${{ secrets.AWS_DB_PASSWORD }}
+      AWS_DB_USER: ${{ secrets.AWS_DB_USER }}
+      GC_API_KEY: ${{ secrets.GC_API_KEY }}
+      NEXT_PUBLIC_STRIPE_TOKEN: ${{ secrets.NEXT_PUBLIC_STRIPE_TOKEN }}
+      STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
+      WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+      MJ_PUBLIC: ${{ secrets.MJ_PUBLIC }}
+      MJ_SECRET: ${{ secrets.MJ_SECRET }}
