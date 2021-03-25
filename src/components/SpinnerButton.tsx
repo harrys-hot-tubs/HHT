@@ -13,6 +13,7 @@ interface ComponentProps {
 	activeText: string
 	disabled?: boolean
 	onClick?: React.MouseEventHandler<HTMLElement>
+	'data-testid'?: string
 }
 
 const SpinnerButton = ({
@@ -25,6 +26,7 @@ const SpinnerButton = ({
 	activeText,
 	disabled,
 	onClick,
+	'data-testid': dataTestID,
 }: ComponentProps) => (
 	<button
 		id={id}
@@ -33,12 +35,19 @@ const SpinnerButton = ({
 		disabled={disabled || status}
 		onClick={onClick}
 		className={className}
+		data-testid={dataTestID}
 	>
 		{status ? (
-			<>
+			<React.Fragment>
 				<span>{activeText} </span>
-				<Spinner animation='border' role='status' size='sm' />
-			</>
+				<Spinner
+					animation='border'
+					role='status'
+					size='sm'
+					aria-busy='true'
+					aria-label='spinner'
+				/>
+			</React.Fragment>
 		) : (
 			<>{children}</>
 		)}

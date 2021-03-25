@@ -23,11 +23,14 @@ const PostcodeField = ({
 	invalidReason,
 	onValidate,
 }: ComponentProps) => {
+	console.log(`invalidReason`, isInvalid)
 	return (
-		<>
+		<React.Fragment>
 			<InputGroup className='postcode-field'>
 				<FormControl
 					id='postcode'
+					aria-label='postcode'
+					aria-describedby='postcode-error'
 					placeholder='Postcode'
 					autoComplete='postal-code'
 					isInvalid={isInvalid}
@@ -43,16 +46,22 @@ const PostcodeField = ({
 						activeText='Checking...'
 						onClick={onValidate}
 						className='postcode-validate-button'
+						data-testid='postcode-validate'
 					>
 						Check Availability
 					</SpinnerButton>
 				</InputGroup.Append>
-				<FormControl.Feedback type='invalid'>
+				<FormControl.Feedback
+					type='invalid'
+					id='postcode-error'
+					role='alert'
+					aria-label='postcode-feedback'
+				>
 					{generateFeedback(invalidReason)}
 				</FormControl.Feedback>
 			</InputGroup>
 			<PostcodeModal invalidReason={invalidReason} />
-		</>
+		</React.Fragment>
 	)
 }
 
@@ -68,6 +77,8 @@ const generateFeedback = (invalidReason: PostcodeError) => {
 			return 'Delivery at this location is subject to change.'
 		case 'other':
 			return 'An unknown error occurred.'
+		default:
+			return null
 	}
 }
 

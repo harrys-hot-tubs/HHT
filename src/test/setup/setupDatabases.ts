@@ -11,7 +11,7 @@ export default async () => {
 		},
 	})
 
-	const dbName = 'test'
+	const dbName = process.env.AWS_DB
 	const workers = parseInt(process.env.JEST_WORKERS || '1')
 	for (let i = 0; i < workers; i++) {
 		const workerDB = `test_${i}`

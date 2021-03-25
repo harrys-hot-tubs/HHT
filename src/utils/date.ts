@@ -2,7 +2,7 @@ import { FormatError } from '@utils/errors'
 import moment from 'moment'
 
 export const stringToMoment = (date: string): moment.Moment => {
-	const formattedDate = moment.utc(date, 'YYYY-MM-DD')
+	const formattedDate = moment.utc(date, 'YYYY-MM-DD', true)
 	if (!formattedDate.isValid() || date.length < 10) {
 		throw new FormatError('Malformed date.')
 	} else {
@@ -12,6 +12,5 @@ export const stringToMoment = (date: string): moment.Moment => {
 
 export const momentToString = (date: moment.Moment): string => {
 	if (!date) throw new FormatError('Date is not a valid moment')
-	moment.locale('en-GB')
-	return date.format('l')
+	return date.format('D/M/YYYY')
 }

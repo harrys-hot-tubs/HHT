@@ -92,7 +92,7 @@ const CheckoutForm = ({
 
 	return (
 		<Form
-			noValidate
+			noValidate={true}
 			validated={validated}
 			onSubmit={handleSubmit}
 			className='checkout-form'

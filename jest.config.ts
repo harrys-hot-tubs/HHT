@@ -36,7 +36,7 @@ export default {
 		{
 			displayName: 'backend',
 			testEnvironment: 'node',
-			testPathIgnorePatterns: ['^.+\\.(tsx)?$'],
+			testPathIgnorePatterns: ['^.+\\.(tsx)?$', '<rootDir>/cypress/'],
 			moduleNameMapper: {
 				'@components/(.*)$': '<rootDir>/src/components/$1',
 				'@pages/(.*)$': '<rootDir>/src/pages/$1',

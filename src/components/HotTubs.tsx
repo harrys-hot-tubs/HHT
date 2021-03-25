@@ -18,18 +18,20 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 	const [displayable, setDisplayable] = useState<DisplayableTub[]>([])
 
 	useEffect(() => {
-		;(async () => {
-			const parsedTubs: DisplayableTub[] = await Promise.all(
-				displayableTubs(tubs).map(async (tub) => {
-					const price = await determinePrice(tub.tub_id, startDate, endDate)
-					return {
-						...tub,
-						price,
-					}
-				})
-			)
-			setDisplayable(parsedTubs)
-		})()
+		if (tubs) {
+			;(async () => {
+				const parsedTubs: DisplayableTub[] = await Promise.all(
+					displayableTubs(tubs).map(async (tub) => {
+						const price = await determinePrice(tub.tub_id, startDate, endDate)
+						return {
+							...tub,
+							price,
+						}
+					})
+				)
+				setDisplayable(parsedTubs)
+			})()
+		}
 	}, [tubs, startDate, endDate])
 
 	const onSelectTub = (id: number) => {
