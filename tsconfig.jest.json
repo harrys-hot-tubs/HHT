@@ -2,6 +2,7 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"jsx": "react",
-		"types": ["jest"]
+		"types": ["@types/jest"],
+		"skipLibCheck": true
 	}
 }

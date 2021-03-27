@@ -1,6 +1,6 @@
 import { CheckoutRequest } from '@typings/api/Checkout'
 import { APIError } from '@typings/api/Error'
-import { momentToString, stringToMoment } from '@utils/date'
+import { displayableMoment, stringToMoment } from '@utils/date'
 import { formatAmount } from '@utils/stripe'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Stripe } from 'stripe'
@@ -44,9 +44,9 @@ const post = async (
 			payment_method_types: ['card'],
 			line_items: [
 				{
-					name: `Booking from ${momentToString(
+					name: `Booking from ${displayableMoment(
 						parsedStartDate
-					)} to ${momentToString(parsedEndDate)}.`,
+					)} to ${displayableMoment(parsedEndDate)}.`,
 					amount: formatAmount(price),
 					currency: 'GBP',
 					quantity: 1,

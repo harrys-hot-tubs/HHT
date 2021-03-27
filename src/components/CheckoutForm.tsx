@@ -6,7 +6,7 @@ import {
 	PriceResponse,
 } from '@typings/api/Checkout'
 import { CreateOrderRequest } from '@typings/api/Order'
-import { momentToString } from '@utils/date'
+import { displayableMoment } from '@utils/date'
 import { getStripe } from '@utils/stripe'
 import axios from 'axios'
 import React, { FormEventHandler, useState } from 'react'
@@ -286,7 +286,7 @@ const CheckoutForm = ({
 						aria-label='start-date'
 						required
 						disabled
-						placeholder={startDate ? momentToString(startDate) : null}
+						placeholder={startDate ? displayableMoment(startDate) : null}
 					/>
 				</Form.Group>
 				<Form.Group as={Col}>
@@ -295,7 +295,7 @@ const CheckoutForm = ({
 						aria-label='end-date'
 						required
 						disabled
-						placeholder={endDate ? momentToString(endDate) : null}
+						placeholder={endDate ? displayableMoment(endDate) : null}
 					/>
 				</Form.Group>
 			</Form.Row>

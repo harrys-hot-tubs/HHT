@@ -16,7 +16,7 @@ export default {
 			setupFiles: ['jest-localstorage-mock'],
 			displayName: 'frontend',
 			testEnvironment: 'jsdom',
-			testMatch: ['<rootDir>/**/*.spec.tsx'],
+			testMatch: ['<rootDir>/**/*.spec.tsx', '<rootDir>/**/use*.spec.ts'],
 			transform: {
 				'^.+\\.(js|ts)$': 'ts-jest',
 				'^.+\\.(jsx|tsx)$': 'babel-jest',
@@ -36,7 +36,11 @@ export default {
 		{
 			displayName: 'backend',
 			testEnvironment: 'node',
-			testPathIgnorePatterns: ['^.+\\.(tsx)?$', '<rootDir>/cypress/'],
+			testPathIgnorePatterns: [
+				'^.+\\.(tsx)?$',
+				'<rootDir>/cypress/',
+				'<rootDir>/src/hooks/use\\w*.spec.ts',
+			],
 			moduleNameMapper: {
 				'@components/(.*)$': '<rootDir>/src/components/$1',
 				'@pages/(.*)$': '<rootDir>/src/pages/$1',
