@@ -29,15 +29,16 @@ const CookieConsentModal = () => {
 	return (
 		<Modal show={show} centered>
 			<Modal.Header>
-				<Modal.Title>Cookies</Modal.Title>
+				<Modal.Title>This website uses cookies</Modal.Title>
 			</Modal.Header>
 
 			<Modal.Body>
 				<p>
-					We use necessary cookies to make our site work. We'd also like to set
-					optional analytics cookies to help us improve it. We won't set
-					optional cookies unless you enable them. Using this tool will set a
-					cookie on your device to remember your preferences.
+					We use cookies to personalise ads and analyse our traffic. We also
+					share information about your use of our site with our social media,
+					advertising and analytics partners who may combine it with other
+					information that you’ve provided to them or that they’ve collected
+					from your use of their services.
 				</p>
 			</Modal.Body>
 
