@@ -15,7 +15,7 @@ const CookieConsentModal = () => {
 		setConsent(true)
 		setShow(false)
 		;(async () => {
-			const ReactPixel = (await import('react-facebook-pixel')).default
+			const { default: ReactPixel } = await import('react-facebook-pixel')
 			ReactPixel.grantConsent()
 			ReactPixel.track('PageView')
 		})()

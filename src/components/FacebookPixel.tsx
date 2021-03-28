@@ -8,7 +8,7 @@ const FacebookPixel = () => {
 	useEffect(() => {
 		if (consent === true) {
 			;(async () => {
-				const ReactPixel = (await import('react-facebook-pixel')).default
+				const { default: ReactPixel } = await import('react-facebook-pixel')
 				ReactPixel.grantConsent()
 				ReactPixel.track('PageView')
 			})()
@@ -17,7 +17,7 @@ const FacebookPixel = () => {
 
 	useEffect(() => {
 		;(async () => {
-			const ReactPixel = (await import('react-facebook-pixel')).default
+			const { default: ReactPixel } = await import('react-facebook-pixel')
 			ReactPixel.revokeConsent()
 			ReactPixel.init(process.env.NEXT_PUBLIC_PIXEL_ID)
 			ReactPixel.pageView()
