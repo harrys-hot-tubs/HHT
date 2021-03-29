@@ -1,17 +1,25 @@
+import {
+	birmingham,
+	centralLondon,
+	sheffield,
+} from '@fixtures/postcodeFixtures'
 import usePostcode from '@hooks/usePostcode'
 import { act, renderHook } from '@testing-library/react-hooks'
 
-const name = 'test'
+jest.mock('@utils/validators')
+
+const name = 'postcode'
 
 afterEach(() => {
 	localStorage.clear()
+	jest.clearAllMocks()
 })
 
 it('accesses stored data if available', () => {
-	const storedValue = 'test'
+	const storedValue = birmingham
 	localStorage.setItem(name, storedValue)
 
-	const { result } = renderHook(() => usePostcode(name))
+	const { result } = renderHook(() => usePostcode())
 	const { value } = result.current
 	expect(value).toBe(storedValue)
 })
@@ -19,31 +27,31 @@ it('accesses stored data if available', () => {
 //TODO finish these tests refer to useAsyncValidatedInput
 
 it('defaults to the fallback if no data is available', () => {
-	const { result } = renderHook(() => usePostcode(name))
-	const [value] = result.current
+	const { result } = renderHook(() => usePostcode())
+	const { value } = result.current
 	expect(value).toBe('')
 })
 
 it('sets stored data when updated', () => {
-	const storedValue = 'test'
+	const newValue = sheffield
 
-	const { result } = renderHook(() => usePostcode(name))
+	const { result } = renderHook(() => usePostcode())
 	act(() => {
-		result.current[1](storedValue)
+		result.current.setValue(newValue)
 	})
 
-	expect(localStorage.setItem).toHaveBeenLastCalledWith(name, storedValue)
+	expect(localStorage.setItem).toHaveBeenLastCalledWith(name, newValue)
 })
 
 it('sets active data when updated', () => {
-	const storedValue = 'test'
+	const newValue = centralLondon
 
-	const { result } = renderHook(() => usePostcode(name))
+	const { result } = renderHook(() => usePostcode())
 	act(() => {
-		result.current[1](storedValue)
+		result.current[1](newValue)
 	})
 
-	expect(result.current[0]).toBe(storedValue)
+	expect(result.current[0]).toBe(newValue)
 })
 
 it('overwrites stored data when updated', () => {
@@ -51,7 +59,7 @@ it('overwrites stored data when updated', () => {
 	const nextValue = 'next'
 	localStorage.setItem(name, storedValue)
 
-	const { result } = renderHook(() => usePostcode(name))
+	const { result } = renderHook(() => usePostcode())
 	expect(result.current[0]).toBe(storedValue)
 	act(() => {
 		result.current[1](nextValue)
