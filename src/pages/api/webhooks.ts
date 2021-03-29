@@ -1,10 +1,11 @@
 import { OrderDB } from '@typings/api/Order'
 import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/Location'
+import { TubDB } from '@typings/Tub'
 import db from '@utils/db'
 import { priceToString } from '@utils/stripe'
 import Cors from 'cors'
-import Knex from 'knex'
+import { Knex } from 'knex'
 import { buffer } from 'micro'
 import { NextApiRequest, NextApiResponse } from 'next'
 import mj from 'node-mailjet'
@@ -23,7 +24,7 @@ export const config = {
 }
 
 const cors = Cors({
-	allowMethods: ['POST', 'HEAD'],
+	methods: ['POST', 'HEAD'],
 })
 
 const runMiddleware = (
@@ -130,6 +131,8 @@ const sendEmailNotification = async (
 			.where('orders.id', order.id)
 			.select('locations.name', 'bookings.booking_duration', 'tubs.tub_id')
 			.first()
+
+		const tub = await db<TubDB>('tubs').where('tub_id', tub_id).first()
 		await mailjet.post('send', { version: 'v3.1' }).request({
 			Messages: [
 				{
@@ -153,7 +156,7 @@ const sendEmailNotification = async (
 						paymentIntent,
 						name,
 						booking_duration,
-						tub_id,
+						tub,
 						success
 					),
 				},
@@ -169,7 +172,7 @@ const emailTemplate = (
 	paymentIntent: Stripe.PaymentIntent,
 	name: string,
 	booking_duration: string,
-	tub_id: number,
+	tub: TubDB,
 	success: boolean,
 	origin: string = 'Stripe'
 ) => `<h1>Payment ${success ? 'Succeeded' : 'Failed'}.</h1>
@@ -192,7 +195,8 @@ const emailTemplate = (
 	<section>
 		<h2>Inventory Information</h2>
 		<p>To be delivered from: ${name}</p>
-		<p>Hot tub id: ${tub_id}</p>
+		<p>Hot tub id: ${tub.tub_id}</p>
+		<p>Hot tub capacity: ${tub.max_capacity}</p>
 	</section> `
 
 const formatDuration = (duration: string) => {
