@@ -51,13 +51,7 @@ it('sets working value when updated', () => {
 })
 
 it('informs loading when validating', async () => {
-	validator.mockReturnValueOnce(
-		new Promise((resolve, _reject) => {
-			setTimeout(() => {
-				resolve([true, null])
-			}, 50)
-		})
-	)
+	validator.mockResolvedValueOnce([true, null])
 
 	const { result, waitForNextUpdate } = renderHook(() =>
 		useAsyncValidatedInput<string, string>(params)
@@ -73,13 +67,7 @@ it('informs loading when validating', async () => {
 })
 
 it('does not store working value when validated if invalid', async () => {
-	validator.mockReturnValueOnce(
-		new Promise((resolve, _reject) => {
-			setTimeout(() => {
-				resolve([false, 'Error'])
-			}, 50)
-		})
-	)
+	validator.mockResolvedValueOnce([false, 'Error'])
 
 	const { result, waitForNextUpdate } = renderHook(() =>
 		useAsyncValidatedInput<string, string>(params)
@@ -96,13 +84,7 @@ it('does not store working value when validated if invalid', async () => {
 
 it('provides a reason for invalid value', async () => {
 	const errorMessage = 'Error'
-	validator.mockReturnValueOnce(
-		new Promise((resolve, _reject) => {
-			setTimeout(() => {
-				resolve([false, errorMessage])
-			}, 50)
-		})
-	)
+	validator.mockResolvedValueOnce([false, errorMessage])
 
 	const { result, waitForNextUpdate } = renderHook(() =>
 		useAsyncValidatedInput<string, string>(params)
@@ -118,13 +100,7 @@ it('provides a reason for invalid value', async () => {
 })
 
 it('stores working value when validated if valid', async () => {
-	validator.mockReturnValueOnce(
-		new Promise((resolve, _reject) => {
-			setTimeout(() => {
-				resolve([true, null])
-			}, 50)
-		})
-	)
+	validator.mockResolvedValueOnce([true, null])
 
 	const { result, waitForNextUpdate } = renderHook(() =>
 		useAsyncValidatedInput<string, string>(params)
