@@ -48,6 +48,7 @@ const findAvailableTubs = async (
 				.where('booking_duration', '&&', `[${startDate},${endDate})`)
 		})
 		.andWhere('location_id', '=', closest)
+		.andWhere('available', '=', true)
 }
 
 export default db()(handler)

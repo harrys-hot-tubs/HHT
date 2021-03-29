@@ -12,6 +12,7 @@ const Tub = ({ tub }: PageProps) => {
 			<h1>ID: {tub.tub_id}</h1>
 			<h2>Location: {tub.location_id}</h2>
 			<h3>Max Capacity: {tub.max_capacity}</h3>
+			<h3>Availability: {tub.available.toString()}</h3>
 		</div>
 	)
 }
