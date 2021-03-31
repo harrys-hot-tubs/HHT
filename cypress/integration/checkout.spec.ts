@@ -1,7 +1,7 @@
 import { RefereeOptions } from '@components/CheckoutForm'
 import { formData } from '@fixtures/checkoutFixtures'
+import { setStorage } from '@helpers/localStorageHelper'
 import { displayableMoment, stringToMoment } from '@utils/date'
-import { setStorage } from '../helpers/localStorageHelper'
 
 beforeEach(() => {
 	setStorage(formData)

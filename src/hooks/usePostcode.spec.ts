@@ -16,7 +16,7 @@ const name = 'postcode'
 
 afterEach(() => {
 	localStorage.clear()
-	jest.clearAllMocks() // TODO investigate effect of this on other tests.
+	jest.clearAllMocks()
 })
 
 it('accesses stored data if available', () => {
