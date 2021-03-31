@@ -10,7 +10,7 @@ import validatePostcode from '@utils/validators/postcodeValidator'
 
 const mockValidator = validatePostcode as jest.Mock
 
-jest.mock('@utils/validators')
+jest.mock('@utils/validators/postcodeValidator')
 
 const name = 'postcode'
 

@@ -107,9 +107,7 @@ describe('postcode field', () => {
 })
 
 describe('date picker', () => {
-	it('lets the user pick dates', () => {
-		cy.get('.DayPickerNavigation_rightButton__horizontalDefault').click()
-	})
+	it('lets the user pick dates', () => {})
 	it('lets the user change months', () => {})
 	it('lets the user type the dates they want', () => {})
 	it('notifies the user ', () => {})

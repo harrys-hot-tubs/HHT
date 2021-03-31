@@ -5,7 +5,7 @@ import validatePromoCode from '@utils/validators/promoCodeValidator'
 
 const mockValidator = validatePromoCode as jest.Mock
 
-jest.mock('@utils/validators')
+jest.mock('@utils/validators/promoCodeValidator')
 
 const name = 'promoCode'
 
