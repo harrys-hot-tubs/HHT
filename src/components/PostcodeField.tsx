@@ -1,6 +1,6 @@
 import PostcodeModal from '@components/postcode_modals/PostcodeModal'
 import SpinnerButton from '@components/SpinnerButton'
-import { PostcodeError } from '@utils/validators'
+import { PostcodeError } from '@utils/validators/postcodeValidator'
 import React from 'react'
 import { FormControl, InputGroup } from 'react-bootstrap'
 
@@ -23,7 +23,6 @@ const PostcodeField = ({
 	invalidReason,
 	onValidate,
 }: ComponentProps) => {
-	console.log(`invalidReason`, isInvalid)
 	return (
 		<React.Fragment>
 			<InputGroup className='postcode-field'>

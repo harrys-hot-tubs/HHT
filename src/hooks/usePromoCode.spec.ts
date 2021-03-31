@@ -1,7 +1,7 @@
 import usePromoCode from '@hooks/usePromoCode'
 import { jest } from '@jest/globals'
 import { act, renderHook } from '@testing-library/react-hooks'
-import { validatePromoCode } from '@utils/validators'
+import validatePromoCode from '@utils/validators/promoCodeValidator'
 
 const mockValidator = validatePromoCode as jest.Mock
 

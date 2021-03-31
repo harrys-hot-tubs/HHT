@@ -1,6 +1,6 @@
 import { bir } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { birmingham } from '@fixtures/postcodeFixtures'
+import { birmingham, failedRangeResponse } from '@fixtures/postcodeFixtures'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
@@ -49,7 +49,7 @@ describe('postcode field', () => {
 		cy.get('[role=alert]').should('not.be.visible')
 	})
 
-	it('recognises invalid postcodes', async () => {
+	it('recognises postcodes of the wrong format', async () => {
 		const testedPostcode = birmingham
 
 		mock
@@ -67,4 +67,50 @@ describe('postcode field', () => {
 			.should('be.visible')
 			.should('have.text', 'Postcode is not in the correct format.')
 	})
+
+	it('recognises postcodes that are blocked', async () => {
+		const testedPostcode = 'SE1 1AP'
+
+		mock
+			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}/validate`)
+			.reply(200, {
+				result: { isValid: false },
+			})
+
+		cy.get('[aria-label=postcode]')
+			.type(testedPostcode)
+			.should('have.attr', 'value', testedPostcode)
+		cy.get('[data-testid="postcode-validate]').click()
+
+		cy.get('[role=alert]')
+			.should('be.visible')
+			.should('have.text', 'Delivery in your area is subject to change.')
+	})
+
+	it('recognises postcodes that are out of range', async () => {
+		const testedPostcode = birmingham
+
+		mock.onPost('/api/locations').reply(200, failedRangeResponse)
+
+		cy.get('[aria-label=postcode]')
+			.type(testedPostcode)
+			.should('have.attr', 'value', testedPostcode)
+		cy.get('[data-testid="postcode-validate]').click()
+
+		cy.get('[role=alert]')
+			.should('be.visible')
+			.should(
+				'have.text',
+				"Sadly we don't currently offer deliveries in your area."
+			)
+	})
+})
+
+describe('date picker', () => {
+	it('lets the user pick dates', () => {
+		cy.get('.DayPickerNavigation_rightButton__horizontalDefault').click()
+	})
+	it('lets the user change months', () => {})
+	it('lets the user type the dates they want', () => {})
+	it('notifies the user ', () => {})
 })

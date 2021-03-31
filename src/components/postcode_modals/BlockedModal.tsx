@@ -7,7 +7,9 @@ const BlockedModal = ({ display, hide }: PostcodeModalProps) => (
 		<Modal.Header closeButton>
 			<Modal.Title>Oh no!</Modal.Title>
 		</Modal.Header>
-		<Modal.Body>Delivery in your area is subject to change.</Modal.Body>
+		<Modal.Body role='alert'>
+			Delivery in your area is subject to change.
+		</Modal.Body>
 		<Modal.Footer>
 			Get in touch with us at{' '}
 			<a href='mailto:harry@harryshottubs.com'>harry@harryshottubs.com</a>

@@ -2,7 +2,7 @@ import { getCoordinates, getInRange, isPostcode } from '@utils/postcode'
 
 export type PostcodeError = 'missing' | 'format' | 'range' | 'other' | 'blocked'
 
-export const validatePostcode = async (
+const validatePostcode = async (
 	postcode: string
 ): Promise<[boolean, PostcodeError]> => {
 	try {
@@ -79,13 +79,4 @@ export const blockedOutcodes = [
 	'E18',
 ]
 
-export type PromoCodeError = 'invalid' | 'dead'
-
-export const validatePromoCode = (
-	promoCode: string
-): [boolean, PromoCodeError] => {
-	if (validPromoCodes.includes(promoCode)) return [true, null]
-	else return [false, 'invalid']
-}
-
-export const validPromoCodes = ['FREE2020']
+export default validatePostcode

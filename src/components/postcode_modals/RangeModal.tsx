@@ -9,7 +9,7 @@ const RangeModal = ({ display, hide }: PostcodeModalProps) => (
 		<Modal.Header closeButton>
 			<Modal.Title>Oh no!</Modal.Title>
 		</Modal.Header>
-		<Modal.Body>
+		<Modal.Body role='alert'>
 			Sadly we don't currently offer deliveries in your area. While we expand
 			our delivery capacity, check out our social media below.
 		</Modal.Body>

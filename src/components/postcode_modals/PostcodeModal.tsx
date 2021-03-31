@@ -1,6 +1,6 @@
 import BlockedModal from '@components/postcode_modals/BlockedModal'
 import RangeModal from '@components/postcode_modals/RangeModal'
-import { PostcodeError } from '@utils/validators'
+import { PostcodeError } from '@utils/validators/postcodeValidator'
 import React, { useEffect, useState } from 'react'
 
 interface ComponentProps {

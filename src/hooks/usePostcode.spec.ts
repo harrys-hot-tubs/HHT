@@ -6,7 +6,7 @@ import {
 import usePostcode from '@hooks/usePostcode'
 import { jest } from '@jest/globals'
 import { act, renderHook } from '@testing-library/react-hooks'
-import { validatePostcode } from '@utils/validators'
+import validatePostcode from '@utils/validators/postcodeValidator'
 
 const mockValidator = validatePostcode as jest.Mock
 
