@@ -1,6 +1,6 @@
+import Icon from '@components/icons/index'
 import facebook from '@components/svg/facebook.svg'
 import React from 'react'
-import Icon from './index'
 
 const FacebookIcon = () => (
 	<Icon

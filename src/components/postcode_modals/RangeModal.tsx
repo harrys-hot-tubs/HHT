@@ -1,8 +1,8 @@
 import FacebookIcon from '@components/icons/FacebookIcon'
 import InstagramIcon from '@components/icons/InstagramIcon'
+import { PostcodeModalProps } from '@components/postcode_modals/PostcodeModal'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
-import { PostcodeModalProps } from './PostcodeModal'
 
 const RangeModal = ({ display, hide }: PostcodeModalProps) => (
 	<Modal show={display} onHide={hide} centered>

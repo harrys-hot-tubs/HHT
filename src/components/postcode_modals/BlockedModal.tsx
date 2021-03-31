@@ -1,6 +1,6 @@
+import { PostcodeModalProps } from '@components/postcode_modals/PostcodeModal'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
-import { PostcodeModalProps } from './PostcodeModal'
 
 const BlockedModal = ({ display, hide }: PostcodeModalProps) => (
 	<Modal show={display} onHide={hide} centered>
