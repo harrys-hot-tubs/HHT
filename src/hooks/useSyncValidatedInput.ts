@@ -1,7 +1,7 @@
 import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-interface HookArgs<T, U> extends UseStoredStateArgs<T> {
+export interface UseValidatedInputArgs<T, U> extends UseStoredStateArgs<T> {
 	validator: (value: T) => [boolean, U]
 }
 
@@ -11,15 +11,20 @@ const useValidatedInput = <T, U>({
 	fallback,
 	toString,
 	fromString,
-}: HookArgs<T, U>) => {
-	const [value, setValue] = useStoredState<T>({
+}: UseValidatedInputArgs<T, U>) => {
+	const [storedValue, setStoredValue] = useStoredState<T>({
 		fallback,
 		name,
 		toString,
 		fromString,
 	})
+	const [workingValue, setWorkingValue] = useState(storedValue)
 	const [valid, setValid] = useState<boolean>(undefined)
 	const [reason, setReason] = useState<U>(undefined)
+
+	useEffect(() => {
+		setWorkingValue(storedValue)
+	}, [storedValue])
 
 	const makeValid = () => {
 		setValid(true)
@@ -32,18 +37,20 @@ const useValidatedInput = <T, U>({
 	}
 
 	const validate = () => {
-		const [valid, error] = validator(value)
-		if (valid) makeValid()
-		else makeInvalid(error)
+		const [valid, error] = validator(workingValue)
+		if (valid) {
+			makeValid()
+			setStoredValue(workingValue)
+		} else makeInvalid(error)
 	}
 
 	const updateValue = (value: T) => {
 		setValid(undefined)
-		setValue(value)
+		setWorkingValue(value)
 	}
 
 	return {
-		value,
+		value: workingValue,
 		setValue: updateValue,
 		valid,
 		message: reason,

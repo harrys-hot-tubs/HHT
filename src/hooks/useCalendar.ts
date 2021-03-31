@@ -7,6 +7,7 @@ const MAX_NIGHTS = 7
 const MIN_NIGHTS = 2
 
 const useCalendar = (): CalendarInterface => {
+	//TODO refactor this to use syncValidatedInput
 	moment.locale('en-GB')
 	const [startDate, setStartDate] = useStoredDate('startDate')
 	const [endDate, setEndDate] = useStoredDate('endDate')
