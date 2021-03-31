@@ -1,6 +1,6 @@
+import Icon from '@components/icons/index'
 import insta from '@components/svg/instagram.svg'
 import React from 'react'
-import Icon from './index'
 
 const InstagramIcon = () => (
 	<Icon

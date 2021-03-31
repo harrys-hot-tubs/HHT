@@ -1,11 +1,11 @@
+import HotTub, { DisplayableTub } from '@components/HotTub'
+import NoAvailabilities from '@components/NoAvailabilities'
 import { PriceRequest, PriceResponse } from '@typings/api/Checkout'
 import { TubDB } from '@typings/Tub'
 import { displayableTubs } from '@utils/tubs'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import HotTub, { DisplayableTub } from './HotTub'
-import NoAvailabilities from './NoAvailabilities'
 
 interface ComponentProps {
 	tubs: TubDB[]

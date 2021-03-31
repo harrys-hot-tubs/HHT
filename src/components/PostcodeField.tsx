@@ -1,8 +1,8 @@
+import PostcodeModal from '@components/postcode_modals/PostcodeModal'
 import SpinnerButton from '@components/SpinnerButton'
 import { PostcodeError } from '@utils/validators'
 import React from 'react'
 import { FormControl, InputGroup } from 'react-bootstrap'
-import PostcodeModal from './postcode_modals/PostcodeModal'
 
 interface ComponentProps {
 	loading: boolean
