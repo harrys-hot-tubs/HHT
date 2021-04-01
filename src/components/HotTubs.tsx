@@ -1,11 +1,11 @@
+import HotTub, { DisplayableTub } from '@components/HotTub'
+import NoAvailabilities from '@components/NoAvailabilities'
 import { PriceRequest, PriceResponse } from '@typings/api/Checkout'
 import { TubDB } from '@typings/Tub'
 import { displayableTubs } from '@utils/tubs'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import HotTub, { DisplayableTub } from './HotTub'
-import NoAvailabilities from './NoAvailabilities'
 
 interface ComponentProps {
 	tubs: TubDB[]
@@ -18,18 +18,20 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 	const [displayable, setDisplayable] = useState<DisplayableTub[]>([])
 
 	useEffect(() => {
-		;(async () => {
-			const parsedTubs: DisplayableTub[] = await Promise.all(
-				displayableTubs(tubs).map(async (tub) => {
-					const price = await determinePrice(tub.tub_id, startDate, endDate)
-					return {
-						...tub,
-						price,
-					}
-				})
-			)
-			setDisplayable(parsedTubs)
-		})()
+		if (tubs) {
+			;(async () => {
+				const parsedTubs: DisplayableTub[] = await Promise.all(
+					displayableTubs(tubs).map(async (tub) => {
+						const price = await determinePrice(tub.tub_id, startDate, endDate)
+						return {
+							...tub,
+							price,
+						}
+					})
+				)
+				setDisplayable(parsedTubs)
+			})()
+		}
 	}, [tubs, startDate, endDate])
 
 	const onSelectTub = (id: number) => {

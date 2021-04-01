@@ -6,7 +6,7 @@ import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/Booking'
 import { TubDB } from '@typings/Tub'
 import db from '@utils/db'
-import Knex from 'knex'
+import { Knex } from 'knex'
 import { NextApiResponse } from 'next'
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {

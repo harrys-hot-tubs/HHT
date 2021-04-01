@@ -20,7 +20,6 @@ const Tub = ({ tub }: PageProps) => {
 export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	context
 ) => {
-	// TODO refactor connector so it can be used in getSSP
 	const db = connector()()
 	const tub = await db<TubDB>('tubs')
 		.select()

@@ -1,6 +1,6 @@
 import { CheckoutRequest } from '@typings/api/Checkout'
 import { APIError } from '@typings/api/Error'
-import { momentToString, stringToMoment } from '@utils/date'
+import { displayableMoment, stringToMoment } from '@utils/date'
 import { formatAmount } from '@utils/stripe'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Stripe } from 'stripe'
@@ -30,6 +30,13 @@ const post = async (
 	try {
 		const parsedStartDate = stringToMoment(startDate)
 		const parsedEndDate = stringToMoment(endDate)
+		if (parsedEndDate.diff(parsedStartDate, 'days') <= 0)
+			throw new RangeError('Order duration must be greater than 0.')
+
+		if (price < 0.3)
+			throw new RangeError(
+				'Price must be greater than stripe minimum charge (£0.30)'
+			)
 
 		const params: Stripe.Checkout.SessionCreateParams = {
 			mode: 'payment',
@@ -37,17 +44,17 @@ const post = async (
 			payment_method_types: ['card'],
 			line_items: [
 				{
-					name: `Booking from ${momentToString(
+					name: `Booking from ${displayableMoment(
 						parsedStartDate
-					)} to ${momentToString(parsedEndDate)}.`,
+					)} to ${displayableMoment(parsedEndDate)}.`,
 					amount: formatAmount(price),
-					currency: process.env.STRIPE_CURRENCY,
+					currency: 'GBP',
 					quantity: 1,
 				},
 				{
 					name: `Refundable Security Deposit`,
 					amount: formatAmount(70),
-					currency: process.env.STRIPE_CURRENCY,
+					currency: 'GBP',
 					quantity: 1,
 				},
 			],
@@ -62,7 +69,10 @@ const post = async (
 
 		res.status(200).json(checkoutSession)
 	} catch (e) {
-		console.error(e.message)
-		res.status(500).json({ statusCode: 500, message: e.message })
+		if (e instanceof RangeError) {
+			return res.status(400).json({ type: 'RangeError', message: e.message })
+		} else {
+			return res.status(500).json({ type: 'Error', message: e.message })
+		}
 	}
 }

@@ -1,5 +1,5 @@
-import { validatePromoCode } from '../utils/validators'
-import useValidatedInput from './useValidatedInput'
+import useValidatedInput from '@hooks/useSyncValidatedInput'
+import validatePromoCode from '@utils/validators/promoCodeValidator'
 
 const usePromoCode = () =>
 	useValidatedInput({

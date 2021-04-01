@@ -17,11 +17,10 @@ const Success = ({ totalPrice }: PageProps) => {
 				<title>Successful Payment</title>
 			</Head>
 			<h1>Thank you!</h1>
-			<h3>Your order for £{totalPrice} has been accepted and confirmed.</h3>
+			<h3>Your order for {totalPrice} has been accepted and confirmed.</h3>
 			<p>We will contact you soon to with an accurate delivery time.</p>
 			<div className='exit-card'>
 				<h3>Check out our social media:</h3>
-
 				<div className='social-media'>
 					<FacebookIcon />
 					<InstagramIcon />
@@ -29,7 +28,7 @@ const Success = ({ totalPrice }: PageProps) => {
 				<hr />
 				<span className='home-text'>
 					Back to{' '}
-					<a href='/' className='home-link'>
+					<a href='/' className='home-link' role='link' aria-label='home'>
 						home
 					</a>
 					.

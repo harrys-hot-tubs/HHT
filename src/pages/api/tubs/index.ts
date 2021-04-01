@@ -18,9 +18,10 @@ const get = async (req: ConnectedRequest, res: NextApiResponse<TubDB[]>) => {
 		const { db } = req
 		const tubs = await db<TubDB>('tubs').select()
 		return res.status(200).json(tubs)
-	} catch (e) {
-		return res.status(400).json(e)
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json(error)
 	}
 }
 
-export default db(handler)
+export default db()(handler)

@@ -1,4 +1,5 @@
 import useStoredDate from '@hooks/useStoredDate'
+import validateDates from '@utils/validators/dateValidator'
 import moment from 'moment'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { FocusedInputShape } from 'react-dates'
@@ -7,6 +8,7 @@ const MAX_NIGHTS = 7
 const MIN_NIGHTS = 2
 
 const useCalendar = (): CalendarInterface => {
+	//TODO refactor this to use syncValidatedInput
 	moment.locale('en-GB')
 	const [startDate, setStartDate] = useStoredDate('startDate')
 	const [endDate, setEndDate] = useStoredDate('endDate')
@@ -52,15 +54,20 @@ const useCalendar = (): CalendarInterface => {
 	}
 
 	const isValid = (): boolean => {
-		if (startDate && endDate) return true
-		else return false
+		return validateDates(startDate, endDate)[0]
+	}
+
+	const updateFocus = (newFocus: FocusedInputShape | null) => {
+		if (newFocus === 'startDate') setStartDate(null)
+		if (newFocus === 'endDate') setEndDate(null)
+		setFocused(newFocus)
 	}
 
 	return {
 		startDate,
 		endDate,
 		focused,
-		updateFocus: setFocused,
+		updateFocus,
 		isDayBlocked,
 		updateDates,
 		resetDates,

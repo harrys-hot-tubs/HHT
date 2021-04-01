@@ -1,13 +1,15 @@
 import { LocationDB } from '@typings/Location'
 
-export type RangeResponse =
-	| {
-			inRange: true
-			closest: LocationDB
-	  }
-	| {
-			inRange: false
-	  }
+export type SuccessfulRangeResponse = {
+	inRange: true
+	closest: LocationDB
+}
+
+export type FailedRangeResponse = {
+	inRange: false
+}
+
+export type RangeResponse = SuccessfulRangeResponse | FailedRangeResponse
 
 export interface RangeRequest {
 	latitude: number

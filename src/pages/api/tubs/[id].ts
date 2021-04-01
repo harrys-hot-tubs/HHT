@@ -4,7 +4,7 @@ import { LocationDB } from '@typings/Location'
 import { TubDB } from '@typings/Tub'
 import { stringToMoment } from '@utils/date'
 import db from '@utils/db'
-import Knex from 'knex'
+import { Knex } from 'knex'
 import moment from 'moment'
 import { NextApiResponse } from 'next'
 
@@ -28,11 +28,13 @@ const get = async (req: ConnectedRequest, res: NextApiResponse<TubDB>) => {
 		const tub = await req
 			.db<TubDB>('tubs')
 			.select()
-			.first()
 			.where('tub_id', '=', id)
+			.first()
+
+		if (!tub) throw new Error(`Tub with id ${id} doesn't exist`)
 		return res.status(200).json(tub)
-	} catch (e) {
-		return res.status(400).json(e)
+	} catch (error) {
+		return res.status(400).json(error)
 	}
 }
 
@@ -57,9 +59,8 @@ const post = async (
 			db,
 		})
 		return res.status(200).json({ price })
-	} catch (e) {
-		console.log('e', e)
-		return res.status(400).json(e)
+	} catch (error) {
+		return res.status(400).json(error)
 	}
 }
 

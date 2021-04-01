@@ -1,9 +1,13 @@
 {
-  "cSpell.words": [
-    "Haversine",
-    "Unavailabilities",
-    "centered",
-    "datepicker",
-    "mailjet"
-  ]
+	"cSpell.words": [
+		"Haversine",
+		"Outcodes",
+		"Unavailabilities",
+		"datepicker",
+		"distancematrix",
+		"googlemaps",
+		"localstorage",
+		"mailjet",
+		"outcode"
+	]
 }
