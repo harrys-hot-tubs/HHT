@@ -28,8 +28,8 @@ const get = async (req: ConnectedRequest, res: NextApiResponse<TubDB>) => {
 		const tub = await req
 			.db<TubDB>('tubs')
 			.select()
-			.first()
 			.where('tub_id', '=', id)
+			.first()
 
 		if (!tub) throw new Error(`Tub with id ${id} doesn't exist`)
 		return res.status(200).json(tub)

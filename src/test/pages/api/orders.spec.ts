@@ -30,11 +30,18 @@ describe('post', () => {
 })
 
 describe('delete', () => {
-	it('deletes outdated orders', async () => {
+	beforeEach(async () => {
 		await connection<OrderDB[]>('orders').del()
 		await connection<BookingDB[]>('bookings').del()
 		await connection<BookingDB[]>('bookings').insert([bookings[0]])
-		await connection<OrderDB[]>('orders').insert([storedOrder])
+	})
+
+	it('deletes outdated orders', async () => {
+		try {
+			await connection<OrderDB[]>('orders').insert([storedOrder])
+		} catch (e) {
+			fail(e)
+		}
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'DELETE',
 		})
@@ -48,12 +55,14 @@ describe('delete', () => {
 	})
 
 	it("doesn't delete in date orders", async () => {
-		await connection<OrderDB[]>('orders').del()
-		await connection<BookingDB[]>('bookings').del()
-		await connection<BookingDB[]>('bookings').insert([bookings[0]])
-		await connection<OrderDB[]>('orders').insert([
-			{ ...storedOrder, created_at: '3000-03-08 10:59:59' },
-		])
+		try {
+			await connection<OrderDB[]>('orders').insert([
+				{ ...storedOrder, created_at: '3000-03-08 10:59:59' },
+			])
+		} catch (e) {
+			fail(e)
+		}
+
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'DELETE',
 		})

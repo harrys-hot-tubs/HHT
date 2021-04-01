@@ -107,6 +107,7 @@ describe('postcode field', () => {
 })
 
 describe('date picker', () => {
+	//TODO add date picker tests.
 	it('lets the user pick dates', () => {})
 	it('lets the user change months', () => {})
 	it('lets the user type the dates they want', () => {})

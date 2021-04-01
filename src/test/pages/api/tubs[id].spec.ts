@@ -38,7 +38,7 @@ describe('get', () => {
 
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(400)
-	})
+	}, 7000)
 })
 
 describe('post', () => {
