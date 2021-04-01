@@ -1,8 +1,8 @@
 import { ConnectedRequest } from '@typings/api/Request'
-import knex from 'knex'
+import knex, { Knex } from 'knex'
 import { NextApiResponse } from 'next'
 
-let connection: knex
+let connection: Knex
 
 export const connector = () => {
 	return () => {
@@ -14,7 +14,7 @@ export const connector = () => {
 				password: process.env.AWS_DB_PASSWORD,
 				database:
 					process.env.NODE_ENV === 'test'
-						? `test_${process.env.JEST_WORKER_ID}`
+						? `test_${process.env.JEST_WORKER_ID || '1'}`
 						: process.env.AWS_DB,
 			},
 		})

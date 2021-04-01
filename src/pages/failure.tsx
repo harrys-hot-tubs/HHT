@@ -11,7 +11,7 @@ const Failure = () => {
 			<h2>For some reason we were unable to accept your payment.</h2>
 			<span className='home-text'>
 				Back to{' '}
-				<a href='/' className='home-link'>
+				<a href='/' className='home-link' role='link'>
 					home
 				</a>
 				.

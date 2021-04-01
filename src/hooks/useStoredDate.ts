@@ -1,4 +1,5 @@
 import useStoredState from '@hooks/useStoredState'
+import { stringToMoment } from '@utils/date'
 import moment from 'moment'
 
 const useStoredDate = (
@@ -9,13 +10,8 @@ const useStoredDate = (
 		fallback: null,
 		toString: (v) => v?.toISOString(),
 		fromString: (v) => {
-			const date = moment(v, true)
 			try {
-				if (date.format() === 'Invalid date') {
-					throw new Error('Failed to parse date.')
-				} else {
-					return date
-				}
+				return stringToMoment(v)
 			} catch (error) {
 				return null
 			}

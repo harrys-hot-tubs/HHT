@@ -4,7 +4,7 @@ import { LocationDB } from '@typings/Location'
 import { TubDB } from '@typings/Tub'
 import { stringToMoment } from '@utils/date'
 import db from '@utils/db'
-import Knex from 'knex'
+import { Knex } from 'knex'
 import moment from 'moment'
 import { NextApiResponse } from 'next'
 

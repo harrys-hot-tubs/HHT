@@ -1,10 +1,10 @@
+import { bir } from '@fixtures/coordinateFixtures'
 import {
 	FailedRangeResponse as FailedRangeResponseType,
 	SuccessfulRangeResponse as SuccessfulRangeResponseType,
 } from '@typings/api/Locations'
 import { LocationResponse } from '@typings/api/Postcode'
 import { AxiosResponse } from 'axios'
-import { bir } from './coordinateFixtures'
 
 export const chester = 'CH1 1ER'
 export const liverpool = 'L1 1DN'

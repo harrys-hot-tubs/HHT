@@ -1,11 +1,11 @@
 import { OrderDB } from '@typings/api/Order'
 import { ConnectedRequest } from '@typings/api/Request'
-import { BookingDB } from '@typings/Booking'
 import { LocationDB } from '@typings/Location'
+import { TubDB } from '@typings/Tub'
 import db from '@utils/db'
 import { priceToString } from '@utils/stripe'
 import Cors from 'cors'
-import Knex from 'knex'
+import { Knex } from 'knex'
 import { buffer } from 'micro'
 import { NextApiRequest, NextApiResponse } from 'next'
 import mj from 'node-mailjet'
@@ -102,32 +102,6 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			console.log(err.message)
 			return res.status(200).json({ received: true, error: err.message })
 		}
-	} else if (event.type === 'payment_intent.payment_failed') {
-		const paymentIntent = event.data.object as Stripe.PaymentIntent
-		const sessionID = await getCheckoutSessionID(paymentIntent.id)
-		const order = (
-			await db<OrderDB>('orders')
-				.del()
-				.where('id', sessionID)
-				.returning(['booking_id', 'id'])
-		)[0]
-
-		if (order === undefined) {
-			return res.status(200).json({
-				received: true,
-				message: 'Order already removed.',
-			})
-		}
-
-		await db<BookingDB>('bookings')
-			.del()
-			.where('booking_id', '=', order.booking_id)
-
-		console.log('Booking deleted.')
-		return res.status(200).json({
-			received: true,
-			message: { id: order.id, booking_id: order.booking_id, deleted: true },
-		})
 	} else {
 		return res.status(200).json({ received: true })
 	}
@@ -157,6 +131,8 @@ const sendEmailNotification = async (
 			.where('orders.id', order.id)
 			.select('locations.name', 'bookings.booking_duration', 'tubs.tub_id')
 			.first()
+
+		const tub = await db<TubDB>('tubs').where('tub_id', tub_id).first()
 		await mailjet.post('send', { version: 'v3.1' }).request({
 			Messages: [
 				{
@@ -180,7 +156,7 @@ const sendEmailNotification = async (
 						paymentIntent,
 						name,
 						booking_duration,
-						tub_id,
+						tub,
 						success
 					),
 				},
@@ -196,7 +172,7 @@ const emailTemplate = (
 	paymentIntent: Stripe.PaymentIntent,
 	name: string,
 	booking_duration: string,
-	tub_id: number,
+	tub: TubDB,
 	success: boolean,
 	origin: string = 'Stripe'
 ) => `<h1>Payment ${success ? 'Succeeded' : 'Failed'}.</h1>
@@ -219,7 +195,8 @@ const emailTemplate = (
 	<section>
 		<h2>Inventory Information</h2>
 		<p>To be delivered from: ${name}</p>
-		<p>Hot tub id: ${tub_id}</p>
+		<p>Hot tub id: ${tub.tub_id}</p>
+		<p>Hot tub capacity: ${tub.max_capacity}</p>
 	</section> `
 
 const formatDuration = (duration: string) => {

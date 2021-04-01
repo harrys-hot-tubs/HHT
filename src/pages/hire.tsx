@@ -55,7 +55,7 @@ const Hire = () => {
 			<div className='primary-container'>
 				<Form onSubmit={onSubmit} className='hire-form'>
 					<div className='description'>
-						<h1>Hire a hot tub</h1>
+						<h1 role='heading'>Hire a hot tub</h1>
 						<p>
 							The process is simple!... Our team will provide everything you
 							need for the setup - we just need access to water and electricity.
