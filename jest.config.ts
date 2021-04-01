@@ -31,6 +31,7 @@ export default {
 				'@test/(.*)$': '<rootDir>/src/test/$1',
 				'@fixtures/(.*)$': '<rootDir>/src/test/fixtures/$1',
 				'@helpers/(.*)$': '<rootDir>/src/test/helpers/$1',
+				'@json/(.*)$': '<rootDir>/src/json/$1',
 			},
 		},
 		{
@@ -49,6 +50,7 @@ export default {
 				'@utils/(.*)$': '<rootDir>/src/utils/$1',
 				'@test/(.*)$': '<rootDir>/src/test/$1',
 				'@fixtures/(.*)$': '<rootDir>/src/test/fixtures/$1',
+				'@json/(.*)$': '<rootDir>/src/json/$1',
 			},
 		},
 	],

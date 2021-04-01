@@ -3,8 +3,8 @@ import {
 	failedRangeResponse,
 	successfulRangeResponse,
 } from '@fixtures/postcodeFixtures'
+import blockedOutcodes from '@json/blockedOutcodes.json'
 import validatePostcode, {
-	blockedOutcodes,
 	PostcodeError,
 } from '@utils/validators/postcodeValidator'
 import axios from 'axios'

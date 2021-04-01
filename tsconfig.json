@@ -23,7 +23,8 @@
 			"@utils/*": ["utils/*"],
 			"@test/*": ["test/*"],
 			"@fixtures/*": ["test/fixtures/*"],
-			"@helpers/*": ["test/helpers/*"]
+			"@helpers/*": ["test/helpers/*"],
+			"@json/*": ["json/*"]
 		}
 	},
 	"include": ["next-env.d.ts", "src"],

@@ -1,4 +1,16 @@
-import { formatAmount, priceToString } from '@utils/stripe'
+import { formatAmount, getStripe, priceToString } from '@utils/stripe'
+
+describe('getStripe', () => {
+	it('creates instance', () => {
+		expect(async () => await getStripe()).toBeTruthy()
+	})
+
+	it('creates only one instance', async () => {
+		const firstInstance = await getStripe()
+		const secondInstance = await getStripe()
+		expect(secondInstance).toEqual(firstInstance)
+	})
+})
 
 describe('formatAmount', () => {
 	it('should format valid prices', () => {

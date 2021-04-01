@@ -1,6 +1,6 @@
+import validPromoCodes from '@json/validPromoCodes.json'
 import validatePromoCode, {
 	PromoCodeError,
-	validPromoCodes,
 } from '@utils/validators/promoCodeValidator'
 
 it('accepts valid promo codes', () => {
