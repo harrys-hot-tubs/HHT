@@ -1,10 +1,10 @@
 import { priceToString } from '@utils/stripe'
+import { setStorage } from '../helpers/localStorageHelper'
 
 const totalPrice = priceToString(17900)
 
-//TODO convert to cypress
-
 before(() => {
+	setStorage({ consent: 'true' })
 	cy.visit(
 		'/success?session_id=cs_test_b1ntF5EK43fzumB9QUrkhvof77a5DH6eOUgHsrypgdQ24o5xUz9LahsmWF'
 	)

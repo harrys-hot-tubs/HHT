@@ -4,6 +4,7 @@ import { setStorage } from '@helpers/localStorageHelper'
 import { displayableMoment, stringToMoment } from '@utils/date'
 
 beforeEach(() => {
+	setStorage({ consent: 'true' })
 	setStorage(formData)
 	cy.visit('/checkout?tub_id=91')
 })

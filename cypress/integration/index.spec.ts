@@ -1,4 +1,7 @@
+import { setStorage } from '../helpers/localStorageHelper'
+
 before(() => {
+	setStorage({ consent: 'true' })
 	cy.visit('/')
 })
 

@@ -16,7 +16,7 @@ const Home = () => {
 				<title>Harry's Hot Tubs</title>
 			</Head>
 			<div className='lead-container'>
-				<img src='lead1.jpg' className='hero-image' />
+				<img src='lead3.jpeg' className='hero-image' />
 				<h1 className='title' role='heading' aria-level={1}>
 					Harry's Hot Tubs
 				</h1>
@@ -34,8 +34,8 @@ const Home = () => {
 					Harry's Hot Tubs
 				</p>
 				<p className='introduction'>
-					Boasting 5* reviews from over 800 hires, we are proud to be the Number
-					One Hot Tub Rental Company in the UK!
+					Boasting 5* reviews from over 1,000 hires, we are proud to be the
+					Number One Hot Tub Rental Company in the UK!
 				</p>
 				<p className='links'>
 					<a
