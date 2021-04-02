@@ -176,7 +176,7 @@ const emailTemplate = (
 	success: boolean,
 	origin: string = 'Stripe'
 ) => `<h1>Payment ${success ? 'Succeeded' : 'Failed'}.</h1>
-	<p>£${priceToString(paymentIntent.amount)} paid via ${origin}</p>
+	<p>${priceToString(paymentIntent.amount)} paid via ${origin}</p>
 	<section>
 		<h2>Delivery Information</h2>
 		<p>${order.address_line_1}</p>
