@@ -4,7 +4,7 @@ export interface AccountDB {
 	password_hash: string
 	first_name: string
 	last_name: string
-	telephone_number?: string
+	telephone_number: string
 	account_roles: Role[]
 }
 

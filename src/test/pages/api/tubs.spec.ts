@@ -1,7 +1,7 @@
 import { locations } from '@fixtures/locationFixtures'
 import { mixedSizes } from '@fixtures/tubsFixtures'
+import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/tubs'
-import { cleanupDatabase, connection } from '@test/helpers/DBHelper'
 import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'
