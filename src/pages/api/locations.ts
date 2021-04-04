@@ -1,6 +1,6 @@
 import { RangeRequest, RangeResponse } from '@typings/api/Locations'
 import { ConnectedRequest } from '@typings/api/Request'
-import { LocationDB } from '@typings/Location'
+import { LocationDB } from '@typings/db/Location'
 import Coordinate from '@utils/coordinate'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'

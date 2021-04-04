@@ -1,7 +1,7 @@
 import HotTub, { DisplayableTub } from '@components/HotTub'
 import NoAvailabilities from '@components/NoAvailabilities'
 import { PriceRequest, PriceResponse } from '@typings/api/Checkout'
-import { TubDB } from '@typings/Tub'
+import { TubDB } from '@typings/db/Tub'
 import { displayableTubs } from '@utils/tubs'
 import axios from 'axios'
 import { useRouter } from 'next/router'

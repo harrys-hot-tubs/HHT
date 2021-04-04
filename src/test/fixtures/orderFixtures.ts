@@ -1,5 +1,6 @@
 import { bookings } from '@fixtures/bookingFixtures'
-import { CreateOrderRequest, OrderDB } from '@typings/api/Order'
+import { CreateOrderRequest } from '@typings/api/Order'
+import { OrderDB } from '@typings/db/Order'
 
 export const orderRequest: CreateOrderRequest = {
 	checkout_session_id: 'checkout_session_id',

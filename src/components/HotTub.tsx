@@ -1,4 +1,4 @@
-import { TubDB } from '@typings/Tub'
+import { TubDB } from '@typings/db/Tub'
 import React from 'react'
 
 interface ComponentProps extends DisplayableTub {

@@ -1,7 +1,7 @@
-import { OrderDB } from '@typings/api/Order'
-import { BookingDB } from '@typings/Booking'
-import { LocationDB } from '@typings/Location'
-import { TubDB } from '@typings/Tub'
+import { BookingDB } from '@typings/db/Booking'
+import { LocationDB } from '@typings/db/Location'
+import { OrderDB } from '@typings/db/Order'
+import { TubDB } from '@typings/db/Tub'
 import { connector } from '@utils/db'
 import { Knex } from 'knex'
 

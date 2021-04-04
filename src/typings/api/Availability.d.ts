@@ -1,5 +1,5 @@
-import { LocationDB } from '@typings/Location'
-import { TubDB } from '@typings/Tub'
+import { LocationDB } from '@typings/db/Location'
+import { TubDB } from '@typings/db/Tub'
 
 export type AvailabilityResponse =
 	| {

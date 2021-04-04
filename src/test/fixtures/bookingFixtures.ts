@@ -1,5 +1,5 @@
 import { mixedSizes } from '@fixtures/tubsFixtures'
-import { BookingDB } from '@typings/Booking'
+import { BookingDB } from '@typings/db/Booking'
 
 export const bookings: BookingDB[] = [
 	{
