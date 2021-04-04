@@ -31,7 +31,6 @@ const post = async (
 		)[0]
 		return res.status(200).json(storedAccount)
 	} catch (e) {
-		console.error(e)
 		return res
 			.status(400)
 			.json({ type: 'Error', message: 'Failed to create account.' })
