@@ -1,3 +1,4 @@
+import { AccountDB } from '@typings/db/Account'
 import { BookingDB } from '@typings/db/Booking'
 import { LocationDB } from '@typings/db/Location'
 import { OrderDB } from '@typings/db/Order'
@@ -22,10 +23,12 @@ export const resetTables = async (db: Knex) => {
 	await db<BookingDB>('bookings').del()
 	await db<TubDB>('tubs').del()
 	await db<LocationDB>('locations').del()
+	await db<AccountDB>('accounts').del()
 }
 
 export const resetSequences = async (db: Knex) => {
 	await db.raw('ALTER SEQUENCE bookings_booking_id_seq RESTART WITH 1')
 	await db.raw('ALTER SEQUENCE locations_locationid_seq RESTART WITH 1')
 	await db.raw('ALTER SEQUENCE tubs_tubid_seq RESTART WITH 1')
+	await db.raw('ALTER SEQUENCE accounts_account_id_seq RESTART WITH 1')
 }
