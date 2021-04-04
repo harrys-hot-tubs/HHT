@@ -23,3 +23,4 @@ jobs:
       WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
       MJ_PUBLIC: ${{ secrets.MJ_PUBLIC }}
       MJ_SECRET: ${{ secrets.MJ_SECRET }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
