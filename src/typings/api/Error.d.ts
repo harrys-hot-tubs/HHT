@@ -1,4 +1,4 @@
 export interface APIError {
-	type: 'RangeError' | 'FormatError' | 'Error'
+	type: 'RangeError' | 'FormatError' | 'AuthError' | 'Error'
 	message: string
 }
