@@ -25,20 +25,10 @@ const post = async (
 	const { db } = req
 	const newAccount: NewAccount = req.body
 	try {
-		const hashedPassword = await bcrypt.hash(newAccount.password, SALT_ROUNDS)
-		const preparedAccount: Omit<AccountDB, 'account_id'> = {
-			email_address: newAccount.emailAddress,
-			password_hash: hashedPassword,
-			first_name: newAccount.firstName,
-			last_name: newAccount.lastName,
-			account_roles: newAccount.accountRoles,
-			telephone_number: newAccount.telephoneNumber,
-		}
-
+		const preparedAccount = await prepareAccount(newAccount)
 		const storedAccount: AccountDB = (
 			await db<AccountDB>('accounts').insert(preparedAccount, '*')
 		)[0]
-
 		return res.status(200).json(storedAccount)
 	} catch (e) {
 		console.error(e)
@@ -46,6 +36,21 @@ const post = async (
 			.status(400)
 			.json({ type: 'Error', message: 'Failed to create account.' })
 	}
+}
+
+export const prepareAccount = async (
+	account: NewAccount
+): Promise<Omit<AccountDB, 'account_id'>> => {
+	const hashedPassword = await bcrypt.hash(account.password, SALT_ROUNDS)
+	const preparedAccount: Omit<AccountDB, 'account_id'> = {
+		email_address: account.emailAddress,
+		password_hash: hashedPassword,
+		first_name: account.firstName,
+		last_name: account.lastName,
+		account_roles: account.accountRoles,
+		telephone_number: account.telephoneNumber,
+	}
+	return preparedAccount
 }
 
 export default db()(handler)
