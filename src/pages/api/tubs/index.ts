@@ -1,5 +1,5 @@
 import { ConnectedRequest } from '@typings/api/Request'
-import { TubDB } from '@typings/Tub'
+import { TubDB } from '@typings/db/Tub'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'
 

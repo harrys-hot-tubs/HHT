@@ -1,4 +1,4 @@
-import { TubDB } from '@typings/Tub'
+import { TubDB } from '@typings/db/Tub'
 import { connector } from '@utils/db'
 import { GetServerSideProps } from 'next'
 

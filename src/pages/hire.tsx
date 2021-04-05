@@ -8,7 +8,7 @@ import {
 	AvailabilityRequest,
 	AvailabilityResponse,
 } from '@typings/api/Availability'
-import { TubDB } from '@typings/Tub'
+import { TubDB } from '@typings/db/Tub'
 import { getClosestDispatcher } from '@utils/postcode'
 import axios from 'axios'
 import Head from 'next/head'

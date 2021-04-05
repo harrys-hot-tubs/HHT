@@ -1,4 +1,4 @@
-import { LocationDB } from '@typings/Location'
+import { LocationDB } from '@typings/db/Location'
 
 export const locations: LocationDB[] = [
 	{
