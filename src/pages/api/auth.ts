@@ -1,6 +1,6 @@
 import { AuthRequest, AuthResponse, TokenAccount } from '@typings/api/Auth'
 import { ConnectedRequest } from '@typings/api/Request'
-import { AccountDB } from '@typings/db/Account'
+import { AccountDB, Role } from '@typings/db/Account'
 import db from '@utils/db'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -48,13 +48,21 @@ const passwordsMatch = async (
 	return await bcrypt.compare(password, storedPasswordHash)
 }
 
+const convertRoles = (account_roles: string): Role[] => {
+	return account_roles.slice(1, -1).split(',') as Role[]
+}
+
 const tokeniseAccount = ({
 	first_name,
 	last_name,
 	account_roles,
 }: AccountDB): string => {
-	const reducedAccount: TokenAccount = { first_name, last_name, account_roles }
-	return jwt.sign(reducedAccount, process.env.TOKEN_SECRET, {
+	const payload: TokenAccount = {
+		first_name,
+		last_name,
+		account_roles: convertRoles((account_roles as unknown) as string),
+	}
+	return jwt.sign(payload, process.env.TOKEN_SECRET, {
 		expiresIn: '1h',
 	})
 }
