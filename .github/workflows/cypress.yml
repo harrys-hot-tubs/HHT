@@ -13,6 +13,16 @@ jobs:
         with:
           build: yarn build
           start: yarn start
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
     env:
       AWS_DB: ${{ secrets.AWS_DB }}
       AWS_DB_ENDPOINT: ${{ secrets.AWS_DB_ENDPOINT }}
