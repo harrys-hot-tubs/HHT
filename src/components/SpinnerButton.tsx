@@ -18,7 +18,7 @@ interface ComponentProps {
 
 const SpinnerButton = ({
 	id,
-	className,
+	className = 'button',
 	status,
 	type = 'button',
 	value,

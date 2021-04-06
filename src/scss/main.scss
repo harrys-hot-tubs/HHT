@@ -4,6 +4,7 @@
 @import './pages/hire';
 @import './pages/success';
 @import './pages/failure';
+@import './pages/login';
 @import './components/no_availabilities';
 @import './components/hot_tub';
 @import './components/postcode_field';
@@ -46,9 +47,8 @@ body::-webkit-scrollbar {
 	min-width: 100%;
 	border: none;
 	overflow: visible;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	display: grid;
+	place-items: center;
 }
 
 #__next::-webkit-scrollbar {

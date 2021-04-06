@@ -51,7 +51,12 @@ const LoginForm = () => {
 					onChange={(e) => setPassword(e.target.value)}
 				/>
 			</Form.Group>
-			<SpinnerButton type='submit' status={false} activeText='Logging in...'>
+			<SpinnerButton
+				className='button'
+				type='submit'
+				status={false}
+				activeText='Logging in...'
+			>
 				Login
 			</SpinnerButton>
 		</Form>
