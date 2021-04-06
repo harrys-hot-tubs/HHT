@@ -56,6 +56,7 @@ const LoginForm = () => {
 				type='submit'
 				status={false}
 				activeText='Logging in...'
+				data-testid='submit'
 			>
 				Login
 			</SpinnerButton>
