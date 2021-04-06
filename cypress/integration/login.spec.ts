@@ -1,6 +1,15 @@
+import account from '../fixtures/account.json'
 import { setStorage } from '../helpers/localStorageHelper'
 
+before(() => {
+	console.log(`Cypress.env()`, Cypress.env())
+	cy.task('addAccount').then(() => {
+		console.log('added account')
+	})
+})
+
 beforeEach(() => {
+	cy.clearLocalStorage()
 	setStorage({ consent: 'true' })
 	cy.visit('/login')
 })
@@ -39,10 +48,16 @@ describe('form', () => {
 	})
 
 	it('allows the user to login', () => {
-		cy.get('[aria-label=email]').type('test')
-		cy.get('[aria-label=password]').type('test')
+		cy.get('[aria-label=email]').type(account.email_address)
+		cy.get('[aria-label=password]').type('password')
 
 		cy.get('[data-testid=submit]').click()
 		cy.location('pathname').should('eq', '/secure')
+	})
+})
+
+after(() => {
+	cy.task('cleanup').then(() => {
+		console.log('cleaned up')
 	})
 })
