@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"e2e": "cypress run --headless",
-		"pretest": "NODE_ENV=test next dev",
+		"dev:test": "NODE_ENV=test next dev",
 		"test": "JEST_WORKERS=4 jest -w JEST_WORKERS",
 		"build": "next build",
 		"start": "next start"
