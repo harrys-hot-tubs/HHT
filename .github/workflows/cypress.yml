@@ -13,12 +13,12 @@ jobs:
         with:
           build: yarn build
           start: yarn start
-      - uses: actions/upload-artifact@v2
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-      - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: cypress-videos

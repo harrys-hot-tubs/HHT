@@ -1,5 +1,5 @@
 require('dotenv').config({ path: '.env.test' })
-// TODO see if the above works in CI.
+// TODO figure out why this breaks in CI.
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import { AccountDB } from '@typings/db/Account'
 import bcrypt from 'bcrypt'
