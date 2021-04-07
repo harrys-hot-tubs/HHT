@@ -1,0 +1,9 @@
+.login-container {
+	@extend .container;
+	align-items: center;
+	background-color: white;
+	padding: 20px;
+	border-radius: 10px;
+	width: 100%;
+	height: 100%;
+}

@@ -25,7 +25,7 @@ const PostcodeField = ({
 }: ComponentProps) => {
 	return (
 		<React.Fragment>
-			<InputGroup className='postcode-field'>
+			<InputGroup className='postcode-field' hasValidation>
 				<FormControl
 					id='postcode'
 					aria-label='postcode'
