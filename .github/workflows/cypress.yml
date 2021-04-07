@@ -24,6 +24,7 @@ jobs:
           name: cypress-videos
           path: cypress/videos
     env:
+      TOKEN_SECRET: qRnK3wnkcDRrq6maUnH9veb9TFFoQ2Q6U9vhs6QD
       AWS_DB: ${{ secrets.AWS_DB }}
       AWS_DB_ENDPOINT: ${{ secrets.AWS_DB_ENDPOINT }}
       AWS_DB_PASSWORD: ${{ secrets.AWS_DB_PASSWORD }}
