@@ -4,8 +4,8 @@ import moment from 'moment'
 
 const useStoredDate = (
 	name: string
-): [moment.Moment, (value: moment.Moment) => void] => [
-	...useStoredState<moment.Moment>({
+): [moment.Moment, (value: moment.Moment) => void] =>
+	useStoredState<moment.Moment>({
 		name,
 		fallback: null,
 		toString: (v) => v?.toISOString(),
@@ -16,7 +16,6 @@ const useStoredDate = (
 				return null
 			}
 		},
-	}),
-]
+	})
 
 export default useStoredDate

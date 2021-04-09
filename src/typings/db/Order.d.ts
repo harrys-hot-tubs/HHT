@@ -1,3 +1,5 @@
+import { BookingDB } from '@typings/db/Booking'
+
 export interface OrderDB {
 	id: string
 	booking_id: number
@@ -16,3 +18,5 @@ export interface OrderDB {
 	referee: string
 	created_at: string
 }
+
+export type PopulatedOrder = OrderDB & BookingDB

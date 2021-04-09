@@ -43,10 +43,20 @@ const handleSSAuth = (
 
 	if (!isTokenAccount(payload)) return { isValid: false, error: 'invalid' }
 
-	if (!payload.account_roles.some((role) => permittedRoles.includes(role)))
+	if (!accountIsPermitted(permittedRoles, payload.account_roles))
 		return { isValid: false, error: 'forbidden' }
 
 	return { isValid: true, payload }
+}
+
+export const accountIsPermitted = (
+	permittedRoles: Role[],
+	accountRoles: Role[]
+): boolean => {
+	if (accountRoles.length === 0) return false
+	if (permittedRoles.includes('*')) return true
+
+	return accountRoles.some((role) => permittedRoles.includes(role))
 }
 
 export default handleSSAuth
