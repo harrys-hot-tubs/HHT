@@ -78,7 +78,7 @@ describe('booleans', () => {
 	const params: UseStoredStateArgs<boolean> = {
 		fallback: undefined,
 		name,
-		fromString: (v) => Boolean(v),
+		fromString: (v) => v === 'true',
 		toString: (v) => v.toString(),
 	}
 
@@ -88,7 +88,7 @@ describe('booleans', () => {
 
 		const { result } = renderHook(() => useStoredState<boolean>(params))
 		const [value] = result.current
-		expect(value).toBe(Boolean(storedValue))
+		expect(value).toBe(false)
 	})
 
 	it('defaults to the fallback if no data is available', () => {
@@ -128,7 +128,7 @@ describe('booleans', () => {
 		localStorage.setItem(name, storedValue)
 
 		const { result } = renderHook(() => useStoredState<boolean>(params))
-		expect(result.current[0]).toBe(Boolean(storedValue))
+		expect(result.current[0]).toBe(false)
 		act(() => {
 			result.current[1](nextValue)
 		})

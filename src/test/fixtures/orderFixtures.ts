@@ -34,5 +34,5 @@ export const storedOrder: OrderDB = {
 	special_requests: '',
 	referee: 'Instagram',
 	postcode: 'AB2 2CD',
-	created_at: '2021-03-08 10:59:59',
+	created_at: '2021-03-08T10:59:59.000Z',
 }

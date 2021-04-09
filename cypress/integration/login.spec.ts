@@ -2,10 +2,7 @@ import account from '../fixtures/account.json'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {
-	console.log(`Cypress.env()`, Cypress.env())
-	cy.task('addAccount').then(() => {
-		console.log('added account')
-	})
+	cy.task('addAccount').then(() => {})
 })
 
 beforeEach(() => {
@@ -52,12 +49,10 @@ describe('form', () => {
 		cy.get('[aria-label=password]').type('password')
 
 		cy.get('[data-testid=submit]').click()
-		cy.location('pathname').should('eq', '/secure')
+		cy.location('pathname').should('eq', '/dashboard')
 	})
 })
 
 after(() => {
-	cy.task('cleanup').then(() => {
-		console.log('cleaned up')
-	})
+	cy.task('cleanup').then(() => {})
 })
