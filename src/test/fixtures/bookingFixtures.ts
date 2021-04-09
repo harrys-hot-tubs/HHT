@@ -1,14 +1,20 @@
 import { mixedSizes } from '@fixtures/tubsFixtures'
 import { BookingDB } from '@typings/db/Booking'
 
-const generateDuration = (): string => {
+export const generateStartDate = (): string => {
 	const bookingStart = new Date()
 	bookingStart.setDate(bookingStart.getDate() + 1) // Day after tomorrow
-	const bookingEnd = new Date(bookingStart)
+	return bookingStart.toISOString().substr(0, 10)
+}
+
+export const generateEndDate = (): string => {
+	const bookingEnd = new Date(generateStartDate())
 	bookingEnd.setDate(bookingEnd.getDate() + 3) // Four days from now
-	return `[${bookingStart
-		.toISOString()
-		.substr(0, 10)},${bookingEnd.toISOString().substr(0, 10)})`
+	return bookingEnd.toISOString().substr(0, 10)
+}
+
+const generateDuration = (): string => {
+	return `[${generateStartDate()},${generateEndDate()})`
 }
 
 export const bookings: BookingDB[] = [
