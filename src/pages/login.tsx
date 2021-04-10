@@ -19,8 +19,8 @@ const Login = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const status = handleSSAuth(context, ['admin', 'driver', 'manager'])
-	if (status.isValid)
+	const status = await handleSSAuth(context, ['admin', 'driver', 'manager'])
+	if (status.authorised)
 		return {
 			redirect: {
 				destination: '/dashboard',

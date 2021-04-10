@@ -12,7 +12,4 @@ export type AuthResponse =
 	  }
 	| APIError
 
-export type TokenAccount = Pick<
-	AccountDB,
-	'first_name' | 'last_name' | 'account_roles'
->
+export type TokenAccount = Pick<AccountDB, 'account_id'>

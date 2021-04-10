@@ -49,63 +49,18 @@ describe('validateToken', () => {
 })
 
 describe('isTokenAccount', () => {
-	it('detects incorrectly typed first names', () => {
-		const missing: Omit<TokenAccount, 'first_name'> = {
-			last_name: 'Doe',
-			account_roles: ['admin'],
-		}
+	it('detects incorrectly typed account ids', () => {
+		const missing: Omit<TokenAccount, 'account_id'> = {}
 
 		const nulled: TokenAccount = {
-			first_name: null,
+			account_id: null,
 			...missing,
 		}
 
-		const wrong: Omit<TokenAccount, 'first_name'> & { first_name: number } = {
-			first_name: 23,
-			...missing,
-		}
-
-		expect(isTokenAccount(missing)).toEqual(false)
-		expect(isTokenAccount(nulled)).toEqual(false)
-		expect(isTokenAccount(wrong)).toEqual(false)
-	})
-
-	it('detects incorrectly typed last names', () => {
-		const missing: Omit<TokenAccount, 'last_name'> = {
-			first_name: 'John',
-			account_roles: ['admin'],
-		}
-
-		const nulled: TokenAccount = {
-			last_name: null,
-			...missing,
-		}
-
-		const wrong: Omit<TokenAccount, 'last_name'> & { last_name: number } = {
-			last_name: 23,
-			...missing,
-		}
-
-		expect(isTokenAccount(missing)).toEqual(false)
-		expect(isTokenAccount(nulled)).toEqual(false)
-		expect(isTokenAccount(wrong)).toEqual(false)
-	})
-
-	it('detects incorrectly typed account roles', () => {
-		const missing: Omit<TokenAccount, 'account_roles'> = {
-			first_name: 'John',
-			last_name: 'Doe',
-		}
-
-		const nulled: TokenAccount = {
-			account_roles: null,
-			...missing,
-		}
-
-		const wrong: Omit<TokenAccount, 'account_roles'> & {
-			account_roles: number
+		const wrong: Omit<TokenAccount, 'account_id'> & {
+			account_id: string
 		} = {
-			account_roles: 23,
+			account_id: 'asdas',
 			...missing,
 		}
 
@@ -116,9 +71,7 @@ describe('isTokenAccount', () => {
 
 	it('detects complete accounts', () => {
 		const complete: TokenAccount = {
-			first_name: 'John',
-			last_name: 'Doe',
-			account_roles: ['admin'],
+			account_id: 1,
 		}
 
 		expect(isTokenAccount(complete)).toEqual(true)

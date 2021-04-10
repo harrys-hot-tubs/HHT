@@ -1,3 +1,4 @@
+import { storedAccount } from '@fixtures/accountsFixtures'
 import { TokenAccount } from '@typings/api/Auth'
 import jwt from 'jsonwebtoken'
 
@@ -18,9 +19,7 @@ export const nonExpiredObject = jwt.sign(
 )
 
 export const tokenAccount: TokenAccount = {
-	first_name: 'John',
-	last_name: 'Doe',
-	account_roles: ['admin'],
+	account_id: storedAccount.account_id,
 }
 
 export const inDateAccountToken = jwt.sign(
