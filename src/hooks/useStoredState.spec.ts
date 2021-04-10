@@ -1,7 +1,7 @@
 import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
 import { act, renderHook } from '@testing-library/react-hooks'
 
-const name = 'test'
+const key = 'test'
 
 afterEach(() => {
 	localStorage.clear()
@@ -10,14 +10,14 @@ afterEach(() => {
 describe('numbers', () => {
 	const params: UseStoredStateArgs<number> = {
 		fallback: 0,
-		name,
+		key,
 		fromString: (v) => Number(v),
 		toString: (v) => v.toString(),
 	}
 
 	it('accesses stored data if available', () => {
 		const storedValue = '1'
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<number>(params))
 		const [value] = result.current
@@ -38,10 +38,7 @@ describe('numbers', () => {
 			result.current[1](newValue)
 		})
 
-		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
-			String(newValue)
-		)
+		expect(localStorage.setItem).toHaveBeenLastCalledWith(key, String(newValue))
 	})
 
 	it('sets active data when updated', () => {
@@ -58,7 +55,7 @@ describe('numbers', () => {
 	it('overwrites stored data when updated', () => {
 		const storedValue = '17'
 		const newValue = 22
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<number>(params))
 		expect(result.current[0]).toBe(Number(storedValue))
@@ -66,10 +63,7 @@ describe('numbers', () => {
 			result.current[1](newValue)
 		})
 
-		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
-			String(newValue)
-		)
+		expect(localStorage.setItem).toHaveBeenLastCalledWith(key, String(newValue))
 		expect(result.current[0]).toBe(newValue)
 	})
 })
@@ -77,14 +71,14 @@ describe('numbers', () => {
 describe('booleans', () => {
 	const params: UseStoredStateArgs<boolean> = {
 		fallback: undefined,
-		name,
+		key: key,
 		fromString: (v) => v === 'true',
 		toString: (v) => v.toString(),
 	}
 
 	it('accesses stored data if available', () => {
 		const storedValue = 'false'
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<boolean>(params))
 		const [value] = result.current
@@ -105,10 +99,7 @@ describe('booleans', () => {
 			result.current[1](newValue)
 		})
 
-		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
-			String(newValue)
-		)
+		expect(localStorage.setItem).toHaveBeenLastCalledWith(key, String(newValue))
 	})
 
 	it('sets active data when updated', () => {
@@ -125,7 +116,7 @@ describe('booleans', () => {
 	it('overwrites stored data when updated', () => {
 		const storedValue = 'false'
 		const nextValue = true
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<boolean>(params))
 		expect(result.current[0]).toBe(false)
@@ -134,7 +125,7 @@ describe('booleans', () => {
 		})
 
 		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
+			key,
 			String(nextValue)
 		)
 		expect(result.current[0]).toBe(nextValue)
@@ -144,14 +135,14 @@ describe('booleans', () => {
 describe('arrays', () => {
 	const params: UseStoredStateArgs<string[]> = {
 		fallback: [],
-		name,
+		key: key,
 		fromString: (v) => v.split(','),
 		toString: (v) => v.toString(),
 	}
 
 	it('accesses stored data if available', () => {
 		const storedValue = 'a,b'
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<string[]>(params))
 		const [value] = result.current
@@ -173,7 +164,7 @@ describe('arrays', () => {
 		})
 
 		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
+			key,
 			newValue.toString()
 		)
 	})
@@ -192,7 +183,7 @@ describe('arrays', () => {
 	it('overwrites stored data when updated', () => {
 		const storedValue = 'e,f'
 		const nextValue = ['g', 'h']
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<string[]>(params))
 		expect(result.current[0]).toEqual(storedValue.split(','))
@@ -201,7 +192,7 @@ describe('arrays', () => {
 		})
 
 		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
+			key,
 			nextValue.toString()
 		)
 		expect(result.current[0]).toBe(nextValue)
@@ -221,7 +212,7 @@ describe('objects', () => {
 			bar: null,
 			bash: null,
 		},
-		name,
+		key: key,
 		fromString: (v) => JSON.parse(v) as StorableObject,
 		toString: (v) => JSON.stringify(v),
 	}
@@ -232,7 +223,7 @@ describe('objects', () => {
 			bar: 76,
 			bash: false,
 		})
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<StorableObject>(params))
 		const [value] = result.current
@@ -258,7 +249,7 @@ describe('objects', () => {
 		})
 
 		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
+			key,
 			JSON.stringify(newValue)
 		)
 	})
@@ -289,7 +280,7 @@ describe('objects', () => {
 			bar: -324897,
 			bash: true,
 		}
-		localStorage.setItem(name, storedValue)
+		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<StorableObject>(params))
 		expect(result.current[0]).toEqual(JSON.parse(storedValue))
@@ -298,7 +289,7 @@ describe('objects', () => {
 		})
 
 		expect(localStorage.setItem).toHaveBeenLastCalledWith(
-			name,
+			key,
 			JSON.stringify(nextValue)
 		)
 		expect(result.current[0]).toBe(nextValue)

@@ -3,11 +3,11 @@ import useValidatedInput, {
 } from '@hooks/useSyncValidatedInput'
 import { act, renderHook } from '@testing-library/react-hooks'
 
-const name = 'test'
+const key = 'test'
 const validator = jest.fn<[boolean, string], [string]>()
 const params: UseValidatedInputArgs<string, string> = {
 	fallback: '',
-	name,
+	key,
 	fromString: (v) => v,
 	toString: (v) => v,
 	validator,
@@ -20,7 +20,7 @@ afterEach(() => {
 
 it('access stored data if available', () => {
 	const storedValue = 'storedValue'
-	localStorage.setItem(name, storedValue)
+	localStorage.setItem(key, storedValue)
 
 	const { result } = renderHook(() => useValidatedInput<string, string>(params))
 	const { value } = result.current
@@ -79,7 +79,7 @@ it('stores working value when validated if valid', () => {
 	})
 
 	expect(localStorage.setItem).toHaveBeenLastCalledWith(
-		name,
+		key,
 		result.current.value
 	)
 })

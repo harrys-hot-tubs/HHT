@@ -2,19 +2,25 @@ import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
 import { useEffect, useState } from 'react'
 
 export interface UseValidatedInputArgs<T, U> extends UseStoredStateArgs<T> {
+	/**
+	 * Function to be called when the input is validated.
+	 */
 	validator: (value: T) => [boolean, U]
 }
 
+/**
+ * Synchronously validates and stores user input.
+ */
 const useValidatedInput = <T, U>({
 	validator,
-	name,
+	key,
 	fallback,
 	toString,
 	fromString,
 }: UseValidatedInputArgs<T, U>) => {
 	const [storedValue, setStoredValue] = useStoredState<T>({
 		fallback,
-		name,
+		key,
 		toString,
 		fromString,
 	})

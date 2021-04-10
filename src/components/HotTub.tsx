@@ -6,9 +6,15 @@ interface ComponentProps extends DisplayableTub {
 }
 
 export interface DisplayableTub extends TubDB {
+	/**
+	 * Price of the hot tub booking over a previously specified period at a previously specified address.
+	 */
 	price: number
 }
 
+/**
+ * Displays an image of the tub and its associated price.
+ */
 const HotTub = ({ tub_id, max_capacity, price, onClick }: ComponentProps) => {
 	return (
 		<div onClick={() => onClick(tub_id)} className='card'>

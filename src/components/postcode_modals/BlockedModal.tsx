@@ -2,6 +2,9 @@ import { PostcodeModalProps } from '@components/postcode_modals/PostcodeModal'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
 
+/**
+ * Modal displayed to the customer when their postcode appears in the list of blocked outcodes in `blockedOutcodes.json`.
+ */
 const BlockedModal = ({ display, hide }: PostcodeModalProps) => (
 	<Modal show={display} onHide={hide} centered>
 		<Modal.Header closeButton>

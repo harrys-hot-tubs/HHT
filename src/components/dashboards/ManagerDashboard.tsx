@@ -4,6 +4,9 @@ import { PopulatedOrder } from '@typings/db/Order'
 import { extractBookingStart } from '@utils/date'
 import React from 'react'
 
+/**
+ * Dashboard to be used by managers to identify deliveries expected to be made in the future, and handle refunds.
+ */
 const ManagerDashboard = () => {
 	const { orders, isLoading } = useOrders()
 	const upcomingOrders = findUpcoming(orders)
@@ -34,7 +37,12 @@ const ManagerDashboard = () => {
 	)
 }
 
-const findUpcoming = (orders: PopulatedOrder[]) => {
+/**
+ * Finds all orders that are to be delivered today or in the future, sorted by date - soonest first.
+ * @param orders All orders in the database.
+ * @returns All orders that are to be delivered either today, or in the future.
+ */
+const findUpcoming = (orders: PopulatedOrder[]): PopulatedOrder[] => {
 	if (!orders) return []
 
 	const today = new Date()
