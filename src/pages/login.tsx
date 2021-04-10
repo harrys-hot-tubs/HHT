@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	if (status.isValid)
 		return {
 			redirect: {
-				destination: '/secure',
+				destination: '/dashboard',
 				permanent: false,
 			},
 		}

@@ -9,4 +9,5 @@ export interface AccountDB {
 	account_roles: Role[]
 }
 
-export type Role = 'admin' | 'customer' | 'driver' | 'manager'
+// '*' type does not exist in the database, but it's useful for authorisation.
+export type Role = 'admin' | 'customer' | 'driver' | 'manager' | '*'

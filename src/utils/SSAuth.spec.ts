@@ -4,7 +4,13 @@ import {
 	nonExpiredObject,
 	tokenAccount,
 } from '@fixtures/authFixtures'
-import handleSSAuth, { AuthResponse, getToken, SSRRequest } from '@utils/SSAuth'
+import { Role } from '@typings/db/Account'
+import handleSSAuth, {
+	accountIsPermitted,
+	AuthResponse,
+	getToken,
+	SSRRequest,
+} from '@utils/SSAuth'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
 
@@ -100,6 +106,57 @@ describe('handleSSAuth', () => {
 		).toMatchObject<AuthResponse>({
 			isValid: true,
 			payload: tokenAccount,
+		})
+	})
+
+	it('allows login for all roles with "*" set for permittedRoles', () => {
+		const context: IncompleteContext = {
+			req: { cookies: { token: inDateAccountToken } },
+		}
+
+		expect(
+			handleSSAuth(context as ExpectedContent, ['*'])
+		).toMatchObject<AuthResponse>({
+			isValid: true,
+			payload: tokenAccount,
+		})
+	})
+})
+
+describe('accountIsPermitted', () => {
+	it('permits no account with no roles', () => {
+		expect(accountIsPermitted(['*'], [])).toBe(false)
+		expect(accountIsPermitted(['customer'], [])).toBe(false)
+	})
+
+	it('permits no roles for an empty array', () => {
+		expect(accountIsPermitted([], ['admin'])).toBe(false)
+		expect(accountIsPermitted([], ['driver'])).toBe(false)
+	})
+
+	it('only permits one matching role for length one', () => {
+		expect(accountIsPermitted(['customer'], ['customer'])).toBe(true)
+		expect(accountIsPermitted(['customer'], ['driver'])).toBe(false)
+	})
+
+	it('permits one matching role for length n', () => {
+		expect(accountIsPermitted(['customer', 'admin'], ['customer'])).toBe(true)
+		expect(accountIsPermitted(['driver', 'customer'], ['manager'])).toBe(false)
+	})
+
+	it('permits n matching roles for length n', () => {
+		expect(
+			accountIsPermitted(['customer', 'admin'], ['admin', 'customer'])
+		).toBe(true)
+		expect(
+			accountIsPermitted(['driver', 'manager'], ['admin', 'customer'])
+		).toBe(false)
+	})
+
+	it('permits all roles on "*"', () => {
+		const allRoles: Role[] = ['admin', 'customer', 'driver', 'manager']
+		allRoles.forEach((role) => {
+			expect(accountIsPermitted(['*'], [role])).toBe(true)
 		})
 	})
 })

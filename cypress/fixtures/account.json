@@ -4,5 +4,5 @@
 	"first_name": "John",
 	"last_name": "Doe",
 	"telephone_number": "123456",
-	"account_roles": ["admin"]
+	"account_roles": ["manager"]
 }

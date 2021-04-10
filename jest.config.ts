@@ -12,7 +12,10 @@ export default {
 	preset: 'ts-jest',
 	projects: [
 		{
-			setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+			setupFilesAfterEnv: [
+				'@testing-library/jest-dom/extend-expect',
+				'<rootDir>/src/test/setup/setupSWR.ts',
+			],
 			setupFiles: ['jest-localstorage-mock'],
 			displayName: 'frontend',
 			testEnvironment: 'jsdom',

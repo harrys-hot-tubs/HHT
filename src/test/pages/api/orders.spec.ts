@@ -17,8 +17,35 @@ beforeAll(async () => {
 	await connection<TubDB>('tubs').insert(mixedSizes)
 })
 
+describe('get', () => {
+	beforeEach(async () => {
+		await connection<OrderDB[]>('orders').del()
+		await connection<BookingDB[]>('bookings').del()
+		await connection<BookingDB[]>('bookings').insert([bookings[0]])
+		await connection<OrderDB[]>('orders').insert([storedOrder])
+	})
+
+	it('fetches stored orders', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'GET',
+		})
+
+		await handler(req, res)
+		expect(res._getStatusCode()).toBe(200)
+		expect(JSON.parse(res._getData())).toEqual([
+			{
+				...bookings[0],
+				...storedOrder,
+				payment_intent_id: null,
+			},
+		])
+	})
+})
+
 describe('post', () => {
 	it('adds an order', async () => {
+		await connection<OrderDB[]>('orders').del()
+		await connection<BookingDB[]>('bookings').del()
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'POST',
 			body: orderRequest,
@@ -37,11 +64,7 @@ describe('delete', () => {
 	})
 
 	it('deletes outdated orders', async () => {
-		try {
-			await connection<OrderDB[]>('orders').insert([storedOrder])
-		} catch (e) {
-			fail(e)
-		}
+		await connection<OrderDB[]>('orders').insert([storedOrder])
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'DELETE',
 		})
@@ -55,14 +78,9 @@ describe('delete', () => {
 	})
 
 	it("doesn't delete in date orders", async () => {
-		try {
-			await connection<OrderDB[]>('orders').insert([
-				{ ...storedOrder, created_at: '3000-03-08 10:59:59' },
-			])
-		} catch (e) {
-			fail(e)
-		}
-
+		await connection<OrderDB[]>('orders').insert([
+			{ ...storedOrder, created_at: '3000-03-08 10:59:59' },
+		])
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'DELETE',
 		})
