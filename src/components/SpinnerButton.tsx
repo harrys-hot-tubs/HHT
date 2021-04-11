@@ -6,16 +6,25 @@ type Type = 'button' | 'submit' | 'reset'
 interface ComponentProps {
 	id?: string
 	className?: string
+	/**
+	 * Whether the spinner is active.
+	 */
 	status: boolean
 	type?: Type
 	value?: string
 	children: React.ReactNode
+	/**
+	 * The text to be displayed when the spinner is active.
+	 */
 	activeText: string
 	disabled?: boolean
 	onClick?: React.MouseEventHandler<HTMLElement>
 	'data-testid'?: string
 }
 
+/**
+ * Generic button that allows async actions to be performed, while keeping the user updated, when it is clicked.
+ */
 const SpinnerButton = ({
 	id,
 	className = 'button',

@@ -2,6 +2,10 @@ import { HeadManagerContext } from 'next/dist/next-server/lib/head-manager-conte
 import { useEffect } from 'react'
 import ReactDOMServer from 'react-dom/server'
 
+/**
+ * Allows the testing of markup stored in the `head` element.
+ * @returns A wrapper component that renders the `head` element of the HTML page during test.
+ */
 const HeadProvider: React.FC = ({ children }) => {
 	let head: JSX.Element[]
 

@@ -9,6 +9,9 @@ interface PageProps {
 	roles: Role[]
 }
 
+/**
+ * Dashboard page that displays a different view to each role that is logged in.
+ */
 const Dashboard = ({ roles }: PageProps) => {
 	// Role priority order: Admin, Manager, Driver, Customer
 

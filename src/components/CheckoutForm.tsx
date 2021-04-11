@@ -14,14 +14,41 @@ import { Col, Form } from 'react-bootstrap'
 import Stripe from 'stripe'
 
 interface ComponentProps {
+	/**
+	 * The tubID that the customer is booking.
+	 */
 	tubID: number
+	/**
+	 * The postcode the customer will have their booking sent to.
+	 */
 	postcode: string
+	/**
+	 * The start date of the customer's booking.
+	 */
 	startDate: moment.Moment
+	/**
+	 * The end date of the customer's booking.
+	 */
 	endDate: moment.Moment
+	/**
+	 * All other information about the customer needed to dispatch a hot tub to them.
+	 */
 	user: CheckoutInformation
 	setUser: React.Dispatch<React.SetStateAction<CheckoutInformation>>
 }
 
+export const RefereeOptions = [
+	'Facebook',
+	'Instagram',
+	'Recommendation',
+	'Influencer - Please Enter Name!',
+	'Search Engine',
+	'Other',
+]
+
+/**
+ * The form the customer must fill out in order to complete their booking.
+ */
 const CheckoutForm = ({
 	tubID,
 	postcode,
@@ -41,11 +68,11 @@ const CheckoutForm = ({
 		if (form.checkValidity() === false) {
 			setValidated(true)
 		} else {
-			const price = await getPrice({
-				id: tubID,
-				startDate: startDate.toISOString(),
-				endDate: endDate.toISOString(),
-			})
+			const price = await getPrice(
+				startDate.toISOString(),
+				endDate.toISOString(),
+				tubID
+			)
 
 			const params: CheckoutRequest = {
 				price,
@@ -314,15 +341,18 @@ const CheckoutForm = ({
 	)
 }
 
-const getPrice = async ({
-	startDate,
-	endDate,
-	id,
-}: {
-	startDate: string
-	endDate: string
+/**
+ * Fetches the current price of booking a hot tub.
+ * @param startDate The start date of the customer's booking.
+ * @param endDate The end date of the customer's booking.
+ * @param id The id of the tub the customer is booking.
+ * @returns The price of booking the tub from the start date until the end date.
+ */
+const getPrice = async (
+	startDate: string,
+	endDate: string,
 	id: number
-}): Promise<number> => {
+): Promise<number> => {
 	const params: PriceRequest = {
 		startDate,
 		endDate,
@@ -332,6 +362,16 @@ const getPrice = async ({
 	else return res.data.price
 }
 
+/**
+ * Sends a order creation request to the API.
+ * @param user The information describing the customer making the booking request
+ * @param postcode The postcode of the customer making the booking request
+ * @param startDate The start date of the customer's booking
+ * @param endDate The end date of the customer's booking.
+ * @param checkoutSessionID The id of the stripe checkout session associated with this booking request
+ * @param tubID The id of the tub the customer is booking.
+ * @throws If the order creation fails on the server.
+ */
 const createOrder = async (
 	user: CheckoutInformation,
 	postcode: string,
@@ -359,14 +399,5 @@ const createOrder = async (
 	const res = await axios.post('/api/orders', params)
 	if (res.status !== 200) throw new Error('Order creation failed.')
 }
-
-export const RefereeOptions = [
-	'Facebook',
-	'Instagram',
-	'Recommendation',
-	'Influencer - Please Enter Name!',
-	'Search Engine',
-	'Other',
-]
 
 export default CheckoutForm

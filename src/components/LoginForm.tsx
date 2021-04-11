@@ -6,6 +6,9 @@ import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Form } from 'react-bootstrap'
 
+/**
+ * Form used by the user to login to the application.
+ */
 const LoginForm = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')

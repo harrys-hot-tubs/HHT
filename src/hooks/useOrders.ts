@@ -4,6 +4,9 @@ import useSWR from 'swr'
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data)
 
+/**
+ * State-while-revalidate hook that fetches all currently existing orders from the database via the API.
+ */
 const useOrders = (): {
 	orders: PopulatedOrder[]
 	isLoading: boolean

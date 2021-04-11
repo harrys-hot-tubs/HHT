@@ -5,15 +5,39 @@ import React from 'react'
 import { FormControl, InputGroup } from 'react-bootstrap'
 
 interface ComponentProps {
+	/**
+	 * Whether the postcode is being validated.
+	 */
 	loading: boolean
+	/**
+	 * The customer's postcode.
+	 */
 	postcode: string
+	/**
+	 * Function to be called when the postcode is updated.
+	 */
 	onChange?: (value: string) => void
+	/**
+	 * True if the postcode is not valid.
+	 */
 	isInvalid: boolean
+	/**
+	 * True if the postcode is valid.
+	 */
 	isValid: boolean
+	/**
+	 * The reason the postcode is identified as invalid.
+	 */
 	invalidReason: PostcodeError
+	/**
+	 * Function to be called when the postcode is validated.
+	 */
 	onValidate: React.MouseEventHandler<HTMLElement>
 }
 
+/**
+ * Text entry field allowing the customer to enter their postcode and allowing the postcode to be validated.
+ */
 const PostcodeField = ({
 	loading,
 	postcode,

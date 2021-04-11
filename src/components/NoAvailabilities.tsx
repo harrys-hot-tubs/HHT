@@ -1,5 +1,8 @@
 import React from 'react'
 
+/**
+ * Message displayed to the user if there are no bookings available at the location chosen over the time chosen.
+ */
 const NoAvailabilities = () => (
 	<div className='no-availabilities'>
 		<h5>Oops, no availability on these dates.</h5>

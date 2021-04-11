@@ -1,5 +1,8 @@
 import Knex from 'knex'
 
+/**
+ * Creates a number of identical databases for use by Jest based on a template DB.
+ */
 export default async () => {
 	const connection = Knex({
 		client: 'pg',

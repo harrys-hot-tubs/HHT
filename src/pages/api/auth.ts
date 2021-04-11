@@ -41,6 +41,12 @@ const post = async (
 	}
 }
 
+/**
+ * Determines whether two passwords are the same.
+ * @param password The password the user is attempting to login with.
+ * @param storedPasswordHash The password stored under the account the user is attempting to log into.
+ * @returns True if the hash of the password matches the stored hash, false otherwise.
+ */
 const passwordsMatch = async (
 	password: string,
 	storedPasswordHash: string
@@ -48,10 +54,17 @@ const passwordsMatch = async (
 	return await bcrypt.compare(password, storedPasswordHash)
 }
 
+/**
+ * Transforms the stored form of roles in the database into a JS object.
+ */
 const convertRoles = (account_roles: string): Role[] => {
 	return account_roles.slice(1, -1).split(',') as Role[]
 }
 
+/**
+ * Transforms an account from the database into a JSON Web Token for transmission to the client.
+ * @returns A signed JSON Web Token representing the account the user is logging into.
+ */
 const tokeniseAccount = ({
 	first_name,
 	last_name,
