@@ -15,6 +15,9 @@ import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 
+/**
+ * Page allowing a customer to specify the location and duration of their hire.
+ */
 const Hire = () => {
 	const calendar = useCalendar()
 	const postcode = usePostcode()

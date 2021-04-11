@@ -21,6 +21,11 @@ export const isPostcode = async (
 	else return [false, 'Postcode format incorrect.']
 }
 
+/**
+ * Determines the latitude and longitude of a UK postcode.
+ * @param postcode A postcode in the UK.
+ * @returns A coordinate object representing the geographic location of the postcode.
+ */
 export const getCoordinates = async (postcode: string): Promise<Coordinate> => {
 	const {
 		data: {
@@ -32,7 +37,12 @@ export const getCoordinates = async (postcode: string): Promise<Coordinate> => {
 	return new Coordinate(latitude, longitude)
 }
 
-export const getInRange = async (
+/**
+ * Determines whether not not a given location can be delivered to by Harry's Hot Tubs.
+ * @param location A geographic location in the UK.
+ * @returns True if the postcode is in range of one of the delivery venues.
+ */
+export const isInRange = async (
 	location: Coordinate
 ): Promise<[boolean, string]> => {
 	const {
@@ -45,6 +55,11 @@ export const getInRange = async (
 	else return [false, 'Delivery is not available in your area.']
 }
 
+/**
+ * Finds the closest delivery venue to a UK postcode.
+ * @param postcode A UK postcode.
+ * @returns The location_id of the nearest delivery venue, or throws an error if the postcode is invalid.
+ */
 export const getClosestDispatcher = async (
 	postcode: string
 ): Promise<number> => {

@@ -15,7 +15,7 @@ import {
 import {
 	getClosestDispatcher,
 	getCoordinates,
-	getInRange,
+	isInRange,
 	isPostcode,
 } from '@utils/postcode'
 import axios from 'axios'
@@ -83,13 +83,13 @@ describe('getInRange', () => {
 
 	it('responds with correct response if the postcode is in range', async () => {
 		mock.onPost('/api/locations').reply(200, successfulRangeResponse)
-		await expect(getInRange(bir)).resolves.toEqual([true, null])
+		await expect(isInRange(bir)).resolves.toEqual([true, null])
 	})
 
 	it('responds with correct response if the postcode is not in range', async () => {
 		mock.onPost('/api/locations').reply(200, failedRangeResponse)
 
-		const received = await getInRange(esb)
+		const received = await isInRange(esb)
 		expect(received[0]).toBe(false)
 		expect(received[1]).toBeDefined()
 	})

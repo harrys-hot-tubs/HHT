@@ -1,5 +1,5 @@
 import blockedOutcodes from '@json/blockedOutcodes.json'
-import { getCoordinates, getInRange, isPostcode } from '@utils/postcode'
+import { getCoordinates, isInRange, isPostcode } from '@utils/postcode'
 
 export type PostcodeError = 'missing' | 'format' | 'range' | 'other' | 'blocked'
 
@@ -16,7 +16,7 @@ const validatePostcode = async (
 
 		const location = await getCoordinates(postcode)
 
-		const [inRange, rangeError] = await getInRange(location)
+		const [inRange, rangeError] = await isInRange(location)
 		if (rangeError) return [false, 'range']
 
 		return [valid && inRange, null]

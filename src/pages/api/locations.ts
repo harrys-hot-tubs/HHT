@@ -54,6 +54,11 @@ const post = async (
 	}
 }
 
+/**
+ * Transforms a location object from the database into a Coordinate object.
+ * @param location A location stored in the database.
+ * @returns A coordinate object representing the geographic position of the location object.
+ */
 const locationToCoordinate = (location: LocationDB) =>
 	new Coordinate(location.latitude, location.longitude)
 

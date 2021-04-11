@@ -6,6 +6,9 @@ interface PageProps {
 	tub: TubDB
 }
 
+/**
+ * Page describing a specific hot tub.
+ */
 const Tub = ({ tub }: PageProps) => {
 	return (
 		<div>

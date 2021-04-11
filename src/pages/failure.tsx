@@ -1,6 +1,9 @@
 import Head from 'next/head'
 import React from 'react'
 
+/**
+ * Page displayed to the customer when their order has not been successfully processed.
+ */
 const Failure = () => {
 	return (
 		<div className='failure-container'>

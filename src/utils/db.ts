@@ -4,6 +4,10 @@ import { NextApiResponse } from 'next'
 
 let connection: Knex
 
+/**
+ * Higher order function that allows a function to be executed with a connection to the database.
+ * @returns A Knex object.
+ */
 export const connector = () => {
 	return () => {
 		connection = knex({
@@ -23,6 +27,9 @@ export const connector = () => {
 	}
 }
 
+/**
+ * Higher-order function for wrapping API route handlers to provide them with a database connection.
+ */
 const db = (...args: any[]) => {
 	return (fn: Function) => async (
 		req: ConnectedRequest,
