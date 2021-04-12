@@ -1,7 +1,8 @@
-import OrderRow from '@components/OrderRow'
+import OrderCard from '@components/OrderCard'
 import useLocation from '@hooks/useLocation'
 import useOrders from '@hooks/useOrders'
 import { PopulatedOrder } from '@typings/db/Order'
+import { extractBookingStart } from '@utils/date'
 import React from 'react'
 
 interface ComponentProps {
@@ -14,30 +15,20 @@ interface ComponentProps {
 const DriverDashboard = ({ id }: ComponentProps) => {
 	const { location, isLoading: locationIsLoading, isError } = useLocation()
 	const { orders, isLoading: ordersAreLoading } = useOrders()
-	const relevantOrders = findRelevant(orders, location.location_id)
+	const relevantOrders = findRelevant(orders, location?.location_id)
 
 	if (locationIsLoading) return <h1>Loading...</h1>
 
 	return (
-		<div>
-			<h1>Upcoming Deliveries in {location.name}</h1>
-			<table>
-				<thead>
-					<tr>
-						<td>Booking ID</td>
-						<td>Payment Intent ID</td>
-						<td>Paid</td>
-						<td>Fulfilled</td>
-						<td>First Name</td>
-						<td>Email</td>
-					</tr>
-				</thead>
-				<tbody>
+		<div className='outer driver'>
+			<main>
+				<h1>Upcoming Deliveries in {location.name}</h1>
+				<div className='orders'>
 					{relevantOrders.map((order) => (
-						<OrderRow key={order.id} {...{ ...order }} />
+						<OrderCard key={order.id} {...{ ...order }} />
 					))}
-				</tbody>
-			</table>
+				</div>
+			</main>
 		</div>
 	)
 }
@@ -45,7 +36,17 @@ const DriverDashboard = ({ id }: ComponentProps) => {
 const findRelevant = (orders: PopulatedOrder[], locationID: number) => {
 	if (!orders || !locationID) return []
 
-	return orders.filter((order) => order.location_id === locationID)
+	const today = new Date()
+	return orders
+		.filter((order) => order.location_id === locationID)
+		.filter((order) => {
+			return extractBookingStart(order.booking_duration) >= today
+		})
+		.sort(
+			(a, b) =>
+				extractBookingStart(a.booking_duration).getTime() -
+				extractBookingStart(b.booking_duration).getTime()
+		)
 }
 
 export default DriverDashboard

@@ -11,11 +11,11 @@ const Home = () => {
 	}, [])
 
 	return (
-		<div className='main'>
+		<div className='outer home'>
 			<Head>
 				<title>Harry's Hot Tubs</title>
 			</Head>
-			<div className='lead-container'>
+			<main className='lead-container'>
 				<img src='lead3.jpeg' className='hero-image' />
 				<h1 className='title' role='heading' aria-level={1}>
 					Harry's Hot Tubs
@@ -28,8 +28,8 @@ const Home = () => {
 				>
 					Hire a Hot Tub
 				</Button>
-			</div>
-			<div className='details-container'>
+			</main>
+			<aside className='details-container'>
 				<p className='background-text' role='presentation'>
 					Harry's Hot Tubs
 				</p>
@@ -58,7 +58,7 @@ const Home = () => {
 						T&amp;Cs
 					</a>
 				</p>
-			</div>
+			</aside>
 		</div>
 	)
 }

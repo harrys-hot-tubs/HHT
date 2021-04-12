@@ -47,59 +47,59 @@ const Hire = () => {
 	}, [calendar.startDate, calendar.endDate, postcode.value])
 
 	return (
-		<div className='hire-container'>
+		<div className='outer hire'>
 			<Head>
 				<title>Hire a Hot Tub</title>
 			</Head>
 			<img src='hire.jpg' className='hire-background' />
-			<div className='primary-container'>
+			<main className='primary-container'>
+				<div className='description'>
+					<h1 role='heading'>Hire a hot tub</h1>
+					<p>
+						The process is simple!... Our team will provide everything you need
+						for the setup - we just need access to water and electricity. All
+						you have to do is book yourself in and enjoy!
+					</p>
+					<p>
+						(Outside taps are not essential! We have adaptors to get water from
+						inside taps)
+					</p>
+					<p>
+						For more information view our FAQ{' '}
+						<a href='/docs/FAQs.pdf' target='_blank'>
+							here
+						</a>{' '}
+						or get in touch{' '}
+						<a href='mailto:harry@harryshottubs.com' target='_blank'>
+							here
+						</a>
+						.
+					</p>
+				</div>
+			</main>
+			<aside>
 				<Form onSubmit={onSubmit} className='hire-form'>
-					<div className='description'>
-						<h1 role='heading'>Hire a hot tub</h1>
-						<p>
-							The process is simple!... Our team will provide everything you
-							need for the setup - we just need access to water and electricity.
-							All you have to do is book yourself in and enjoy!
-						</p>
-						<p>
-							(Outside taps are not essential! We have adaptors to get water
-							from inside taps)
-						</p>
-						<p>
-							For more information view our FAQ{' '}
-							<a href='/docs/FAQs.pdf' target='_blank'>
-								here
-							</a>{' '}
-							or get in touch{' '}
-							<a href='mailto:harry@harryshottubs.com' target='_blank'>
-								here
-							</a>
-							.
-						</p>
-					</div>
-					<div className='active-components'>
-						<Calendar {...calendar} />
-						<PostcodeField
-							loading={postcode.loading}
-							postcode={postcode.value}
-							isInvalid={postcode.valid == false}
-							isValid={postcode.valid}
-							onChange={postcode.setValue}
-							invalidReason={postcode.message}
-							onValidate={postcode.validate}
-						/>
-						<SpinnerButton
-							type='submit'
-							status={loading}
-							disabled={!postcode.valid || !calendar.isValid()}
-							className='hire-submit'
-							activeText='Loading... '
-						>
-							Submit
-						</SpinnerButton>
-					</div>
+					<Calendar {...calendar} />
+					<PostcodeField
+						loading={postcode.loading}
+						postcode={postcode.value}
+						isInvalid={postcode.valid == false}
+						isValid={postcode.valid}
+						onChange={postcode.setValue}
+						invalidReason={postcode.message}
+						onValidate={postcode.validate}
+					/>
+					<SpinnerButton
+						type='submit'
+						status={loading}
+						disabled={!postcode.valid || !calendar.isValid()}
+						className='hire-submit'
+						activeText='Loading... '
+					>
+						Submit
+					</SpinnerButton>
 				</Form>
-			</div>
+			</aside>
 			<HotTubs
 				tubs={tubs}
 				startDate={calendar.startDate?.toISOString()}

@@ -1,0 +1,55 @@
+.outer.driver {
+	grid-template-columns: 1fr;
+}
+
+.orders {
+	display: grid;
+	width: 100%;
+	grid-template-columns: 1fr;
+	place-items: center;
+}
+
+.order-card {
+	padding: 0.5em;
+	margin: 0.5em;
+	border: 2px solid;
+	border-radius: 10px;
+}
+
+.order-card-divider {
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+.order-address {
+	font-size: 0.9rem;
+}
+
+small > br {
+	display: block;
+	margin-bottom: -0.5em;
+}
+
+.order-card.today {
+	border-color: red;
+}
+
+.order-card.upcoming {
+	border-color: $primary-blue;
+}
+
+@media (min-width: 700px) {
+	.orders {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (min-width: 1000px) {
+	// .outer.driver {
+	// 	grid-template-columns: 1fr 200px;
+	// }
+
+	.orders {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}

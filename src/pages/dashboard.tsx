@@ -24,12 +24,12 @@ const Dashboard = ({ account }: PageProps) => {
 	}
 
 	return (
-		<div style={{ backgroundColor: 'white' }}>
+		<React.Fragment>
 			<Head>
 				<title>Dashboard</title>
 			</Head>
 			{pickDashboard()}
-		</div>
+		</React.Fragment>
 	)
 }
 
