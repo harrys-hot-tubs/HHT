@@ -4,9 +4,18 @@ import moment from 'moment'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { FocusedInputShape } from 'react-dates'
 
+/**
+ * The maximum duration of a customer's booking.
+ */
 const MAX_NIGHTS = 7
+/**
+ * The minimum duration of a customer's booking.
+ */
 const MIN_NIGHTS = 2
 
+/**
+ * Stores and validates user inputted booking dates.
+ */
 const useCalendar = (): CalendarInterface => {
 	//TODO refactor this to use syncValidatedInput
 	moment.locale('en-GB')
@@ -77,11 +86,29 @@ const useCalendar = (): CalendarInterface => {
 }
 
 export interface CalendarInterface {
+	/**
+	 * The start of a customer's booking.
+	 */
 	startDate: moment.Moment
+	/**
+	 * The end of a customer's booking.
+	 */
 	endDate: moment.Moment
+	/**
+	 * Either null, start or end date depending on which is in focus.
+	 */
 	focused: FocusedInputShape
+	/**
+	 * Function to update the stored focus of the calendar.
+	 */
 	updateFocus: Dispatch<SetStateAction<FocusedInputShape>>
+	/**
+	 * True if a given day is to be marked as unavailable.
+	 */
 	isDayBlocked: (day: moment.Moment) => boolean
+	/**
+	 * Function to update the stored dates.
+	 */
 	updateDates: ({
 		startDate,
 		endDate,
@@ -89,14 +116,34 @@ export interface CalendarInterface {
 		startDate: moment.Moment
 		endDate: moment.Moment
 	}) => void
+	/**
+	 * Function to reset the stored dates.
+	 */
 	resetDates: () => void
+	/**
+	 * True if a given booking exceeds the maximum allowed duration.
+	 */
 	isTooLong: (startDate: moment.Moment, endDate: moment.Moment) => boolean
+	/**
+	 * True if the booking meets all required conditions.
+	 */
 	isValid: () => boolean
 }
 
+/**
+ * Determines whether a booking between two dates exceeds the maximum allowed duration.
+ * @param startDate The start date of the customer's booking.
+ * @param endDate The end date of the customer's booking.
+ * @returns True if the duration of the booking exceeds the maximum allowed duration.
+ */
 const isTooLong = (startDate: moment.Moment, endDate: moment.Moment): boolean =>
 	endDate?.diff(startDate, 'days') > MAX_NIGHTS
 
+/**
+ * Determines whether or not a given moment object is a weekend date.
+ * @param date The moment object to be checked for its weekend status.
+ * @returns True if the date is a weekend, false otherwise.
+ */
 const isWeekend = (date: moment.Moment): boolean =>
 	date.day() == 0 || date.day() == 6
 

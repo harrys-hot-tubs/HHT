@@ -5,9 +5,15 @@ import { DateRangePicker } from 'react-dates'
 import 'react-dates/initialize'
 
 interface ComponentProps extends CalendarInterface {
+	/**
+	 * Whether or not the current customer is a student.
+	 */
 	isStudent?: boolean
 }
 
+/**
+ * Calendar component that allows the user to select a date range to book their hot tub between.
+ */
 const Calendar = ({
 	isStudent = true,
 	isTooLong,

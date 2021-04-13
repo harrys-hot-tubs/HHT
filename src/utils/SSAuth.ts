@@ -28,6 +28,12 @@ export const getToken = ({ cookies }: SSRRequest) => {
 	return cookies.token
 }
 
+/**
+ * Determines whether or not a user is authenticated and permitted to view a given page.
+ * @param ctx The context of the page request.
+ * @param permittedRoles The roles allowed to access the page.
+ * @returns The user's account information if they are permitted to view this page, else throws an error.
+ */
 const handleSSAuth = async (
 	ctx: GetServerSidePropsContext<ParsedUrlQuery>,
 	permittedRoles: Role[]
@@ -75,10 +81,19 @@ export const fetchAccount = async (
 	}
 }
 
+/**
+ * Transforms the stored form of roles in the database into a JS object.
+ */
 const convertRoles = (account_roles: string): Role[] => {
 	return account_roles.slice(1, -1).split(',') as Role[]
 }
 
+/**
+ * Determines whether a user is permitted to view a page.
+ * @param permittedRoles The list of roles permitted to view the page.
+ * @param accountRoles The roles associated with the user attempting to view the page.
+ * @returns True if the user is permitted to view the page, else false.
+ */
 export const accountIsPermitted = (
 	permittedRoles: Role[],
 	accountRoles: Role[]

@@ -10,6 +10,9 @@ interface PageProps {
 	account: Omit<AccountDB, 'password_hash'>
 }
 
+/**
+ * Dashboard page that displays a different view to each role that is logged in.
+ */
 const Dashboard = ({ account }: PageProps) => {
 	const pickDashboard = () => {
 		const primaryRole = extractPrimaryRole(account.account_roles)

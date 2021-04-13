@@ -4,6 +4,9 @@ import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import React from 'react'
 
+/**
+ * Page used by all users to allow them to access secured pages.
+ */
 const Login = () => {
 	return (
 		<div className='login-container'>

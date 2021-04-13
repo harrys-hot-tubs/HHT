@@ -4,6 +4,9 @@ import { PostcodeModalProps } from '@components/postcode_modals/PostcodeModal'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
 
+/**
+ * Modal displayed to the customer when their postcode is out of range of all current distribution venues.
+ */
 const RangeModal = ({ display, hide }: PostcodeModalProps) => (
 	<Modal show={display} onHide={hide} centered>
 		<Modal.Header closeButton>

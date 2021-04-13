@@ -41,6 +41,11 @@ const post = async (
 	}
 }
 
+/**
+ * Transforms the constituent parts of an account into the final form to be stored in the database.
+ * @param account The components of an account to be created.
+ * @returns An account object to be stored in the database.
+ */
 export const prepareAccount = async (
 	account: NewAccount
 ): Promise<Omit<AccountDB, 'account_id'>> => {

@@ -3,6 +3,9 @@ import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 
+/**
+ * Landing page.
+ */
 const Home = () => {
 	const router = useRouter()
 

@@ -11,6 +11,9 @@ interface PageProps {
 	tubID: number
 }
 
+/**
+ * Page allowing customers to complete their purchase.
+ */
 const Checkout = ({ tubID }: PageProps) => {
 	const router = useRouter()
 

@@ -2,6 +2,9 @@ import { PopulatedOrder } from '@typings/db/Order'
 import { extractBookingStart, isToday } from '@utils/date'
 import React from 'react'
 
+/**
+ * Displays all information relevant to a particular order.
+ */
 const OrderRow = ({
 	id,
 	booking_id,

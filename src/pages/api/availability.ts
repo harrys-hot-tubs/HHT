@@ -36,6 +36,11 @@ const post = async (
 	}
 }
 
+/**
+ * Determines which hot tubs are available based on the conditions provided.
+ * @param db Knex instance.
+ * @returns An array of hot tubs that are available subject to the provided conditions.
+ */
 const findAvailableTubs = async (
 	{ closest, startDate, endDate }: AvailabilityRequest,
 	db: Knex
