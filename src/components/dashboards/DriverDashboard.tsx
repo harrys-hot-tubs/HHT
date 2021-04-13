@@ -1,23 +1,20 @@
 import OrderCard from '@components/OrderCard'
-import useLocation from '@hooks/useLocation'
+import useDriverLocation from '@hooks/useDriverLocation'
 import useOrders from '@hooks/useOrders'
 import { PopulatedOrder } from '@typings/db/Order'
 import { extractBookingStart } from '@utils/date'
 import React from 'react'
 
-interface ComponentProps {
-	/**
-	 * ID of the account belonging to the driver this dashboard is being displayed for.
-	 */
-	id: number
-}
-
-const DriverDashboard = ({ id }: ComponentProps) => {
-	const { location, isLoading: locationIsLoading, isError } = useLocation()
+const DriverDashboard = () => {
+	const {
+		location,
+		isLoading: locationIsLoading,
+		isError,
+	} = useDriverLocation()
 	const { orders, isLoading: ordersAreLoading } = useOrders()
 	const relevantOrders = findRelevant(orders, location?.location_id)
 
-	if (locationIsLoading) return <h1>Loading...</h1>
+	if (locationIsLoading || ordersAreLoading) return <h1>Loading...</h1>
 
 	return (
 		<div className='outer driver'>

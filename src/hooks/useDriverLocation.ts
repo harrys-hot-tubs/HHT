@@ -4,7 +4,7 @@ import useSWR from 'swr'
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data)
 
-const useLocation = (): {
+const useDriverLocation = (): {
 	location: Pick<LocationDB, 'name' | 'location_id'>
 	isLoading: boolean
 	isError: any
@@ -21,4 +21,4 @@ const useLocation = (): {
 	}
 }
 
-export default useLocation
+export default useDriverLocation

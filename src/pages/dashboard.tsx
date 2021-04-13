@@ -17,7 +17,7 @@ const Dashboard = ({ account }: PageProps) => {
 			case 'manager':
 				return <ManagerDashboard />
 			case 'driver':
-				return <DriverDashboard id={account.account_id} />
+				return <DriverDashboard />
 			default:
 				return <h1>No dashboard for you yet.</h1>
 		}

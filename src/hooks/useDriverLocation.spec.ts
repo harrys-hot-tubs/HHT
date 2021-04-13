@@ -1,5 +1,5 @@
 import { locations } from '@fixtures/locationFixtures'
-import useLocation from '@hooks/useLocation'
+import useDriverLocation from '@hooks/useDriverLocation'
 import SWRWrapper from '@test/helpers/SWRWrapper'
 import { renderHook } from '@testing-library/react-hooks'
 import axios from 'axios'
@@ -21,7 +21,7 @@ afterEach(() => {
 
 it('indicates loading before receiving data', async () => {
 	mock.onGet('/api/accounts').replyOnce(200, successValue)
-	const { result, waitForNextUpdate } = renderHook(useLocation, {
+	const { result, waitForNextUpdate } = renderHook(useDriverLocation, {
 		wrapper: SWRWrapper,
 	})
 
@@ -31,7 +31,7 @@ it('indicates loading before receiving data', async () => {
 
 it('stops indicating loading after receiving data', async () => {
 	mock.onGet('/api/accounts').replyOnce(200, {})
-	const { result, waitForNextUpdate } = renderHook(useLocation, {
+	const { result, waitForNextUpdate } = renderHook(useDriverLocation, {
 		wrapper: SWRWrapper,
 	})
 
@@ -42,7 +42,7 @@ it('stops indicating loading after receiving data', async () => {
 it('responds with an error when request fails', async () => {
 	const error = { message: 'failed' }
 	mock.onGet('/api/accounts').replyOnce(400, error)
-	const { result, waitForNextUpdate } = renderHook(useLocation, {
+	const { result, waitForNextUpdate } = renderHook(useDriverLocation, {
 		wrapper: SWRWrapper,
 	})
 
@@ -52,7 +52,7 @@ it('responds with an error when request fails', async () => {
 
 it('responds with data when request succeeds', async () => {
 	mock.onGet('/api/accounts').replyOnce(200, successValue)
-	const { result, waitForNextUpdate } = renderHook(useLocation, {
+	const { result, waitForNextUpdate } = renderHook(useDriverLocation, {
 		wrapper: SWRWrapper,
 	})
 

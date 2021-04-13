@@ -1,36 +1,32 @@
+import { TokenAccount } from '@typings/api/Auth'
 import jwt from 'jsonwebtoken'
-import account from '../fixtures/account.json'
+import accounts from '../fixtures/accounts.json'
 import {
-	addAccountToDatabase,
+	addAccountsToDatabase,
 	arbitraryInsert,
 	cleanupConnection,
 } from '../helpers/databaseHelper'
 
 module.exports = (on, config) => {
 	on('task', {
-		async DBInsert({ tableName, data }) {
+		async DBInsert({ tableName, data }: { tableName: string; data: any[] }) {
 			return await arbitraryInsert(tableName, data)
 		},
-		async addAccount() {
-			return await addAccountToDatabase()
+		async addAccounts() {
+			return await addAccountsToDatabase()
 		},
 		async cleanup() {
 			return await cleanupConnection()
 		},
-		generateToken() {
+		generateToken({ index }: { index: number }) {
 			return new Promise((resolve, reject) => {
 				try {
-					const token = jwt.sign(
-						{
-							first_name: account.first_name,
-							last_name: account.last_name,
-							account_roles: account.account_roles,
-						},
-						process.env.TOKEN_SECRET,
-						{
-							expiresIn: '1h',
-						}
-					)
+					const tokenised: TokenAccount = {
+						account_id: accounts[index].account_id,
+					}
+					const token = jwt.sign(tokenised, process.env.TOKEN_SECRET, {
+						expiresIn: '1h',
+					})
 					resolve(token)
 				} catch (error) {
 					reject(error)
