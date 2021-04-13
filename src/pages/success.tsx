@@ -18,7 +18,10 @@ const Success = ({ totalPrice }: PageProps) => {
 			</Head>
 			<h1>Thank you!</h1>
 			<h3>Your order for {totalPrice} has been accepted and confirmed.</h3>
-			<p>We will contact you soon to with an accurate delivery time.</p>
+			<p>
+				A member of the team will be in touch with you within 48 hours of the
+				delivery date to give you an accurate delivery time!
+			</p>
 			<div className='exit-card'>
 				<h3>Check out our social media:</h3>
 				<div className='social-media'>
