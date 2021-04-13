@@ -2,7 +2,7 @@ import accounts from '../fixtures/accounts.json'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {
-	cy.task('addAccount').then(() => {})
+	cy.task('addAccounts')
 })
 
 beforeEach(() => {
