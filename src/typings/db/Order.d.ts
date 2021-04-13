@@ -1,4 +1,5 @@
 import { BookingDB } from '@typings/db/Booking'
+import { TubDB } from '@typings/db/Tub'
 
 export interface OrderDB {
 	id: string
@@ -19,4 +20,4 @@ export interface OrderDB {
 	created_at: string
 }
 
-export type PopulatedOrder = OrderDB & BookingDB
+export type PopulatedOrder = OrderDB & BookingDB & TubDB

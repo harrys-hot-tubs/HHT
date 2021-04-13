@@ -1,17 +1,23 @@
 import {
 	completeAccount,
+	driverAccount,
+	managerAccount,
 	missingPassword,
 	missingRoles,
 } from '@fixtures/accountsFixtures'
+import { inDateAccountToken } from '@fixtures/authFixtures'
+import { locations } from '@fixtures/locationFixtures'
+import { storedStaff } from '@fixtures/staffFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler, { prepareAccount } from '@pages/api/accounts'
 import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
+import { LocationDB } from '@typings/db/Location'
 import { NextApiResponse } from 'next'
 import { createMocks } from 'node-mocks-http'
 
 describe('post', () => {
-	beforeEach(async () => {
+	afterEach(async () => {
 		await connection<AccountDB[]>('accounts').del()
 	})
 
@@ -87,6 +93,72 @@ describe('post', () => {
 
 		expect(res._getStatusCode()).toBe(400)
 		expect(JSON.parse(res._getData())).toHaveProperty('type', 'Error')
+	})
+})
+
+describe('get', () => {
+	const altDriver: AccountDB = {
+		...driverAccount,
+		account_id: 3,
+		email_address: 'dan@gmail.com',
+	}
+
+	beforeAll(async () => {
+		await connection<AccountDB[]>('accounts').insert([
+			driverAccount,
+			managerAccount,
+			altDriver,
+		])
+		await connection<LocationDB[]>('locations').insert(locations)
+		await connection<StaffDB[]>('staff').insert([storedStaff])
+	})
+
+	it('returns an error for an unauthorized account', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'GET',
+			cookies: {
+				token: inDateAccountToken(managerAccount),
+			},
+		})
+
+		await handler(req, res)
+
+		expect(res._getStatusCode()).toBe(401)
+		expect(res._getData()).toEqual('Not authorised.')
+	})
+
+	it('returns an error for drivers without a staff entry', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'GET',
+			cookies: {
+				token: inDateAccountToken(altDriver),
+			},
+		})
+
+		await handler(req, res)
+
+		expect(res._getStatusCode()).toBe(500)
+		expect(res._getData()).toEqual(
+			`Missing staff entry for account ${altDriver.account_id}`
+		)
+	})
+
+	it('responds with a location for a driver with a staff entry', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'GET',
+			cookies: {
+				token: inDateAccountToken(driverAccount),
+			},
+		})
+
+		await handler(req, res)
+
+		expect(res._getStatusCode()).toBe(200)
+		expect(JSON.parse(res._getData())).toHaveProperty('name', locations[0].name)
+		expect(JSON.parse(res._getData())).toHaveProperty(
+			'location_id',
+			locations[0].location_id
+		)
 	})
 })
 

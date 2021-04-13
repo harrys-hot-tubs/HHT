@@ -1,8 +1,8 @@
-import account from '../fixtures/account.json'
+import accounts from '../fixtures/accounts.json'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {
-	cy.task('addAccount').then(() => {})
+	cy.task('addAccounts')
 })
 
 beforeEach(() => {
@@ -45,7 +45,7 @@ describe('form', () => {
 	})
 
 	it('allows the user to login', () => {
-		cy.get('[aria-label=email]').type(account.email_address)
+		cy.get('[aria-label=email]').type(accounts[0].email_address)
 		cy.get('[aria-label=password]').type('password')
 
 		cy.get('[data-testid=submit]').click()

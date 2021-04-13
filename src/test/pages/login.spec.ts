@@ -1,5 +1,8 @@
+import { driverAccount } from '@fixtures/accountsFixtures'
 import { inDateAccountToken } from '@fixtures/authFixtures'
+import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import { getServerSideProps } from '@pages/login'
+import { AccountDB } from '@typings/db/Account'
 import { SSRRequest } from '@utils/SSAuth'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
@@ -10,13 +13,21 @@ interface IncompleteContext
 	req: Pick<SSRRequest, 'cookies'>
 }
 
+beforeAll(async () => {
+	await connection<AccountDB>('accounts').insert([driverAccount])
+})
+
 it('redirects to the profile page if a JWT is provided', async () => {
 	const incompleteContext: IncompleteContext = {
-		req: { cookies: { token: inDateAccountToken } },
+		req: { cookies: { token: inDateAccountToken(driverAccount) } },
 	}
 
 	const response = await getServerSideProps(
 		incompleteContext as ExpectedContent
 	)
 	expect(response).toHaveProperty('redirect')
+})
+
+afterAll(async () => {
+	await cleanupDatabase(connection)
 })

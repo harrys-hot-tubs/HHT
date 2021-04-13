@@ -2,9 +2,8 @@ import {
 	expiredObject,
 	inDateAccountToken,
 	nonExpiredObject,
-	tokenAccount,
 } from '@fixtures/authFixtures'
-import { Role } from '@typings/db/Account'
+import { AccountDB, Role } from '@typings/db/Account'
 import handleSSAuth, {
 	accountIsPermitted,
 	AuthResponse,
@@ -13,6 +12,8 @@ import handleSSAuth, {
 } from '@utils/SSAuth'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
+import { driverAccount } from '../test/fixtures/accountsFixtures'
+import { cleanupDatabase, connection } from '../test/helpers/DBHelper'
 
 describe('getToken', () => {
 	it('retrieves token if it exists', () => {
@@ -39,87 +40,107 @@ describe('handleSSAuth', () => {
 		req: Pick<SSRRequest, 'cookies'>
 	}
 
-	it('identifies missing tokens', () => {
+	beforeAll(async () => {
+		await connection<AccountDB>('accounts').insert([driverAccount])
+	})
+
+	it('identifies missing tokens', async () => {
 		const context: IncompleteContext = {
 			req: { cookies: { notAToken: 'token' } },
 		}
 
-		expect(handleSSAuth(context as ExpectedContent, [])).toEqual<AuthResponse>({
-			isValid: false,
+		await expect(
+			handleSSAuth(context as ExpectedContent, [])
+		).resolves.toEqual<AuthResponse>({
+			authorised: false,
 			error: 'missing',
 		})
 	})
 
-	it('identifies expired tokens', () => {
+	it('identifies expired tokens', async () => {
 		const context: IncompleteContext = {
 			req: { cookies: { token: expiredObject } },
 		}
 
-		expect(handleSSAuth(context as ExpectedContent, [])).toEqual<AuthResponse>({
-			isValid: false,
+		await expect(
+			handleSSAuth(context as ExpectedContent, [])
+		).resolves.toEqual<AuthResponse>({
+			authorised: false,
 			error: 'expired',
 		})
 	})
 
-	it('identifies malformed tokens', () => {
+	it('identifies malformed tokens', async () => {
 		const context: IncompleteContext = {
 			req: { cookies: { token: nonExpiredObject.substring(10) } },
 		}
 
-		expect(handleSSAuth(context as ExpectedContent, [])).toEqual<AuthResponse>({
-			isValid: false,
+		await expect(
+			handleSSAuth(context as ExpectedContent, [])
+		).resolves.toEqual<AuthResponse>({
+			authorised: false,
 			error: 'malformed',
 		})
 	})
 
-	it('rejects tokens with an incorrect payload', () => {
+	it('rejects tokens with an incorrect payload', async () => {
 		const context: IncompleteContext = {
 			req: { cookies: { token: nonExpiredObject } },
 		}
 
-		expect(handleSSAuth(context as ExpectedContent, [])).toEqual<AuthResponse>({
-			isValid: false,
+		await expect(
+			handleSSAuth(context as ExpectedContent, [])
+		).resolves.toEqual<AuthResponse>({
+			authorised: false,
 			error: 'invalid',
 		})
 	})
 
-	it('rejects payloads with incompatible roles', () => {
+	it('rejects payloads with incompatible roles', async () => {
 		const context: IncompleteContext = {
-			req: { cookies: { token: inDateAccountToken } },
+			req: { cookies: { token: inDateAccountToken(driverAccount) } },
 		}
 
-		expect(
+		await expect(
 			handleSSAuth(context as ExpectedContent, ['customer'])
-		).toEqual<AuthResponse>({
-			isValid: false,
+		).resolves.toEqual<AuthResponse>({
+			authorised: false,
 			error: 'forbidden',
 		})
 	})
 
-	it('accepts valid tokens', () => {
+	it('accepts valid tokens', async () => {
 		const context: IncompleteContext = {
-			req: { cookies: { token: inDateAccountToken } },
+			req: { cookies: { token: inDateAccountToken(driverAccount) } },
 		}
 
-		expect(
-			handleSSAuth(context as ExpectedContent, ['admin'])
-		).toMatchObject<AuthResponse>({
-			isValid: true,
-			payload: tokenAccount,
+		const expectedResponse = driverAccount
+		delete expectedResponse.password_hash
+		await expect(
+			handleSSAuth(context as ExpectedContent, driverAccount.account_roles)
+		).resolves.toMatchObject<AuthResponse>({
+			authorised: true,
+			payload: expectedResponse,
 		})
 	})
 
-	it('allows login for all roles with "*" set for permittedRoles', () => {
+	it('allows login for all roles with "*" set for permittedRoles', async () => {
 		const context: IncompleteContext = {
-			req: { cookies: { token: inDateAccountToken } },
+			req: { cookies: { token: inDateAccountToken(driverAccount) } },
 		}
 
-		expect(
+		const expectedResponse = driverAccount
+		delete expectedResponse.password_hash
+		await expect(
 			handleSSAuth(context as ExpectedContent, ['*'])
-		).toMatchObject<AuthResponse>({
-			isValid: true,
-			payload: tokenAccount,
+		).resolves.toMatchObject<AuthResponse>({
+			authorised: true,
+			payload: expectedResponse,
 		})
+	})
+
+	afterAll(async () => {
+		await cleanupDatabase(connection)
 	})
 })
 

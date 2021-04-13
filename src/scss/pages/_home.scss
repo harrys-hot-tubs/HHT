@@ -1,19 +1,17 @@
 @import '../variables.scss';
 @import url('https://fonts.googleapis.com/css2?family=PT+Serif&display=swap');
 
-.main {
-	@extend .outer;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-evenly;
-	flex: 1;
+#__next:has(.outer.home) {
+	height: 100vh !important;
+}
+
+.outer.home {
+	grid-template-columns: 1fr;
 }
 
 .lead-container {
-	flex: 1;
-	position: relative;
 	height: 100%;
-	min-width: 50%;
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -109,9 +107,8 @@
 }
 
 @media screen and (orientation: landscape) {
-	.main {
-		flex-direction: row;
-		align-items: center;
+	.outer.home {
+		grid-template-columns: 1fr 1fr;
 	}
 
 	.lead-container {

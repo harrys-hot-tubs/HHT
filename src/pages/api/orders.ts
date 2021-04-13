@@ -35,6 +35,7 @@ const get = async (
 		const orders = await db<PopulatedOrder>('orders')
 			.select()
 			.join('bookings', 'orders.booking_id', '=', 'bookings.booking_id')
+			.join('tubs', 'tubs.tub_id', '=', 'bookings.tub_id')
 		return res.status(200).json(orders)
 	} catch (e) {
 		return res.status(400).json(e)

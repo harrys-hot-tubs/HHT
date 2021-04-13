@@ -36,6 +36,7 @@ describe('get', () => {
 			{
 				...bookings[0],
 				...storedOrder,
+				...mixedSizes[0],
 				payment_intent_id: null,
 			},
 		])

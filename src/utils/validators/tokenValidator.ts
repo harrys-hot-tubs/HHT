@@ -18,12 +18,7 @@ const validateToken = (token: string): [boolean, TokenError] => {
 }
 
 export const isTokenAccount = (value: any): value is TokenAccount => {
-	return (
-		typeof value.first_name === 'string' &&
-		typeof value.last_name === 'string' &&
-		Array.isArray(value.account_roles) &&
-		value.account_roles.every((element: any) => typeof element === 'string')
-	)
+	return typeof value.account_id === 'number'
 }
 
 export default validateToken
