@@ -1,4 +1,4 @@
-import { storedAccount } from '@fixtures/accountsFixtures'
+import { driverAccount } from '@fixtures/accountsFixtures'
 import { inDateAccountToken } from '@fixtures/authFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import { getServerSideProps } from '@pages/login'
@@ -14,12 +14,12 @@ interface IncompleteContext
 }
 
 beforeAll(async () => {
-	await connection<AccountDB>('accounts').insert([storedAccount])
+	await connection<AccountDB>('accounts').insert([driverAccount])
 })
 
 it('redirects to the profile page if a JWT is provided', async () => {
 	const incompleteContext: IncompleteContext = {
-		req: { cookies: { token: inDateAccountToken } },
+		req: { cookies: { token: inDateAccountToken(driverAccount) } },
 	}
 
 	const response = await getServerSideProps(

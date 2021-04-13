@@ -75,7 +75,7 @@ const get = async (req: ConnectedRequest, res: NextApiResponse) => {
 
 			return res.status(200).json(location)
 		} else {
-			return res.status(401).json('Not authorised.')
+			return res.status(401).send('Not authorised.')
 		}
 	} catch (error) {
 		console.error(error)

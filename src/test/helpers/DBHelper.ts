@@ -22,6 +22,7 @@ export const resetTables = async (db: Knex) => {
 	await db<OrderDB>('orders').del()
 	await db<BookingDB>('bookings').del()
 	await db<TubDB>('tubs').del()
+	await db<StaffDB>('staff').del()
 	await db<LocationDB>('locations').del()
 	await db<AccountDB>('accounts').del()
 }

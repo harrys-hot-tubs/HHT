@@ -12,7 +12,7 @@ import handleSSAuth, {
 } from '@utils/SSAuth'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { storedAccount } from '../test/fixtures/accountsFixtures'
+import { driverAccount } from '../test/fixtures/accountsFixtures'
 import { cleanupDatabase, connection } from '../test/helpers/DBHelper'
 
 describe('getToken', () => {
@@ -41,7 +41,7 @@ describe('handleSSAuth', () => {
 	}
 
 	beforeAll(async () => {
-		await connection<AccountDB>('accounts').insert([storedAccount])
+		await connection<AccountDB>('accounts').insert([driverAccount])
 	})
 
 	it('identifies missing tokens', async () => {
@@ -98,7 +98,7 @@ describe('handleSSAuth', () => {
 
 	it('rejects payloads with incompatible roles', async () => {
 		const context: IncompleteContext = {
-			req: { cookies: { token: inDateAccountToken } },
+			req: { cookies: { token: inDateAccountToken(driverAccount) } },
 		}
 
 		await expect(
@@ -111,13 +111,13 @@ describe('handleSSAuth', () => {
 
 	it('accepts valid tokens', async () => {
 		const context: IncompleteContext = {
-			req: { cookies: { token: inDateAccountToken } },
+			req: { cookies: { token: inDateAccountToken(driverAccount) } },
 		}
 
-		const expectedResponse = storedAccount
+		const expectedResponse = driverAccount
 		delete expectedResponse.password_hash
 		await expect(
-			handleSSAuth(context as ExpectedContent, storedAccount.account_roles)
+			handleSSAuth(context as ExpectedContent, driverAccount.account_roles)
 		).resolves.toMatchObject<AuthResponse>({
 			authorised: true,
 			payload: expectedResponse,
@@ -126,10 +126,10 @@ describe('handleSSAuth', () => {
 
 	it('allows login for all roles with "*" set for permittedRoles', async () => {
 		const context: IncompleteContext = {
-			req: { cookies: { token: inDateAccountToken } },
+			req: { cookies: { token: inDateAccountToken(driverAccount) } },
 		}
 
-		const expectedResponse = storedAccount
+		const expectedResponse = driverAccount
 		delete expectedResponse.password_hash
 		await expect(
 			handleSSAuth(context as ExpectedContent, ['*'])

@@ -26,12 +26,22 @@ export const completeAccount: NewAccount = {
 	accountRoles: ['driver'],
 }
 
-export const storedAccount: AccountDB = {
+export const driverAccount: AccountDB = {
 	account_id: 1,
 	first_name: 'John',
 	last_name: 'Doe',
 	account_roles: ['driver'],
 	email_address: 'john@doe.com',
+	password_hash: 'TESTHASH',
+	telephone_number: '12345',
+}
+
+export const managerAccount: AccountDB = {
+	account_id: 2,
+	first_name: 'John',
+	last_name: 'Smith',
+	account_roles: ['manager'],
+	email_address: 'john@smith.com',
 	password_hash: 'TESTHASH',
 	telephone_number: '12345',
 }

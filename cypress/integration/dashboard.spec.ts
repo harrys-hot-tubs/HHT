@@ -53,6 +53,8 @@ describe('manager dashboard', () => {
 	})
 })
 
+// TODO add tests for driver dashboard.
+
 after(() => {
 	cy.task('cleanup').then(() => {})
 })
