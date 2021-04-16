@@ -1,9 +1,8 @@
-import OrderCard from '@components/OrderCard'
 import useDriverLocation from '@hooks/useDriverLocation'
 import useOrders from '@hooks/useOrders'
 import { PopulatedOrder } from '@typings/db/Order'
-import { extractBookingStart } from '@utils/date'
 import React from 'react'
+import DriverLists from '../DriverLists'
 
 const DriverDashboard = () => {
 	const {
@@ -12,18 +11,16 @@ const DriverDashboard = () => {
 		isError,
 	} = useDriverLocation()
 	const { orders, isLoading: ordersAreLoading } = useOrders()
-	const relevantOrders = findRelevant(orders, location?.location_id)
+	const relevant = findRelevant(orders, location?.location_id)
 
 	if (locationIsLoading || ordersAreLoading) return <h1>Loading...</h1>
 
 	return (
 		<div className='outer driver'>
 			<main>
-				<h1>Upcoming Deliveries in {location.name}</h1>
-				<div className='orders'>
-					{relevantOrders.map((order) => (
-						<OrderCard key={order.id} {...{ ...order }} />
-					))}
+				<div>
+					<h1>Orders in {location.name}</h1>
+					<DriverLists orders={relevant} />
 				</div>
 			</main>
 		</div>
@@ -33,17 +30,7 @@ const DriverDashboard = () => {
 const findRelevant = (orders: PopulatedOrder[], locationID: number) => {
 	if (!orders || !locationID) return []
 
-	const today = new Date()
-	return orders
-		.filter((order) => order.location_id === locationID)
-		.filter((order) => {
-			return extractBookingStart(order.booking_duration) >= today
-		})
-		.sort(
-			(a, b) =>
-				extractBookingStart(a.booking_duration).getTime() -
-				extractBookingStart(b.booking_duration).getTime()
-		)
+	return orders.filter(({ location_id }) => location_id === locationID)
 }
 
 export default DriverDashboard

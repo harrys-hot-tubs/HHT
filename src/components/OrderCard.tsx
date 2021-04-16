@@ -1,6 +1,9 @@
 import { PopulatedOrder } from '@typings/db/Order'
 import { extractBookingEnd, extractBookingStart, isToday } from '@utils/date'
-import React from 'react'
+import React, { useState } from 'react'
+import { Draggable } from 'react-beautiful-dnd'
+
+export type OrderState = 'pickup' | 'dropoff'
 
 const OrderCard = ({
 	id,
@@ -13,27 +16,53 @@ const OrderCard = ({
 	postcode,
 	special_requests,
 	booking_duration,
-}: PopulatedOrder) => {
+	state,
+	index,
+}: PopulatedOrder & {
+	state?: OrderState
+	index: number
+}) => {
+	const [showDetails, setShowDetails] = useState(false)
 	const orderStart = extractBookingStart(booking_duration)
 
 	return (
-		<div
-			className={`order-card ${isToday(orderStart) ? 'today' : 'upcoming'}`}
-			data-testid={id}
-			aria-label={`information relating to order ${id}`}
-		>
-			<h5 data-testid='full_name'>{first_name + ' ' + last_name}</h5>
-			<hr className='order-card-divider' />
-			{address({ address_line_1, address_line_2, address_line_3, postcode })}
-			{/* <td data-testid='telephone_number'>{telephone_number}</td>
-			<td>{special_requests}</td> */}
-			<hr className='order-card-divider' />
-			<small className='text-muted'>
-				Delivery {extractBookingStart(booking_duration).toLocaleDateString()}{' '}
-				<br />
-				Pickup {extractBookingEnd(booking_duration).toLocaleDateString()}
-			</small>
-		</div>
+		<Draggable draggableId={id} index={index}>
+			{(provided) => (
+				<div
+					className={`order-card ${isToday(orderStart) ? 'today' : 'upcoming'}`}
+					data-testid={id}
+					aria-label={`information relating to order ${id}`}
+					ref={provided.innerRef}
+					{...provided.draggableProps}
+					{...provided.dragHandleProps}
+					onClick={() => {
+						setShowDetails(!showDetails)
+					}}
+				>
+					<h5
+						data-testid='full_name'
+						style={{ marginBottom: !showDetails ? 0 : null }}
+					>
+						{first_name + ' ' + last_name}
+					</h5>
+					{showDetails ? (
+						<>
+							<hr className='order-card-divider' />
+							{address({
+								address_line_1,
+								address_line_2,
+								address_line_3,
+								postcode,
+							})}
+							<hr className='order-card-divider' />
+							<small className='text-muted'>
+								{dates({ booking_duration, state })}
+							</small>
+						</>
+					) : null}
+				</div>
+			)}
+		</Draggable>
 	)
 }
 
@@ -42,12 +71,10 @@ const address = ({
 	address_line_2,
 	address_line_3,
 	postcode,
-}: {
-	address_line_1: string
-	address_line_2: string
-	address_line_3: string
-	postcode: string
-}) => {
+}: Pick<
+	PopulatedOrder,
+	'address_line_1' | 'address_line_2' | 'address_line_3' | 'postcode'
+>) => {
 	return (
 		<div className='order-address'>
 			{address_line_1 !== null ? (
@@ -71,6 +98,32 @@ const address = ({
 			{postcode}
 		</div>
 	)
+}
+
+const dates = ({
+	booking_duration,
+	state,
+}: Pick<PopulatedOrder, 'booking_duration'> & { state: OrderState }) => {
+	switch (state) {
+		case 'dropoff':
+			return (
+				<>
+					Delivery {extractBookingStart(booking_duration).toLocaleDateString()}
+				</>
+			)
+		case 'pickup':
+			return (
+				<>Pickup {extractBookingEnd(booking_duration).toLocaleDateString()}</>
+			)
+		default:
+			return (
+				<>
+					Delivery {extractBookingStart(booking_duration).toLocaleDateString()}
+					<br />
+					Pickup {extractBookingEnd(booking_duration).toLocaleDateString()}
+				</>
+			)
+	}
 }
 
 export default OrderCard
