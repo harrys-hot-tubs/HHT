@@ -30,7 +30,7 @@ const OrderList = ({
 	}
 
 	return (
-		<div className={className}>
+		<div className={className} data-testid={droppableID}>
 			{children}
 			<Droppable droppableId={droppableID}>
 				{(provided) => (

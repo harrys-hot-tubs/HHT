@@ -2,7 +2,7 @@ import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
 import { mixedSizes } from '@fixtures/tubsFixtures'
-import { extractBookingEnd, extractBookingStart } from '@utils/date'
+import { extractBookingStart } from '@utils/date'
 import accounts from '../fixtures/accounts.json'
 import { setStorage } from '../helpers/localStorageHelper'
 
@@ -85,10 +85,7 @@ describe("driver's dashboard", () => {
 	})
 
 	it("displays a title indicating the driver's region", () => {
-		cy.get('h1').should(
-			'have.text',
-			`Upcoming Deliveries in ${locations[0].name}`
-		)
+		cy.get('h1').should('have.text', `Orders in ${locations[0].name}`)
 	})
 
 	it('display a card for each upcoming order', () => {
@@ -96,6 +93,7 @@ describe("driver's dashboard", () => {
 		cy.get('@card')
 			.find('h5')
 			.should('have.text', storedOrder.first_name + ' ' + storedOrder.last_name)
+		cy.get('@card').click()
 		cy.get('@card')
 			.find('.order-address')
 			.should('contain.text', storedOrder.address_line_1)
@@ -106,12 +104,18 @@ describe("driver's dashboard", () => {
 			.find('small')
 			.should(
 				'contain.text',
-				extractBookingStart(bookings[0].booking_duration).toLocaleDateString()
+				`Delivery ${extractBookingStart(
+					bookings[0].booking_duration
+				).toLocaleDateString()}`
 			)
-			.should(
-				'contain.text',
-				extractBookingEnd(bookings[0].booking_duration).toLocaleDateString()
-			)
+	})
+
+	it('allows cards to be dragged from one column to another', () => {
+		cy.get('.order-card').should('be.visible')
+		cy.drag('.order-card', '[data-testid=delivered]').should(
+			'contain',
+			storedOrder.first_name + ' ' + storedOrder.last_name
+		)
 	})
 })
 

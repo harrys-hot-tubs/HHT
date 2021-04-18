@@ -107,7 +107,7 @@ const DriverLists = ({ orders }: ComponentProps) => {
 					orders={upcoming}
 					className='order-list'
 				>
-					<h2>To Be Delivered</h2>
+					<h2>Upcoming</h2>
 				</OrderList>
 				<OrderList
 					droppableID='delivered'
