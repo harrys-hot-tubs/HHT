@@ -46,7 +46,7 @@
 	font-weight: bold;
 }
 
-span:nth-child(2) {
+.card-body > span:nth-child(2) {
 	margin-top: 20px;
 	color: $primary-pink;
 	font-size: 12pt;

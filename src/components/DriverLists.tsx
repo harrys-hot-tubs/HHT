@@ -2,7 +2,7 @@ import OrderList, { ListID } from '@components/OrderList'
 import { OrderDB, PopulatedOrder } from '@typings/db/Order'
 import { extractBookingEnd, extractBookingStart } from '@utils/date'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	DragDropContext,
 	DraggableLocation,
@@ -16,14 +16,28 @@ type ListState = [
 
 export interface ComponentProps {
 	orders: PopulatedOrder[]
+	maxDate?: Date
+	minDate?: Date
 }
 
-const DriverLists = ({ orders }: ComponentProps) => {
+const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
+	console.log(
+		`orders`,
+		orders.filter(({ fulfilled, returned }) => fulfilled && returned)
+	)
+	useEffect(() => {
+		setUpcoming(
+			sortByDate(upcomingDeliveries(orders, maxDate, minDate), 'start')
+		)
+		setDelivered(sortByDate(upcomingPickups(orders, maxDate, minDate), 'end'))
+		setReturned(sortByDate(completed(orders), 'start'))
+	}, [maxDate, minDate])
+
 	const [upcoming, setUpcoming] = useState<PopulatedOrder[]>(
-		sortByDate(upcomingDeliveries(orders), 'start')
+		sortByDate(upcomingDeliveries(orders, maxDate, minDate), 'start')
 	)
 	const [delivered, setDelivered] = useState<PopulatedOrder[]>(
-		sortByDate(upcomingPickups(orders), 'end')
+		sortByDate(upcomingPickups(orders, maxDate, minDate), 'end')
 	)
 	const [returned, setReturned] = useState<PopulatedOrder[]>(
 		sortByDate(completed(orders), 'start')
@@ -107,14 +121,14 @@ const DriverLists = ({ orders }: ComponentProps) => {
 					orders={upcoming}
 					className='order-list'
 				>
-					<h2>Upcoming</h2>
+					<h2>Upcoming - {upcoming.length}</h2>
 				</OrderList>
 				<OrderList
 					droppableID='delivered'
 					orders={delivered}
 					className='order-list'
 				>
-					<h2>Delivered</h2>
+					<h2>Delivered - {delivered.length}</h2>
 				</OrderList>
 				<OrderList
 					droppableID='returned'
@@ -128,26 +142,42 @@ const DriverLists = ({ orders }: ComponentProps) => {
 	)
 }
 
-const upcomingDeliveries = (orders: PopulatedOrder[]) => {
-	const today = new Date()
-	return orders.filter(
-		({ booking_duration, fulfilled, returned }) =>
-			extractBookingStart(booking_duration) >= today && !returned && !fulfilled
-	)
+const upcomingDeliveries = (
+	orders: PopulatedOrder[],
+	maxDate: Date,
+	minDate: Date
+): PopulatedOrder[] => {
+	return orders.filter(({ booking_duration, fulfilled, returned }) => {
+		const deliveryDate = extractBookingStart(booking_duration)
+		return (
+			deliveryDate >= minDate &&
+			deliveryDate <= maxDate &&
+			!returned &&
+			!fulfilled
+		)
+	})
 }
 
-const upcomingPickups = (orders: PopulatedOrder[]) => {
-	const today = new Date()
-	return orders.filter(
-		({ booking_duration, fulfilled, returned }) =>
-			extractBookingEnd(booking_duration) >= today && fulfilled && !returned
-	)
+const upcomingPickups = (
+	orders: PopulatedOrder[],
+	maxDate: Date,
+	minDate: Date
+): PopulatedOrder[] => {
+	return orders.filter(({ booking_duration, fulfilled, returned }) => {
+		const pickupDate = extractBookingEnd(booking_duration)
+		return (
+			pickupDate >= minDate && pickupDate <= maxDate && !returned && fulfilled
+		)
+	})
 }
 
-const completed = (orders: PopulatedOrder[]) =>
+const completed = (orders: PopulatedOrder[]): PopulatedOrder[] =>
 	orders.filter(({ returned, fulfilled }) => fulfilled && returned)
 
-const sortByDate = (orders: PopulatedOrder[], date: 'start' | 'end') =>
+const sortByDate = (
+	orders: PopulatedOrder[],
+	date: 'start' | 'end'
+): PopulatedOrder[] =>
 	orders.sort((a, b) => {
 		if (date === 'start')
 			return (

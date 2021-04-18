@@ -2,10 +2,16 @@
 	grid-template-columns: 1fr;
 }
 
+.outer.driver > main {
+	height: 100%;
+	width: 100%;
+}
+
 .orders {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	width: 100%;
+	min-height: 85%;
 }
 
 .order-list {
@@ -60,4 +66,16 @@ small > br {
 
 .order-card.upcoming {
 	border-color: $primary-blue;
+}
+
+.order-restriction {
+	display: inline-block;
+	width: 100%;
+}
+
+.inline-picker {
+	border: none;
+	border-bottom: 2px solid $primary-pink;
+	line-height: 0.9em;
+	width: 10ch;
 }

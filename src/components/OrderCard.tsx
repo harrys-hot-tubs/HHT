@@ -1,5 +1,5 @@
 import { PopulatedOrder } from '@typings/db/Order'
-import { extractBookingEnd, extractBookingStart, isToday } from '@utils/date'
+import { extractBookingEnd, extractBookingStart } from '@utils/date'
 import React, { useState } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 
@@ -23,13 +23,18 @@ const OrderCard = ({
 	index: number
 }) => {
 	const [showDetails, setShowDetails] = useState(false)
-	const orderStart = extractBookingStart(booking_duration)
+	const isUrgent = () => {
+		const today = new Date()
+		if (state === 'dropoff')
+			return extractBookingStart(booking_duration) <= today
+		if (state === 'pickup') return extractBookingEnd(booking_duration) <= today
+	}
 
 	return (
 		<Draggable draggableId={id} index={index}>
 			{(provided) => (
 				<div
-					className={`order-card ${isToday(orderStart) ? 'today' : 'upcoming'}`}
+					className={`order-card ${isUrgent() ? 'today' : 'upcoming'}`}
 					data-testid={id}
 					aria-label={`information relating to order ${id}`}
 					ref={provided.innerRef}
@@ -39,12 +44,13 @@ const OrderCard = ({
 						setShowDetails(!showDetails)
 					}}
 				>
-					<h5
-						data-testid='full_name'
-						style={{ marginBottom: !showDetails ? 0 : null }}
-					>
+					<h5 data-testid='full_name' style={{ marginBottom: 0 }}>
 						{first_name + ' ' + last_name}
 					</h5>
+					<hr className='order-card-divider' />
+					<small className='text-muted'>
+						{dates({ booking_duration, state })}
+					</small>
 					{showDetails ? (
 						<>
 							<hr className='order-card-divider' />
@@ -54,10 +60,6 @@ const OrderCard = ({
 								address_line_3,
 								postcode,
 							})}
-							<hr className='order-card-divider' />
-							<small className='text-muted'>
-								{dates({ booking_duration, state })}
-							</small>
 						</>
 					) : null}
 				</div>
