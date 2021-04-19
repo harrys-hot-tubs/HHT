@@ -19,13 +19,31 @@ const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
 		key: endKey,
 	})
 
+	const updateRangeStart = (value: Date) => {
+		if (value > rangeEnd) {
+			setRangeStart(rangeEnd)
+			setRangeEnd(value)
+		} else {
+			setRangeStart(value)
+		}
+	}
+
+	const updateRangeEnd = (value: Date) => {
+		if (value < rangeStart) {
+			setRangeEnd(rangeStart)
+			setRangeStart(value)
+		} else {
+			setRangeEnd(value)
+		}
+	}
+
 	//TODO invert dates when two dates are incorrectly ordered
 
 	return {
 		rangeStart,
 		rangeEnd,
-		setRangeStart,
-		setRangeEnd,
+		setRangeStart: updateRangeStart,
+		setRangeEnd: updateRangeEnd,
 	}
 }
 
