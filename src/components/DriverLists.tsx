@@ -21,10 +21,6 @@ export interface ComponentProps {
 }
 
 const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
-	console.log(
-		`orders`,
-		orders.filter(({ fulfilled, returned }) => fulfilled && returned)
-	)
 	useEffect(() => {
 		setUpcoming(
 			sortByDate(upcomingDeliveries(orders, maxDate, minDate), 'start')
@@ -85,7 +81,6 @@ const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
 	) => {
 		if (!destination) return
 		if (source.droppableId === destination.droppableId) return
-
 		const [orders] = getListByID(destination.droppableId as ListID)
 		const { id } = orders[destination.index]
 		let body: Partial<OrderDB> = {}
@@ -102,7 +97,6 @@ const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
 			default:
 				throw new Error(`No list with id ${destination.droppableId}`)
 		}
-
 		const { data } = await axios.post<OrderDB>(`/api/orders/${id}`, body)
 		return data
 	}
@@ -113,6 +107,8 @@ const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
 		await updateDatabase(source, destination)
 	}
 
+	//TODO add horizontal list for emergency unfulfilled orders
+
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<div className='orders'>
@@ -121,14 +117,14 @@ const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
 					orders={upcoming}
 					className='order-list'
 				>
-					<h2>Upcoming - {upcoming.length}</h2>
+					<h2>Upcoming</h2>
 				</OrderList>
 				<OrderList
 					droppableID='delivered'
 					orders={delivered}
 					className='order-list'
 				>
-					<h2>Delivered - {delivered.length}</h2>
+					<h2>Delivered</h2>
 				</OrderList>
 				<OrderList
 					droppableID='returned'

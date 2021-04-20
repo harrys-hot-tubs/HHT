@@ -1,4 +1,8 @@
-import { bookings } from '@fixtures/bookingFixtures'
+import {
+	bookings,
+	generateEndDate,
+	generateStartDate,
+} from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
 import { mixedSizes } from '@fixtures/tubsFixtures'
@@ -89,6 +93,9 @@ describe("driver's dashboard", () => {
 	})
 
 	it('display a card for each upcoming order', () => {
+		setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
+		cy.reload()
+
 		cy.get('.order-card').should('be.visible').as('card')
 		cy.get('@card')
 			.find('h5')
@@ -111,14 +118,66 @@ describe("driver's dashboard", () => {
 	})
 
 	it('allows cards to be dragged from one column to another', () => {
+		setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
+		cy.reload()
+
 		cy.get('.order-card').should('be.visible')
 		cy.drag('.order-card', '[data-testid=delivered]').should(
 			'contain',
 			storedOrder.first_name + ' ' + storedOrder.last_name
 		)
 	})
+
+	describe('cards are shown when their date is in range', () => {
+		beforeEach(() => {
+			cy.task('DBClear', { tableName: 'orders' })
+			setStorage({ minDate: '1901-01-01', maxDate: '1901-01-06' })
+		})
+
+		it('displays in date upcoming deliveries', () => {
+			cy.task('DBInsert', { tableName: 'orders', data: [storedOrder] })
+
+			cy.get('.order-card').should('not.exist')
+			setStorage({ minDate: generateStartDate(), maxDate: generateStartDate() })
+			cy.reload()
+			cy.get('.order-card')
+				.should('be.visible')
+				.parent()
+				.should('have.attr', 'data-rbd-droppable-id', 'upcoming')
+		})
+
+		it('displays in date delivered orders', () => {
+			cy.task('DBInsert', {
+				tableName: 'orders',
+				data: [{ ...storedOrder, fulfilled: true }],
+			})
+
+			cy.get('.order-card').should('not.exist')
+			setStorage({ minDate: generateEndDate(), maxDate: generateEndDate() })
+			cy.reload()
+			cy.get('.order-card')
+				.should('be.visible')
+				.parent()
+				.should('have.attr', 'data-rbd-droppable-id', 'delivered')
+		})
+
+		it('displays in date returned orders', () => {
+			cy.task('DBInsert', {
+				tableName: 'orders',
+				data: [{ ...storedOrder, fulfilled: true, returned: true }],
+			})
+
+			cy.get('.order-card').should('not.exist')
+			setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
+			cy.reload()
+			cy.get('.order-card')
+				.should('be.visible')
+				.parent()
+				.should('have.attr', 'data-rbd-droppable-id', 'returned')
+		})
+	})
 })
 
 after(() => {
-	cy.task('cleanup').then(() => {})
+	cy.task('cleanup')
 })

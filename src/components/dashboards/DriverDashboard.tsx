@@ -1,30 +1,21 @@
 import DriverLists from '@components/DriverLists'
+import useDateRange from '@hooks/useDateRange'
 import useDriverLocation from '@hooks/useDriverLocation'
 import useOrders from '@hooks/useOrders'
 import { PopulatedOrder } from '@typings/db/Order'
 import React from 'react'
 import DatePicker from 'react-datepicker'
-import useStoredState from '../../hooks/useStoredState'
 
 const DriverDashboard = () => {
 	const { location, isLoading: locationIsLoading } = useDriverLocation()
 	const { orders, isLoading: ordersAreLoading } = useOrders()
-	const [minDate, setMinDate] = useStoredState<Date>({
-		fallback: new Date(),
-		fromString: (v) => new Date(v),
-		toString: (v) => v.toISOString(),
-		key: 'minDate',
-	})
-	const [maxDate, setMaxDate] = useStoredState<Date>({
-		fallback: new Date(),
-		fromString: (v) => new Date(v),
-		toString: (v) => v.toISOString(),
-		key: 'maxDate',
+	const { rangeStart, rangeEnd, setRangeStart, setRangeEnd } = useDateRange({
+		startKey: 'minDate',
+		endKey: 'maxDate',
 	})
 	const relevant = findRelevant(orders, location?.location_id)
 
 	if (locationIsLoading || ordersAreLoading) return <h1>Loading...</h1>
-	// TODO fix css
 	return (
 		<div className='outer driver'>
 			<main>
@@ -32,23 +23,29 @@ const DriverDashboard = () => {
 				<span className='order-restriction'>
 					Showing orders from{' '}
 					<DatePicker
-						selected={minDate}
-						onChange={(date: Date) => setMinDate(date)}
-						maxDate={maxDate}
+						selected={rangeStart}
+						onChange={(date: Date) => setRangeStart(date)}
+						maxDate={rangeEnd}
 						todayButton='Today'
 						className='inline-picker'
-					/>{' '}
+						id='start'
+					></DatePicker>{' '}
 					to{' '}
 					<DatePicker
-						selected={maxDate}
-						onChange={(date: Date) => setMaxDate(date)}
-						minDate={minDate}
+						selected={rangeEnd}
+						onChange={(date: Date) => setRangeEnd(date)}
+						minDate={rangeStart}
 						todayButton='Today'
 						className='inline-picker'
+						id='end'
 					/>
 					.
 				</span>
-				<DriverLists orders={relevant} maxDate={maxDate} minDate={minDate} />
+				<DriverLists
+					orders={relevant}
+					maxDate={rangeEnd}
+					minDate={rangeStart}
+				/>
 			</main>
 		</div>
 	)

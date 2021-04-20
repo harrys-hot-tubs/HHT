@@ -37,8 +37,6 @@ const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
 		}
 	}
 
-	//TODO invert dates when two dates are incorrectly ordered
-
 	return {
 		rangeStart,
 		rangeEnd,

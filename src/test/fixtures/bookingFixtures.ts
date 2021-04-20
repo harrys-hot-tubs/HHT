@@ -2,7 +2,7 @@ import { mixedSizes } from '@fixtures/tubsFixtures'
 import { BookingDB } from '@typings/db/Booking'
 
 export const generateStartDate = (): string => {
-	const bookingStart = new Date()
+	const bookingStart = new Date('2302-09-19')
 	bookingStart.setDate(bookingStart.getDate() + 1) // Day after tomorrow
 	return bookingStart.toISOString().substr(0, 10)
 }

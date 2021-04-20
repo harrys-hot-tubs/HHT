@@ -5,10 +5,14 @@ import {
 	addAccountsToDatabase,
 	arbitraryInsert,
 	cleanupConnection,
+	clearTable,
 } from '../helpers/databaseHelper'
 
 module.exports = (on, config) => {
 	on('task', {
+		async DBClear({ tableName }: { tableName: string }) {
+			return await clearTable(tableName)
+		},
 		async DBInsert({ tableName, data }: { tableName: string; data: any[] }) {
 			return await arbitraryInsert(tableName, data)
 		},
