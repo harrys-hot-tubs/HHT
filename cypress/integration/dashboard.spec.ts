@@ -130,6 +130,7 @@ describe("driver's dashboard", () => {
 
 	describe('cards are shown when their date is in range', () => {
 		beforeEach(() => {
+			cy.task('DBClear', { tableName: 'fulfilments' })
 			cy.task('DBClear', { tableName: 'orders' })
 			setStorage({ minDate: '1901-01-01', maxDate: '1901-01-06' })
 		})
