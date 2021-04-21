@@ -31,6 +31,11 @@ beforeEach(() => {
 	cy.clearCookies()
 })
 
+it('redirects to login page for a unauthenticated user', () => {
+	cy.visit('/dashboard')
+	cy.url().should('eq', Cypress.config().baseUrl + '/login')
+})
+
 describe("manager's dashboard", () => {
 	beforeEach(() => {
 		cy.clearLocalStorage()
