@@ -6,10 +6,10 @@ import InstagramIcon from '../icons/InstagramIcon'
 const InsuranceModal = ({ display, hide }: PostcodeModalProps) => (
 	<Modal show={display} onHide={hide} centered>
 		<Modal.Header closeButton>
-			<Modal.Title>Thanks for you interest!</Modal.Title>
+			<Modal.Title>Thanks for your interest!</Modal.Title>
 		</Modal.Header>
 		<Modal.Body role='alert'>
-			For Leeds bookings, please inquire via Instagram.
+			For bookings in the LS6 postcode, please inquire via Instagram.
 		</Modal.Body>
 		<Modal.Footer>
 			<InstagramIcon />
