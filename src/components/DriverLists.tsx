@@ -1,6 +1,11 @@
 import OrderList, { ListID } from '@components/OrderList'
 import { OrderDB, PopulatedOrder } from '@typings/db/Order'
-import { extractBookingEnd, extractBookingStart } from '@utils/date'
+import {
+	completed,
+	sortByDate,
+	upcomingDeliveries,
+	upcomingPickups,
+} from '@utils/orders'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import {
@@ -8,6 +13,7 @@ import {
 	DraggableLocation,
 	DropResult,
 } from 'react-beautiful-dnd'
+import RefundModal from './RefundModal'
 
 type ListState = [
 	PopulatedOrder[],
@@ -21,6 +27,8 @@ export interface ComponentProps {
 }
 
 const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
+	//TODO extract to custom hook.
+	const [showRefundModal, setShowRefundModal] = useState(false)
 	useEffect(() => {
 		setUpcoming(
 			sortByDate(upcomingDeliveries(orders, maxDate, minDate), 'start')
@@ -103,89 +111,55 @@ const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
 
 	const onDragEnd = async (result: DropResult): Promise<void> => {
 		const { source, destination } = result
+		if (destination.droppableId === 'returned') {
+			setShowRefundModal(true)
+			/*
+			Damage - description
+			No damage
+			*/
+			// TODO create popup to get refund information
+			// TODO create a refund DB object
+		}
+
+		if (source.droppableId === 'returned') {
+			//TODO prompt user to make sure they want to make the order unfulfilled again
+			//TODO delete refund object
+		}
 		updatePosition(source, destination)
 		await updateDatabase(source, destination)
 	}
 
-	//TODO add horizontal list for emergency unfulfilled orders
-
 	return (
-		<DragDropContext onDragEnd={onDragEnd}>
-			<div className='orders'>
-				<OrderList
-					droppableID='upcoming'
-					orders={upcoming}
-					className='order-list'
-				>
-					<h2>Upcoming</h2>
-				</OrderList>
-				<OrderList
-					droppableID='delivered'
-					orders={delivered}
-					className='order-list'
-				>
-					<h2>Delivered</h2>
-				</OrderList>
-				<OrderList
-					droppableID='returned'
-					orders={returned}
-					className='order-list'
-				>
-					<h2>Returned</h2>
-				</OrderList>
-			</div>
-		</DragDropContext>
+		<>
+			<RefundModal show={showRefundModal} setShow={setShowRefundModal} />
+			<DragDropContext onDragEnd={onDragEnd}>
+				<div className='orders'>
+					<OrderList
+						droppableID='upcoming'
+						orders={upcoming}
+						className='order-list'
+					>
+						<h2>Upcoming</h2>
+					</OrderList>
+					<OrderList
+						droppableID='delivered'
+						orders={delivered}
+						className='order-list'
+					>
+						<h2>Delivered</h2>
+					</OrderList>
+					<OrderList
+						droppableID='returned'
+						orders={returned}
+						className='order-list'
+					>
+						<h2>Returned</h2>
+					</OrderList>
+				</div>
+			</DragDropContext>
+		</>
 	)
 }
-
-const upcomingDeliveries = (
-	orders: PopulatedOrder[],
-	maxDate: Date,
-	minDate: Date
-): PopulatedOrder[] => {
-	return orders.filter(({ booking_duration, fulfilled, returned }) => {
-		const deliveryDate = extractBookingStart(booking_duration)
-		return (
-			deliveryDate >= minDate &&
-			deliveryDate <= maxDate &&
-			!returned &&
-			!fulfilled
-		)
-	})
-}
-
-const upcomingPickups = (
-	orders: PopulatedOrder[],
-	maxDate: Date,
-	minDate: Date
-): PopulatedOrder[] => {
-	return orders.filter(({ booking_duration, fulfilled, returned }) => {
-		const pickupDate = extractBookingEnd(booking_duration)
-		return (
-			pickupDate >= minDate && pickupDate <= maxDate && !returned && fulfilled
-		)
-	})
-}
-
-const completed = (orders: PopulatedOrder[]): PopulatedOrder[] =>
-	orders.filter(({ returned, fulfilled }) => fulfilled && returned)
-
-const sortByDate = (
-	orders: PopulatedOrder[],
-	date: 'start' | 'end'
-): PopulatedOrder[] =>
-	orders.sort((a, b) => {
-		if (date === 'start')
-			return (
-				extractBookingStart(a.booking_duration).getTime() -
-				extractBookingEnd(b.booking_duration).getTime()
-			)
-		if (date === 'end')
-			return (
-				extractBookingEnd(a.booking_duration).getTime() -
-				extractBookingEnd(b.booking_duration).getTime()
-			)
-	})
 
 const moveOrder = (
 	source: ListState,
