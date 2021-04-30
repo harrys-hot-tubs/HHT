@@ -1,24 +1,11 @@
 import OrderList, { ListID } from '@components/OrderList'
-import { OrderDB, PopulatedOrder } from '@typings/db/Order'
-import {
-	completed,
-	sortByDate,
-	upcomingDeliveries,
-	upcomingPickups,
-} from '@utils/orders'
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import {
-	DragDropContext,
-	DraggableLocation,
-	DropResult,
-} from 'react-beautiful-dnd'
-import RefundModal from './RefundModal'
-
-type ListState = [
-	PopulatedOrder[],
-	React.Dispatch<React.SetStateAction<PopulatedOrder[]>>
-]
+import RefundModal from '@components/RefundModal'
+import useDriverLists from '@hooks/useDriverLists'
+import useRefundModal from '@hooks/useRefundModal'
+import { PopulatedOrder } from '@typings/db/Order'
+import React, { useRef } from 'react'
+import { DragDropContext, DropResult, SensorAPI } from 'react-beautiful-dnd'
+import useStateWithPromise from '../hooks/useStateWithPromise'
 
 export interface ComponentProps {
 	orders: PopulatedOrder[]
@@ -27,112 +14,59 @@ export interface ComponentProps {
 }
 
 const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
-	//TODO extract to custom hook.
-	const [showRefundModal, setShowRefundModal] = useState(false)
-	useEffect(() => {
-		setUpcoming(
-			sortByDate(upcomingDeliveries(orders, maxDate, minDate), 'start')
-		)
-		setDelivered(sortByDate(upcomingPickups(orders, maxDate, minDate), 'end'))
-		setReturned(sortByDate(completed(orders), 'start'))
-	}, [maxDate, minDate])
-
-	const [upcoming, setUpcoming] = useState<PopulatedOrder[]>(
-		sortByDate(upcomingDeliveries(orders, maxDate, minDate), 'start')
-	)
-	const [delivered, setDelivered] = useState<PopulatedOrder[]>(
-		sortByDate(upcomingPickups(orders, maxDate, minDate), 'end')
-	)
-	const [returned, setReturned] = useState<PopulatedOrder[]>(
-		sortByDate(completed(orders), 'start')
+	const {
+		upcoming: [upcoming],
+		delivered: [delivered],
+		returned: [returned],
+		getListByID,
+		updatePosition,
+	} = useDriverLists({ orders, maxDate, minDate })
+	const {
+		state: { show, lastMoved, lastSource, lastDestination, modalVersion },
+		setShow: setShowRefundModal,
+		logMove,
+	} = useRefundModal()
+	const [programmedMove, setProgrammedMove] = useStateWithPromise<boolean>(
+		false
 	)
 
-	const getListByID = (id: ListID): ListState => {
-		switch (id) {
-			case 'upcoming':
-				return [upcoming, setUpcoming]
-			case 'delivered':
-				return [delivered, setDelivered]
-			case 'returned':
-				return [returned, setReturned]
-			default:
-				throw new Error(`No list with id ${id}`)
-		}
-	}
+	const sensorAPIRef = useRef<SensorAPI>(null)
 
-	const updatePosition = (
-		source: DraggableLocation,
-		destination: DraggableLocation
-	) => {
-		if (!destination) return //Dropped outside of lists
-
-		if (source.droppableId === destination.droppableId) {
-			if (source.index === destination.index) return
-			reorder(
-				getListByID(destination.droppableId as ListID),
-				source.index,
-				destination.index
-			)
-		} else {
-			moveOrder(
-				getListByID(source.droppableId as ListID),
-				getListByID(destination.droppableId as ListID),
-				source,
-				destination
-			)
-		}
-	}
-
-	const updateDatabase = async (
-		source: DraggableLocation,
-		destination: DraggableLocation
-	) => {
-		if (!destination) return
-		if (source.droppableId === destination.droppableId) return
-		const [orders] = getListByID(destination.droppableId as ListID)
-		const { id } = orders[destination.index]
-		let body: Partial<OrderDB> = {}
-		switch (destination.droppableId as ListID) {
-			case 'upcoming':
-				body = { fulfilled: false, returned: false }
-				break
-			case 'delivered':
-				body = { fulfilled: true, returned: false }
-				break
-			case 'returned':
-				body = { fulfilled: true, returned: true }
-				break
-			default:
-				throw new Error(`No list with id ${destination.droppableId}`)
-		}
-		const { data } = await axios.post<OrderDB>(`/api/orders/${id}`, body)
-		return data
-	}
-
-	const onDragEnd = async (result: DropResult): Promise<void> => {
+	const onDragEnd = (result: DropResult): void => {
 		const { source, destination } = result
-		if (destination.droppableId === 'returned') {
-			setShowRefundModal(true)
-			/*
-			Damage - description
-			No damage
-			*/
-			// TODO create popup to get refund information
-			// TODO create a refund DB object
-		}
+		const moved = getListByID(source.droppableId as ListID)[0][source.index]
+		if (destination && source) {
+			logMove(moved, { source, destination })
 
-		if (source.droppableId === 'returned') {
-			//TODO prompt user to make sure they want to make the order unfulfilled again
-			//TODO delete refund object
+			if (!programmedMove) {
+				setShowRefundModal(
+					(destination.droppableId === 'returned' &&
+						source.droppableId !== 'returned') ||
+						(source.droppableId === 'returned' &&
+							destination.droppableId !== 'returned')
+				)
+			}
+			updatePosition(result)
 		}
-		updatePosition(source, destination)
-		await updateDatabase(source, destination)
+		setProgrammedMove(false)
 	}
 
 	return (
 		<>
-			<RefundModal show={showRefundModal} setShow={setShowRefundModal} />
-			<DragDropContext onDragEnd={onDragEnd}>
+			<RefundModal
+				show={show}
+				setShow={setShowRefundModal}
+				order={lastMoved}
+				apiRef={sensorAPIRef}
+				modalVersion={modalVersion}
+				setProgrammedMove={setProgrammedMove}
+				lastSource={lastSource}
+				lastDestination={lastDestination}
+			/>
+			<DragDropContext
+				onDragEnd={onDragEnd}
+				sensors={[(api) => (sensorAPIRef.current = api)]}
+			>
 				<div className='orders'>
 					<OrderList
 						droppableID='upcoming'
@@ -159,33 +93,6 @@ const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
 			</DragDropContext>
 		</>
 	)
-}
-
-const moveOrder = (
-	source: ListState,
-	destination: ListState,
-	sourceDroppable: DraggableLocation,
-	destinationDroppable: DraggableLocation
-): void => {
-	const [sourceValues, updateSource] = source
-	const [destinationValues, updateDestination] = destination
-
-	const [removed] = sourceValues.splice(sourceDroppable.index, 1)
-	updateSource(sourceValues)
-
-	destinationValues.splice(destinationDroppable.index, 0, removed)
-	updateDestination(destinationValues)
-}
-
-const reorder = (
-	list: ListState,
-	source: number,
-	destination: number
-): void => {
-	const [values, update] = list
-	const [removed] = values.splice(source, 1)
-	values.splice(destination, 0, removed)
-	update(values)
 }
 
 export default DriverLists
