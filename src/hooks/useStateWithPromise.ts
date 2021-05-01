@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+/**
+ * Hook that guarantees the state of the hook will be updated after the async update function has executed.
+ *
+ * @param initialState The initialState of the hook.
+ * @returns A value and asynchronous update function.
+ */
 const useStateWithPromise = <T>(
 	initialState: T
 ): [T, (stateAction: T) => Promise<void>] => {
@@ -11,12 +17,7 @@ const useStateWithPromise = <T>(
 			resolverRef.current(state)
 			resolverRef.current = null
 		}
-		/**
-		 * Since a state update could be triggered with the exact same state again,
-		 * it's not enough to specify state as the only dependency of this useEffect.
-		 * That's why resolverRef.current is also a dependency, because it will guarantee,
-		 * that handleSetState was called in previous render
-		 */
+		//Uses resolverRef to guarantee handleSetState was called last render.
 	}, [resolverRef.current, state])
 
 	const handleSetState = useCallback(

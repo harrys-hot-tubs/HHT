@@ -122,7 +122,7 @@ const RefundModal = ({
 	}
 
 	return (
-		<Modal show={show}>
+		<Modal show={show} data-testid='refund-modal'>
 			<Modal.Header>
 				<Modal.Title>Refund Information</Modal.Title>
 			</Modal.Header>
@@ -148,6 +148,7 @@ const RefundModal = ({
 							/>
 						</Form.Group>
 						<SpinnerButton
+							data-testid='process-refund-button'
 							type='submit'
 							activeText='Submitting...'
 							status={loading}

@@ -29,7 +29,8 @@ const DriverDashboard = () => {
 						todayButton='Today'
 						className='inline-picker'
 						id='start'
-					></DatePicker>{' '}
+						dateFormat='dd/MM/yyyy'
+					/>{' '}
 					to{' '}
 					<DatePicker
 						selected={rangeEnd}
@@ -38,6 +39,7 @@ const DriverDashboard = () => {
 						todayButton='Today'
 						className='inline-picker'
 						id='end'
+						dateFormat='dd/MM/yyyy'
 					/>
 					.
 				</span>
