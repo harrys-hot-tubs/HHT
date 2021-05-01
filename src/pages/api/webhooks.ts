@@ -137,17 +137,19 @@ const sendEmailNotification = async (
 			Messages: [
 				{
 					From: {
-						Email: 'bridges.wood@gmail.com',
-						Name: 'Max Wood',
+						Email: 'no-reply@harryshottubs.com',
+						Name: "Harry's Hot Tubs",
 					},
 					To: [
 						{
-							Email: 'bridges.wood@gmail.com',
-							Name: 'Max Wood',
-						},
-						{
 							Email: 'harry@harryshottubs.com',
 							Name: 'Harry Strudwick',
+						},
+					],
+					Bcc: [
+						{
+							Email: 'bridges.wood@gmail.com',
+							Name: 'Max Wood',
 						},
 					],
 					Subject: `Online Booking`,
