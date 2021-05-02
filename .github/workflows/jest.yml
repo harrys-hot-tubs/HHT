@@ -13,6 +13,7 @@ jobs:
       - name: Run tests
         run: yarn test
     env:
+      NODE_ENV: test
       AWS_DB: ${{ secrets.AWS_DB }}
       AWS_DB_ENDPOINT: ${{ secrets.AWS_DB_ENDPOINT }}
       AWS_DB_PASSWORD: ${{ secrets.AWS_DB_PASSWORD }}
