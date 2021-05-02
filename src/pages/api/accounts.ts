@@ -30,18 +30,13 @@ const post = async (
 	const newAccount: NewAccount = req.body
 	try {
 		const preparedAccount = await prepareAccount(newAccount)
-		const storedAccount: Omit<AccountDB, 'password_hash'> = (
-			await db<AccountDB>('accounts').insert(preparedAccount, [
-				'account_id',
-				'email_address',
-				'first_name',
-				'last_name',
-				'telephone_number',
-				'account_roles',
-			])
+		const storedAccount: AccountDB = (
+			await db<AccountDB>('accounts').insert(preparedAccount, '*')
 		)[0]
+		delete storedAccount.password_hash
 		return res.status(200).json(storedAccount)
 	} catch (e) {
+		console.error(e)
 		return res
 			.status(400)
 			.json({ type: 'Error', message: 'Failed to create account.' })
