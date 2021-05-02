@@ -35,6 +35,7 @@ const post = async (
 
 		return res.status(200).json({ token: tokeniseAccount(account) })
 	} catch (e) {
+		console.error(e)
 		return res
 			.status(400)
 			.json({ type: 'AuthError', message: 'Failed to create account.' })
