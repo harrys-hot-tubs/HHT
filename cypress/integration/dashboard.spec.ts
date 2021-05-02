@@ -149,7 +149,7 @@ describe("driver's dashboard", () => {
 			cy.task('DBInsert', { tableName: 'orders', data: [storedOrder] })
 
 			cy.get('.order-card').should('not.exist')
-			setStorage({ minDate: generateStartDate(), maxDate: generateStartDate() })
+			setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
 			cy.reload()
 			cy.get('.order-card')
 				.should('be.visible')
