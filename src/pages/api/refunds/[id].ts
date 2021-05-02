@@ -1,7 +1,7 @@
 import { ConnectedRequest } from '@typings/api/Request'
 import { RefundDB } from '@typings/db/Refund'
 import db from '@utils/db'
-import { getToken, isAuthorised } from '@utils/SSAuth'
+import { getToken, hasRole, isAuthorised } from '@utils/SSAuth'
 import { NextApiResponse } from 'next'
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
@@ -22,23 +22,44 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 		query: { id },
 	} = req
 	const token = getToken(req)
-	const status = await isAuthorised(token, ['driver'])
+	const status = await isAuthorised(token, ['driver', 'manager'])
 	if (status.authorised) {
-		const refundDetails: Omit<RefundDB, 'account_id' | 'order_id'> = req.body
-		const driver_id = status.payload.account_id
-		try {
-			const inserted = await db<RefundDB>('refunds').insert(
-				{
-					order_id: id as string,
-					damaged: refundDetails.damaged,
-					damage_information: refundDetails.damage_information,
-					account_id: driver_id,
-				},
-				'*'
-			)
-			return res.status(200).json({ inserted: inserted[0] })
-		} catch (e) {
-			res.status(500).json(e)
+		const { payload: account } = status
+
+		if (hasRole(account, 'driver')) {
+			const refundDetails: Omit<RefundDB, 'account_id' | 'order_id'> = req.body
+			const driver_id = account.account_id
+			try {
+				const inserted = await db<RefundDB>('refunds').insert(
+					{
+						order_id: id as string,
+						damaged: refundDetails.damaged,
+						damage_information: refundDetails.damage_information,
+						account_id: driver_id,
+					},
+					'*'
+				)
+				return res.status(200).json({ inserted: inserted[0] })
+			} catch (e) {
+				res.status(500).json(e)
+			}
+		}
+
+		if (hasRole(account, 'manager')) {
+			const { settled }: Pick<RefundDB, 'settled'> = req.body
+			const manager_id = account.account_id
+			try {
+				const updated = await db<RefundDB>('refunds')
+					.update({
+						account_id: manager_id,
+						settled,
+					})
+					.where('order_id', '=', id as string)
+
+				return res.status(200).json({ updated: updated[0] })
+			} catch (e) {
+				res.status(500).json(e)
+			}
 		}
 	}
 	res.status(400).end()

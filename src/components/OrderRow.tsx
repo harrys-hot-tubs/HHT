@@ -28,12 +28,8 @@ const OrderRow = ({
 			<td data-testid='payment_intent_id'>
 				{payment_intent_id !== undefined ? payment_intent_id : 'Missing'}
 			</td>
-			<td data-testid='paid'>
-				{paid !== undefined ? paid.toString() : 'Unknown'}
-			</td>
-			<td data-testid='fulfilled'>
-				{fulfilled !== undefined ? paid.toString() : 'Unknown'}
-			</td>
+			<td data-testid='paid'>{paid ? paid.toString() : 'Unknown'}</td>
+			<td data-testid='fulfilled'>{fulfilled ? paid.toString() : 'Unknown'}</td>
 			<td data-testid='full_name'>{first_name + ' ' + last_name}</td>
 			<td data-testid='email_address'>{email}</td>
 			<td data-testid='booking_start'>

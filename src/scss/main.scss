@@ -1,4 +1,5 @@
 @import '~react-dates/lib/css/_datepicker.css';
+@import '~react-bootstrap-typeahead/css/Typeahead.css';
 @import '~react-datepicker/dist/react-datepicker.css';
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import './pages/home';
@@ -7,6 +8,7 @@
 @import './pages/failure';
 @import './pages/login';
 @import './components/driver_dashboard';
+@import './components/manager_dashboard';
 @import './components/no_availabilities';
 @import './components/hot_tub';
 @import './components/postcode_field';

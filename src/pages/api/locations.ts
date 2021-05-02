@@ -7,11 +7,24 @@ import { NextApiResponse } from 'next'
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
+		case 'GET':
+			return await get(req, res)
 		case 'POST':
 			return await post(req, res)
 		default:
-			res.setHeader('Allow', 'POST')
+			res.setHeader('Allow', ['GET', 'POST'])
 			res.status(405).end('Method not allowed.')
+	}
+}
+
+const get = async (req: ConnectedRequest, res: NextApiResponse) => {
+	const { db } = req
+	try {
+		const locations: LocationDB[] = await db('locations').select()
+		res.status(200).json(locations)
+	} catch (error) {
+		console.error(error)
+		res.status(500).end()
 	}
 }
 

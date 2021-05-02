@@ -17,7 +17,7 @@ export interface DisplayableTub extends TubDB {
  */
 const HotTub = ({ tub_id, max_capacity, price, onClick }: ComponentProps) => {
 	return (
-		<div onClick={() => onClick(tub_id)} className='card'>
+		<div onClick={() => onClick(tub_id)} className='tub-card'>
 			<img src={getImageHREF(max_capacity)} className='thumbnail' />
 			<div className='card-body'>
 				<span>{max_capacity}-Person</span>
