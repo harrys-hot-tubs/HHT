@@ -8,7 +8,7 @@
 	min-width: 40%;
 }
 
-.card {
+.tub-card {
 	cursor: pointer;
 	margin: 5px;
 	text-align: left;
@@ -22,7 +22,7 @@
 	background-color: white;
 }
 
-.card-body {
+.tub-card > .card-body {
 	padding: 5px;
 	color: white;
 	width: 100%;
@@ -46,7 +46,7 @@
 	font-weight: bold;
 }
 
-.card-body > span:nth-child(2) {
+.tub-card > .card-body > span:nth-child(2) {
 	margin-top: 20px;
 	color: $primary-pink;
 	font-size: 12pt;
@@ -63,12 +63,12 @@
 }
 
 @media (min-width: 800px) {
-	.card {
+	.tub-card {
 		height: 200px;
 		width: 200px;
 	}
 
-	.card-body span {
+	.tub-card > .card-body span {
 		font-size: 24pt;
 	}
 

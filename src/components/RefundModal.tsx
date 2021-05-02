@@ -50,7 +50,7 @@ const RefundModal = ({
 
 	const addRefund: React.FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault()
-		const body: Omit<RefundDB, 'account_id' | 'order_id'> = {
+		const body: Pick<RefundDB, 'damaged' | 'damage_information'> = {
 			damaged,
 			damage_information: damageDetails,
 		}

@@ -24,14 +24,21 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 
 const post = async (
 	req: ConnectedRequest,
-	res: NextApiResponse<AccountDB | APIError>
+	res: NextApiResponse<Omit<AccountDB, 'password_hash'> | APIError>
 ) => {
 	const { db } = req
 	const newAccount: NewAccount = req.body
 	try {
 		const preparedAccount = await prepareAccount(newAccount)
-		const storedAccount: AccountDB = (
-			await db<AccountDB>('accounts').insert(preparedAccount, '*')
+		const storedAccount: Omit<AccountDB, 'password_hash'> = (
+			await db<AccountDB>('accounts').insert(preparedAccount, [
+				'account_id',
+				'email_address',
+				'first_name',
+				'last_name',
+				'telephone_number',
+				'account_roles',
+			])
 		)[0]
 		return res.status(200).json(storedAccount)
 	} catch (e) {

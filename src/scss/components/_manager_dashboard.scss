@@ -1,0 +1,47 @@
+.manager-dashboard {
+	align-items: flex-start !important;
+	justify-items: flex-start !important;
+}
+
+.manager {
+	display: grid;
+	width: 100%;
+}
+
+.recently-fulfilled > .card {
+	padding: 0.2em;
+	margin: 10px 0 10px 0;
+}
+
+.recently-fulfilled > .card > .card-body {
+	padding: 0.2em;
+}
+
+.card.refund {
+	padding: 0.5em;
+	margin: 10px 0 10px 0;
+}
+
+.card.upcoming {
+	padding: 0.2em;
+	margin: 10px 0 10px 0;
+}
+
+@media screen and (orientation: landscape) {
+	.manager-dashboard {
+		grid-template-columns: 1fr 3fr;
+	}
+
+	.manager {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.manager-dashboard > main {
+		padding-left: 1em;
+		width: 100%;
+	}
+
+	.manager-dashboard > aside {
+		grid-row-start: -1;
+	}
+}

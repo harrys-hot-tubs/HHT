@@ -104,4 +104,11 @@ export const accountIsPermitted = (
 	return accountRoles.some((role) => permittedRoles.includes(role))
 }
 
+export const hasRole = (
+	{ account_roles }: Pick<AccountDB, 'account_roles'>,
+	role: Role
+) => {
+	return account_roles.includes(role)
+}
+
 export default handleSSAuth
