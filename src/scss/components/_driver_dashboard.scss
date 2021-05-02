@@ -9,7 +9,7 @@
 
 .orders {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: 1fr;
 	width: 100%;
 	min-height: 85%;
 }
@@ -82,4 +82,10 @@ small > br {
 
 .react-datepicker__tab-loop {
 	display: inline-block;
+}
+
+@media screen and (orientation: landscape) {
+	.orders {
+		grid-template-columns: repeat(3, 1fr);
+	}
 }

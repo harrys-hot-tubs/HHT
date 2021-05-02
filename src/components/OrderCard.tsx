@@ -60,6 +60,12 @@ const OrderCard = ({
 								address_line_3,
 								postcode,
 							})}
+							{special_requests ? (
+								<>
+									<strong>Special Requests</strong>
+									{special_requests}
+								</>
+							) : null}
 						</>
 					) : null}
 				</div>
