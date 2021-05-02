@@ -1,3 +1,4 @@
+import LogoutButton from '@components/LogoutButton'
 import RecentlyFulfilled from '@components/RecentlyFulfilled'
 import RefundManager from '@components/RefundManager'
 import UpcomingOrders from '@components/UpcomingOrders'
@@ -28,6 +29,7 @@ const ManagerDashboard = () => {
 			<aside>
 				<RecentlyFulfilled orders={orders} />
 			</aside>
+			<LogoutButton />
 		</div>
 	)
 }

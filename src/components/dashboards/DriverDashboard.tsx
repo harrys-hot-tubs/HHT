@@ -1,4 +1,5 @@
 import DriverLists from '@components/DriverLists'
+import LogoutButton from '@components/LogoutButton'
 import useDateRange from '@hooks/useDateRange'
 import useDriverLocation from '@hooks/useDriverLocation'
 import useOrders from '@hooks/useOrders'
@@ -49,6 +50,7 @@ const DriverDashboard = () => {
 					minDate={rangeStart}
 				/>
 			</main>
+			<LogoutButton />
 		</div>
 	)
 }
