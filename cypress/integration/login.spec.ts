@@ -53,6 +53,14 @@ describe('form', () => {
 	})
 })
 
+it('redirects authenticated users to the dashboard', () => {
+	cy.task('generateToken', { index: 1 }).then((token: string) =>
+		cy.setCookie('token', token)
+	)
+	cy.reload()
+	cy.url().should('eq', Cypress.config().baseUrl + '/dashboard')
+})
+
 after(() => {
 	cy.task('cleanup').then(() => {})
 })

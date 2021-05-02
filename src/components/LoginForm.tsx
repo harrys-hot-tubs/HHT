@@ -12,6 +12,7 @@ import { Form } from 'react-bootstrap'
 const LoginForm = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
@@ -19,11 +20,13 @@ const LoginForm = () => {
 		event.stopPropagation()
 		try {
 			const params: AuthRequest = { email, password }
+			setLoading(true)
 			const res = await axios.post<AuthRequest, AuthResponse>(
 				'/api/auth',
 				params
 			)
 			const { token } = res.data as AuthResponse
+			setLoading(false)
 			router.push('/dashboard')
 			Cookies.set('token', token)
 		} catch (e) {
@@ -57,7 +60,7 @@ const LoginForm = () => {
 			<SpinnerButton
 				className='button'
 				type='submit'
-				status={false}
+				status={loading}
 				activeText='Logging in...'
 				data-testid='submit'
 			>

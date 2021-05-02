@@ -13,6 +13,7 @@ import handler, { prepareAccount } from '@pages/api/accounts'
 import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import { LocationDB } from '@typings/db/Location'
+import { StaffDB } from '@typings/db/Staff'
 import { NextApiResponse } from 'next'
 import { createMocks } from 'node-mocks-http'
 

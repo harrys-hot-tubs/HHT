@@ -24,6 +24,7 @@ export const storedOrder: OrderDB = {
 	booking_id: bookings[0].booking_id,
 	paid: false,
 	fulfilled: false,
+	returned: false,
 	first_name: 'John',
 	last_name: 'Doe',
 	email: 'email@doe.com',

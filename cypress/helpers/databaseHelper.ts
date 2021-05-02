@@ -9,10 +9,13 @@ import accounts from '../fixtures/accounts.json'
 export const PASSWORD = 'password'
 const SALT_ROUNDS = 10
 let connection = connector()()
-console.log(`process.env.AWS_DB`, process.env.AWS_DB)
 
 export const arbitraryInsert = async (tableName: string, data: any[]) => {
 	return await connection(tableName).insert(data)
+}
+
+export const clearTable = async (tableName: string) => {
+	return await connection(tableName).del()
 }
 
 export const addAccountsToDatabase = async () => {

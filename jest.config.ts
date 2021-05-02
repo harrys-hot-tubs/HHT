@@ -1,4 +1,4 @@
-export default {
+const config = {
 	clearMocks: false,
 	resetMocks: false,
 	coverageDirectory: 'coverage',
@@ -58,6 +58,13 @@ export default {
 			},
 		},
 	],
+	coverageThreshold: {
+		global: {
+			lines: 95,
+		},
+	},
 	roots: ['<rootDir>/src'],
 	testEnvironment: 'node',
 }
+
+export default config

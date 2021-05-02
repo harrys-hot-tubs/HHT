@@ -5,8 +5,9 @@ export interface OrderDB {
 	id: string
 	booking_id: number
 	payment_intent_id?: string
-	paid?: boolean
-	fulfilled?: boolean
+	paid: boolean
+	fulfilled: boolean
+	returned: boolean
 	first_name: string
 	last_name: string
 	email: string

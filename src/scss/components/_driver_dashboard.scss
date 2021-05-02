@@ -2,18 +2,48 @@
 	grid-template-columns: 1fr;
 }
 
+.outer.driver > main {
+	height: 100%;
+	width: 100%;
+}
+
 .orders {
 	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 	width: 100%;
-	grid-template-columns: 1fr;
-	place-items: center;
+	min-height: 85%;
+}
+
+.order-list {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0.7em;
+	margin: 0.7em;
+	background-color: darkgrey;
+	border: 0.1em solid grey;
+	border-radius: 1em;
+}
+
+.droppable-area {
+	height: 100%;
+	width: 100%;
 }
 
 .order-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	padding: 0.5em;
 	margin: 0.5em;
 	border: 2px solid;
 	border-radius: 10px;
+	background-color: white;
+	transition: ease-in 1s;
+}
+
+.order-card > hr {
+	width: 100%;
 }
 
 .order-card-divider {
@@ -38,18 +68,18 @@ small > br {
 	border-color: $primary-blue;
 }
 
-@media (min-width: 700px) {
-	.orders {
-		grid-template-columns: repeat(3, 1fr);
-	}
+.order-restriction {
+	display: inline-block;
+	width: 100%;
 }
 
-@media (min-width: 1000px) {
-	// .outer.driver {
-	// 	grid-template-columns: 1fr 200px;
-	// }
+.inline-picker {
+	border: none;
+	border-bottom: 2px solid $primary-pink;
+	line-height: 0.9em;
+	width: 10ch;
+}
 
-	.orders {
-		grid-template-columns: repeat(4, 1fr);
-	}
+.react-datepicker__tab-loop {
+	display: inline-block;
 }
