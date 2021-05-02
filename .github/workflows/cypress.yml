@@ -10,7 +10,8 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           build: yarn build
-          start: NODE_ENV=test yarn start
+          start: yarn start
+          env: NODE_ENV=test
       - name: Save Screenshots
         uses: actions/upload-artifact@v2
         if: failure()
