@@ -37,7 +37,7 @@ const post = async (
 				'first_name',
 				'last_name',
 				'telephone_number',
-				'roles',
+				'account_roles',
 			])
 		)[0]
 		return res.status(200).json(storedAccount)
