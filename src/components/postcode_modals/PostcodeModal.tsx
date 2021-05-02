@@ -2,6 +2,7 @@ import BlockedModal from '@components/postcode_modals/BlockedModal'
 import RangeModal from '@components/postcode_modals/RangeModal'
 import { PostcodeError } from '@utils/validators/postcodeValidator'
 import React, { useEffect, useState } from 'react'
+import InsuranceModal from './InsuranceModal'
 
 interface ComponentProps {
 	/**
@@ -24,8 +25,8 @@ export interface PostcodeModalProps {
 /**
  * All errors with currently supported modals.
  */
-const DISPLAYABLE: PostcodeError[] = ['range', 'blocked']
-
+const DISPLAYABLE: PostcodeError[] = ['range', 'blocked', 'insurance']
+ 
 /**
  * Generic modal to be displayed to the customer when an error is encountered when checking if delivery is available to their address.
  */
@@ -47,6 +48,8 @@ const PostcodeModal = ({ invalidReason }: ComponentProps) => {
 			return <RangeModal {...props} />
 		case 'blocked':
 			return <BlockedModal {...props} />
+		case 'insurance':
+			return <InsuranceModal {...props} />
 		default:
 			return null
 	}

@@ -34,9 +34,9 @@ const useAsyncValidatedInput = <T, U>({
 		setWorkingValue(storedValue)
 	}, [storedValue])
 
-	const makeValid = () => {
+	const makeValid = (message: U) => {
 		setValid(true)
-		setReason(undefined)
+		setReason(message)
 	}
 
 	const makeInvalid = (message: U) => {
@@ -46,11 +46,11 @@ const useAsyncValidatedInput = <T, U>({
 
 	const validate = async () => {
 		setLoading(true)
-		const [valid, error] = await validator(workingValue)
+		const [valid, message] = await validator(workingValue)
 		if (valid) {
-			makeValid()
+			makeValid(message)
 			setStoredValue(workingValue)
-		} else makeInvalid(error)
+		} else makeInvalid(message)
 
 		setLoading(false)
 	}

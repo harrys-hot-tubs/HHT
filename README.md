@@ -1,6 +1,5 @@
 # Harry's Hot Tubs
-
-[![Cypress Tests](https://github.com/harrys-hot-tubs/HHT/actions/workflows/cypress.yml/badge.svg)](https://github.com/harrys-hot-tubs/HHT/actions/workflows/cypress.yml)[![Jest Tests](https://github.com/harrys-hot-tubs/HHT/actions/workflows/jest.yml/badge.svg)](https://github.com/harrys-hot-tubs/HHT/actions/workflows/jest.yml)
+[![Cypress Tests](https://github.com/harrys-hot-tubs/HHT/actions/workflows/cypress.yml/badge.svg)](https://github.com/harrys-hot-tubs/HHT/actions/workflows/cypress.yml) [![Jest Tests](https://github.com/harrys-hot-tubs/HHT/actions/workflows/jest.yml/badge.svg)](https://github.com/harrys-hot-tubs/HHT/actions/workflows/jest.yml)<br/>
 
 This project is the [Harry's Hot Tubs site](http://harryshottubs.com/), built with [Next.js](https://nextjs.org/).
 

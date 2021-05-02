@@ -1,7 +1,13 @@
 import blockedOutcodes from '@json/blockedOutcodes.json'
 import { getCoordinates, isInRange, isPostcode } from '@utils/postcode'
 
-export type PostcodeError = 'missing' | 'format' | 'range' | 'other' | 'blocked'
+export type PostcodeError =
+	| 'missing'
+	| 'format'
+	| 'range'
+	| 'other'
+	| 'blocked'
+	| 'insurance'
 
 const validatePostcode = async (
 	postcode: string
@@ -19,11 +25,17 @@ const validatePostcode = async (
 		const [inRange, rangeError] = await isInRange(location)
 		if (rangeError) return [false, 'range']
 
+		if (valid && inRange && requiresImage(postcode)) return [true, 'insurance']
+
 		return [valid && inRange, null]
 	} catch (e) {
 		console.error(e.message)
 		return [false, 'other']
 	}
+}
+
+const requiresImage = (postcode: string) => {
+	return postcode.toUpperCase().startsWith('LS6')
 }
 
 const isBlocked = (postcode: string, blocked: string[] = blockedOutcodes) => {
