@@ -4,7 +4,7 @@ import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import db from '@utils/db'
 import { getToken, isAuthorised } from '@utils/SSAuth'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { NextApiResponse } from 'next'
 import { LocationDB } from '../../typings/db/Location'
 

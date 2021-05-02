@@ -2,7 +2,7 @@ import { AuthRequest, AuthResponse, TokenAccount } from '@typings/api/Auth'
 import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import db from '@utils/db'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { NextApiResponse } from 'next'
 

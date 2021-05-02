@@ -3,7 +3,7 @@ import { cleanupDatabase } from '@helpers/DBHelper'
 import { AccountDB } from '@typings/db/Account'
 import { connector } from '@utils/db'
 import { forEachAsync } from '@utils/index'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import accounts from '../fixtures/accounts.json'
 
 export const PASSWORD = 'password'
