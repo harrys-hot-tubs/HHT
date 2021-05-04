@@ -1,4 +1,4 @@
-import { TubDB } from '@typings/Tub'
+import { TubDB } from '@typings/db/Tub'
 import React from 'react'
 
 interface ComponentProps extends DisplayableTub {
@@ -6,12 +6,18 @@ interface ComponentProps extends DisplayableTub {
 }
 
 export interface DisplayableTub extends TubDB {
+	/**
+	 * Price of the hot tub booking over a previously specified period at a previously specified address.
+	 */
 	price: number
 }
 
+/**
+ * Displays an image of the tub and its associated price.
+ */
 const HotTub = ({ tub_id, max_capacity, price, onClick }: ComponentProps) => {
 	return (
-		<div onClick={() => onClick(tub_id)} className='card'>
+		<div onClick={() => onClick(tub_id)} className='tub-card'>
 			<img src={getImageHREF(max_capacity)} className='thumbnail' />
 			<div className='card-body'>
 				<span>{max_capacity}-Person</span>

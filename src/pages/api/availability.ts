@@ -3,8 +3,8 @@ import {
 	AvailabilityResponse,
 } from '@typings/api/Availability'
 import { ConnectedRequest } from '@typings/api/Request'
-import { BookingDB } from '@typings/Booking'
-import { TubDB } from '@typings/Tub'
+import { BookingDB } from '@typings/db/Booking'
+import { TubDB } from '@typings/db/Tub'
 import db from '@utils/db'
 import { Knex } from 'knex'
 import { NextApiResponse } from 'next'
@@ -36,6 +36,11 @@ const post = async (
 	}
 }
 
+/**
+ * Determines which hot tubs are available based on the conditions provided.
+ * @param db Knex instance.
+ * @returns An array of hot tubs that are available subject to the provided conditions.
+ */
 const findAvailableTubs = async (
 	{ closest, startDate, endDate }: AvailabilityRequest,
 	db: Knex

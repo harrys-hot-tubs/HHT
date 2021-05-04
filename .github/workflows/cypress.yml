@@ -1,7 +1,5 @@
 name: Cypress Tests
-
 on: [push]
-
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -13,6 +11,19 @@ jobs:
         with:
           build: yarn build
           start: yarn start
+          env: NODE_ENV=test
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - name: Save Video
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
     env:
       AWS_DB: ${{ secrets.AWS_DB }}
       AWS_DB_ENDPOINT: ${{ secrets.AWS_DB_ENDPOINT }}
@@ -24,3 +35,4 @@ jobs:
       WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
       MJ_PUBLIC: ${{ secrets.MJ_PUBLIC }}
       MJ_SECRET: ${{ secrets.MJ_SECRET }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}

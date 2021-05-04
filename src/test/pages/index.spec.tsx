@@ -1,6 +1,7 @@
 import { headedRender } from '@helpers/frontendHelper'
 import { mockUseRouter } from '@helpers/routerHelper'
 import Index from '@pages/index'
+import '@testing-library/jest-dom'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'

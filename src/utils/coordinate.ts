@@ -1,6 +1,9 @@
 import { Client } from '@googlemaps/google-maps-services-js'
 
 export default class Coordinate {
+	/**
+	 * Radius of the Earth in km.
+	 */
 	static R = 6371e3
 	static client = new Client({})
 	public latitude: number

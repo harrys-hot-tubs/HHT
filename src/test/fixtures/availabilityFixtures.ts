@@ -1,5 +1,6 @@
 import { locations } from '@fixtures/locationFixtures'
 import { AvailabilityRequest } from '@typings/api/Availability'
+import { generateEndDate, generateStartDate } from './bookingFixtures'
 
 export const openBookingRequest: AvailabilityRequest = {
 	closest: locations[0].location_id,
@@ -9,6 +10,6 @@ export const openBookingRequest: AvailabilityRequest = {
 
 export const closedBookingRequest: AvailabilityRequest = {
 	closest: locations[0].location_id,
-	startDate: '2021-03-05',
-	endDate: '2021-03-08',
+	startDate: generateStartDate(),
+	endDate: generateEndDate(),
 }

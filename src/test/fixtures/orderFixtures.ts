@@ -1,5 +1,6 @@
 import { bookings } from '@fixtures/bookingFixtures'
-import { CreateOrderRequest, OrderDB } from '@typings/api/Order'
+import { CreateOrderRequest } from '@typings/api/Order'
+import { OrderDB } from '@typings/db/Order'
 
 export const orderRequest: CreateOrderRequest = {
 	checkout_session_id: 'checkout_session_id',
@@ -23,6 +24,7 @@ export const storedOrder: OrderDB = {
 	booking_id: bookings[0].booking_id,
 	paid: false,
 	fulfilled: false,
+	returned: false,
 	first_name: 'John',
 	last_name: 'Doe',
 	email: 'email@doe.com',
@@ -33,5 +35,5 @@ export const storedOrder: OrderDB = {
 	special_requests: '',
 	referee: 'Instagram',
 	postcode: 'AB2 2CD',
-	created_at: '2021-03-08 10:59:59',
+	created_at: '2021-03-08T10:59:59.000Z',
 }

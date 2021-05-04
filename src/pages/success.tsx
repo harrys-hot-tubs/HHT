@@ -10,6 +10,9 @@ interface PageProps {
 	totalPrice: string
 }
 
+/**
+ * Page displayed to the customer when their order is processed successfully.
+ */
 const Success = ({ totalPrice }: PageProps) => {
 	return (
 		<div className='success-container'>

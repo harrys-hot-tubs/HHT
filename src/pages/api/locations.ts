@@ -1,17 +1,30 @@
 import { RangeRequest, RangeResponse } from '@typings/api/Locations'
 import { ConnectedRequest } from '@typings/api/Request'
-import { LocationDB } from '@typings/Location'
+import { LocationDB } from '@typings/db/Location'
 import Coordinate from '@utils/coordinate'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
+		case 'GET':
+			return await get(req, res)
 		case 'POST':
 			return await post(req, res)
 		default:
-			res.setHeader('Allow', 'POST')
+			res.setHeader('Allow', ['GET', 'POST'])
 			res.status(405).end('Method not allowed.')
+	}
+}
+
+const get = async (req: ConnectedRequest, res: NextApiResponse) => {
+	const { db } = req
+	try {
+		const locations: LocationDB[] = await db('locations').select()
+		res.status(200).json(locations)
+	} catch (error) {
+		console.error(error)
+		res.status(500).end()
 	}
 }
 
@@ -54,6 +67,11 @@ const post = async (
 	}
 }
 
+/**
+ * Transforms a location object from the database into a Coordinate object.
+ * @param location A location stored in the database.
+ * @returns A coordinate object representing the geographic position of the location object.
+ */
 const locationToCoordinate = (location: LocationDB) =>
 	new Coordinate(location.latitude, location.longitude)
 

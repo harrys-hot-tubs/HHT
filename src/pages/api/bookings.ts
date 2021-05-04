@@ -1,5 +1,5 @@
 import { ConnectedRequest } from '@typings/api/Request'
-import { BookingDB } from '@typings/Booking'
+import { BookingDB } from '@typings/db/Booking'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'
 

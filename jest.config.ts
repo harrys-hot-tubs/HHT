@@ -1,4 +1,4 @@
-export default {
+const config = {
 	clearMocks: false,
 	resetMocks: false,
 	coverageDirectory: 'coverage',
@@ -12,7 +12,10 @@ export default {
 	preset: 'ts-jest',
 	projects: [
 		{
-			setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
+			setupFilesAfterEnv: [
+				'@testing-library/jest-dom/extend-expect',
+				'<rootDir>/src/test/setup/setupSWR.ts',
+			],
 			setupFiles: ['jest-localstorage-mock'],
 			displayName: 'frontend',
 			testEnvironment: 'jsdom',
@@ -51,9 +54,17 @@ export default {
 				'@test/(.*)$': '<rootDir>/src/test/$1',
 				'@fixtures/(.*)$': '<rootDir>/src/test/fixtures/$1',
 				'@json/(.*)$': '<rootDir>/src/json/$1',
+				'@helpers/(.*)$': '<rootDir>/src/test/helpers/$1',
 			},
 		},
 	],
+	coverageThreshold: {
+		global: {
+			lines: 95,
+		},
+	},
 	roots: ['<rootDir>/src'],
 	testEnvironment: 'node',
 }
+
+export default config

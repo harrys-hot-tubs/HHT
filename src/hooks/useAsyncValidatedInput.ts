@@ -3,19 +3,25 @@ import { useEffect, useState } from 'react'
 
 export interface UseAsyncValidatedInputArgs<T, U>
 	extends UseStoredStateArgs<T> {
+	/**
+	 * Async function to be executed to check the validity of the input.
+	 */
 	validator: (value: T) => Promise<[boolean, U]>
 }
 
+/**
+ * Generic hook that allows user input to be validated asynchronously.
+ */
 const useAsyncValidatedInput = <T, U>({
 	validator,
-	name,
+	key,
 	fallback,
 	toString,
 	fromString,
 }: UseAsyncValidatedInputArgs<T, U>) => {
 	const [storedValue, setStoredValue] = useStoredState<T>({
 		fallback,
-		name,
+		key,
 		toString,
 		fromString,
 	})

@@ -2,6 +2,9 @@ import useConsent from '@hooks/useConsent'
 import React, { useEffect, useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 
+/**
+ * A modal asking for the user's consent to use tracking cookies. If consent is given it tracks page views using a Facebook pixel.
+ */
 const CookieConsentModal = () => {
 	const [consent, setConsent] = useConsent()
 

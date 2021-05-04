@@ -1,0 +1,91 @@
+.outer.driver {
+	grid-template-columns: 1fr;
+}
+
+.outer.driver > main {
+	height: 100%;
+	width: 100%;
+}
+
+.orders {
+	display: grid;
+	grid-template-columns: 1fr;
+	width: 100%;
+	min-height: 85%;
+}
+
+.order-list {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0.7em;
+	margin: 0.7em;
+	background-color: darkgrey;
+	border: 0.1em solid grey;
+	border-radius: 1em;
+}
+
+.droppable-area {
+	height: 100%;
+	width: 100%;
+}
+
+.order-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 0.5em;
+	margin: 0.5em;
+	border: 2px solid;
+	border-radius: 10px;
+	background-color: white;
+	transition: ease-in 1s;
+}
+
+.order-card > hr {
+	width: 100%;
+}
+
+.order-card-divider {
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+.order-address {
+	font-size: 0.9rem;
+}
+
+small > br {
+	display: block;
+	margin-bottom: -0.5em;
+}
+
+.order-card.today {
+	border-color: red;
+}
+
+.order-card.upcoming {
+	border-color: $primary-blue;
+}
+
+.order-restriction {
+	display: inline-block;
+	width: 100%;
+}
+
+.inline-picker {
+	border: none;
+	border-bottom: 2px solid $primary-pink;
+	line-height: 0.9em;
+	width: 10ch;
+}
+
+.react-datepicker__tab-loop {
+	display: inline-block;
+}
+
+@media screen and (orientation: landscape) {
+	.orders {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}

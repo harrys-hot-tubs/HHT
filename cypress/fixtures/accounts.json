@@ -1,0 +1,18 @@
+[
+	{
+		"account_id": 1,
+		"email_address": "johndoe@gmail.com",
+		"first_name": "John",
+		"last_name": "Doe",
+		"telephone_number": "123456",
+		"account_roles": ["manager"]
+	},
+	{
+		"account_id": 2,
+		"email_address": "johnsmith@gmail.com",
+		"first_name": "John",
+		"last_name": "Smith",
+		"telephone_number": "123456",
+		"account_roles": ["driver"]
+	}
+]

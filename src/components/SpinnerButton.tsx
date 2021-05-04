@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEventHandler, ReactNode } from 'react'
 import { Spinner } from 'react-bootstrap'
 
 type Type = 'button' | 'submit' | 'reset'
@@ -6,19 +6,28 @@ type Type = 'button' | 'submit' | 'reset'
 interface ComponentProps {
 	id?: string
 	className?: string
+	/**
+	 * Whether the spinner is active.
+	 */
 	status: boolean
 	type?: Type
 	value?: string
-	children: React.ReactNode
+	children: ReactNode
+	/**
+	 * The text to be displayed when the spinner is active.
+	 */
 	activeText: string
 	disabled?: boolean
-	onClick?: React.MouseEventHandler<HTMLElement>
+	onClick?: MouseEventHandler<HTMLElement>
 	'data-testid'?: string
 }
 
+/**
+ * Generic button that allows async actions to be performed, while keeping the user updated, when it is clicked.
+ */
 const SpinnerButton = ({
 	id,
-	className,
+	className = 'button',
 	status,
 	type = 'button',
 	value,

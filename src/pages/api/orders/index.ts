@@ -1,6 +1,7 @@
-import { CreateOrderRequest, OrderDB } from '@typings/api/Order'
+import { CreateOrderRequest } from '@typings/api/Order'
 import { ConnectedRequest } from '@typings/api/Request'
-import { BookingDB } from '@typings/Booking'
+import { BookingDB } from '@typings/db/Booking'
+import { OrderDB, PopulatedOrder } from '@typings/db/Order'
 import db from '@utils/db'
 import { forEachAsync } from '@utils/index'
 import moment from 'moment'
@@ -13,13 +14,31 @@ const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
+		case 'GET':
+			return await get(req, res)
 		case 'POST':
 			return await post(req, res)
 		case 'DELETE':
 			return await removeStale(req, res)
 		default:
-			res.setHeader('Allow', ['POST', 'DELETE'])
+			res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
 			res.status(405).end('Method not allowed.')
+	}
+}
+
+const get = async (
+	req: ConnectedRequest,
+	res: NextApiResponse<PopulatedOrder[]>
+) => {
+	try {
+		const { db } = req
+		const orders = await db<PopulatedOrder>('orders')
+			.select()
+			.join('bookings', 'orders.booking_id', '=', 'bookings.booking_id')
+			.join('tubs', 'tubs.tub_id', '=', 'bookings.tub_id')
+		return res.status(200).json(orders)
+	} catch (e) {
+		return res.status(400).json(e)
 	}
 }
 

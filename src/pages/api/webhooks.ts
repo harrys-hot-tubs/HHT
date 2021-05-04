@@ -1,7 +1,7 @@
-import { OrderDB } from '@typings/api/Order'
 import { ConnectedRequest } from '@typings/api/Request'
-import { LocationDB } from '@typings/Location'
-import { TubDB } from '@typings/Tub'
+import { LocationDB } from '@typings/db/Location'
+import { OrderDB } from '@typings/db/Order'
+import { TubDB } from '@typings/db/Tub'
 import db from '@utils/db'
 import { priceToString } from '@utils/stripe'
 import Cors from 'cors'
@@ -107,6 +107,11 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	}
 }
 
+/**
+ * Finds the checkout session that produced a specified payment intent.
+ * @param paymentIntentID An id representing a payment intent.
+ * @returns The checkout session the payment intent belongs to.
+ */
 const getCheckoutSessionID = async (paymentIntentID: string) => {
 	const checkoutSession = await stripe.checkout.sessions.list({
 		payment_intent: paymentIntentID,
@@ -117,6 +122,13 @@ const getCheckoutSessionID = async (paymentIntentID: string) => {
 	return checkoutSession.data[0].id
 }
 
+/**
+ * Sends an email notification to Harry informing him of the details of a processed order.
+ * @param order Information describing a specific order, stored in the database.
+ * @param db A Knex instance to allow connection to the database.
+ * @param paymentIntent The payment intent of the order.
+ * @param success True if the order was paid for successfully.
+ */
 const sendEmailNotification = async (
 	order: OrderDB,
 	db: Knex,

@@ -8,6 +8,7 @@
 		"googlemaps",
 		"localstorage",
 		"mailjet",
-		"outcode"
+		"outcode",
+		"testid"
 	]
 }

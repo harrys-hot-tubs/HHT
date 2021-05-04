@@ -2,6 +2,9 @@ import useConsent from '@hooks/useConsent'
 import { Router } from 'next/router'
 import { useEffect } from 'react'
 
+/**
+ * Facebook Pixel that tracks page views when consent is granted.
+ */
 const FacebookPixel = () => {
 	const [consent] = useConsent()
 
