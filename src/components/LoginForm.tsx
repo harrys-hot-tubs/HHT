@@ -19,7 +19,7 @@ const LoginForm = () => {
 		event.preventDefault()
 		event.stopPropagation()
 		try {
-			const params: AuthRequest = { email, password }
+			const params: AuthRequest = { email: email.toLowerCase(), password }
 			setLoading(true)
 			const res = await axios.post<AuthRequest, AuthResponse>(
 				'/api/auth',
