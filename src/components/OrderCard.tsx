@@ -47,6 +47,7 @@ const OrderCard = ({
 					<h5 data-testid='full_name' style={{ marginBottom: 0 }}>
 						{first_name + ' ' + last_name}
 					</h5>
+
 					<hr className='order-card-divider' />
 					<small className='text-muted'>
 						{dates({ booking_duration, state })}
@@ -60,6 +61,8 @@ const OrderCard = ({
 								address_line_3,
 								postcode,
 							})}
+							<hr className='order-card-divider' />
+							<small className='text-muted'>Contact: {telephone_number}</small>
 							{special_requests ? (
 								<>
 									<strong>Special Requests</strong>
