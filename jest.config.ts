@@ -23,7 +23,6 @@ const config = {
 			transform: {
 				'^.+\\.(js|ts)$': 'ts-jest',
 				'^.+\\.(jsx|tsx)$': 'babel-jest',
-				'^.+\\.svg$': 'jest-svg-transformer',
 			},
 			moduleNameMapper: {
 				'@components/(.*)$': '<rootDir>/src/components/$1',
