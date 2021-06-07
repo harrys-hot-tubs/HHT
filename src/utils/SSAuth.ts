@@ -4,10 +4,10 @@ import validateToken, {
 	isTokenAccount,
 	TokenError,
 } from '@utils/validators/tokenValidator'
+import { IncomingMessage } from 'http'
 import jwt from 'jsonwebtoken'
 import { GetServerSidePropsContext } from 'next'
 import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils'
-import { IncomingMessage } from 'node:http'
 import { ParsedUrlQuery } from 'querystring'
 
 export type SSRRequest = IncomingMessage & {
@@ -75,9 +75,7 @@ export const fetchAccount = async (
 	await connection.destroy()
 	return {
 		...rawAccount,
-		account_roles: convertRoles(
-			(rawAccount.account_roles as unknown) as string
-		),
+		account_roles: convertRoles(rawAccount.account_roles as unknown as string),
 	}
 }
 
