@@ -6,12 +6,14 @@ import {
 	chester,
 	durham,
 	edinburgh,
-	failedRangeResponse,
 	liverpool,
 	newcastle,
 	sheffield,
-	successfulRangeResponse,
 } from '@fixtures/postcodeFixtures'
+import {
+	failedRangeResponse,
+	successfulRangeResponse,
+} from '@fixtures/rangeFixtures'
 import {
 	getClosestDispatcher,
 	getCoordinates,
