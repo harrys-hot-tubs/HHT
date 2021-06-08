@@ -6,7 +6,19 @@
 		"noEmit": true,
 		// be explicit about types included
 		// to avoid clashing with Jest types
-		"types": ["cypress"]
+		"types": ["cypress"],
+		"baseUrl": "../src",
+		"paths": {
+			"@components/*": ["components/*"],
+			"@pages/*": ["pages/*"],
+			"@hooks/*": ["hooks/*"],
+			"@typings/*": ["typings/*"],
+			"@utils/*": ["utils/*"],
+			"@test/*": ["test/*"],
+			"@fixtures/*": ["test/fixtures/*"],
+			"@helpers/*": ["test/helpers/*"],
+			"@json/*": ["json/*"]
+		}
 	},
-	"include": ["../node_modules/cypress", "./*/*.ts"]
+	"include": ["../node_modules/cypress", "**/*.ts", "../src/**/*.ts"]
 }

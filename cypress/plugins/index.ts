@@ -1,3 +1,4 @@
+import wp from '@cypress/webpack-batteries-included-preprocessor'
 import { TokenAccount } from '@typings/api/Auth'
 import jwt from 'jsonwebtoken'
 import accounts from '../fixtures/accounts.json'
@@ -7,8 +8,24 @@ import {
 	cleanupConnection,
 	clearTable,
 } from '../helpers/databaseHelper'
+import wpConfig from '../webpack.config'
 
+/**
+ * @type {Cypress.PluginConfig}
+ */
 module.exports = (on, config) => {
+	on(
+		'file:preprocessor',
+		wp({
+			typescript: require.resolve('typescript'),
+			webpackOptions: {
+				...wpConfig,
+				resolve: {
+					extensions: ['.ts', '.tsx', '.js', '.jsx'],
+				},
+			},
+		})
+	)
 	on('task', {
 		async DBClear({ tableName }: { tableName: string }) {
 			return await clearTable(tableName)

@@ -1,6 +1,7 @@
 import { bir } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { birmingham, failedRangeResponse } from '@fixtures/postcodeFixtures'
+import { birmingham } from '@fixtures/postcodeFixtures'
+import { failedRangeResponse } from '@fixtures/rangeFixtures'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { setStorage } from '../helpers/localStorageHelper'
