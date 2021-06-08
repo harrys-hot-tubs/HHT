@@ -7,12 +7,8 @@ import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
 import { mixedSizes } from '@fixtures/tubsFixtures'
 import { extractBookingStart } from '@utils/date'
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import accounts from '../fixtures/accounts.json'
 import { setStorage } from '../helpers/localStorageHelper'
-
-const mock = new MockAdapter(axios)
 
 before(() => {
 	cy.task('addAccounts')
@@ -105,7 +101,8 @@ describe("driver's dashboard", () => {
 	})
 
 	it('allows cards to be dragged from one column to another', () => {
-		mock.onPost(`/api/orders/${storedOrder.id}`).replyOnce(200)
+		cy.intercept('POST', `/api/orders/${storedOrder.id}`, { statusCode: 200 })
+
 		setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
 		cy.reload()
 

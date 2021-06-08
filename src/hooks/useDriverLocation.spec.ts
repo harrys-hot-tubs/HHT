@@ -47,7 +47,10 @@ it('responds with an error when request fails', async () => {
 	})
 
 	await waitForNextUpdate()
-	expect(result.current.isError).toBeTruthy()
+	expect(result.current.isLoading).toBe(false)
+	expect(
+		result.current.isError || Object.keys(result.current.location).length === 0
+	).toBeTruthy()
 })
 
 it('responds with data when request succeeds', async () => {

@@ -2,11 +2,7 @@ import { bir } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { birmingham } from '@fixtures/postcodeFixtures'
 import { failedRangeResponse } from '@fixtures/rangeFixtures'
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import { setStorage } from '../helpers/localStorageHelper'
-
-const mock = new MockAdapter(axios)
 
 beforeEach(() => {
 	setStorage({ consent: 'true' })
@@ -30,36 +26,57 @@ describe('postcode field', () => {
 	it('recognises valid postcode', () => {
 		const testedPostcode = birmingham
 
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}/validate`)
-			.reply(200, {
-				result: { isValid: true },
-			})
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}`)
-			.reply(200, {
-				result: { latitude: bir.latitude, longitude: bir.longitude },
-			})
-		mock.onPost(`/api/locations`).reply(200, {
-			inRange: true,
-			closest: locations[0],
+		cy.intercept(
+			'GET',
+			`https://api.postcodes.io/postcodes/${testedPostcode}/validate`,
+			{
+				statusCode: 200,
+				body: {
+					result: { isValid: true },
+				},
+			}
+		)
+
+		cy.intercept(
+			'GET',
+			`https://api.postcodes.io/postcodes/${testedPostcode}`,
+			{
+				statusCode: 200,
+				body: {
+					result: { latitude: bir.latitude, longitude: bir.longitude },
+				},
+			}
+		)
+
+		cy.intercept('POST', `/api/locations`, {
+			statusCode: 200,
+			body: {
+				inRange: true,
+				closest: locations[0],
+			},
 		})
 
 		cy.get('[aria-label=postcode]')
+			.as('postcode-field')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
 		cy.get('[data-testid="postcode-validate"]').click()
-		cy.get('[role=alert]').should('not.be.visible')
+		cy.get('@postcode-field').should('have.class', 'is-valid')
 	})
 
 	it('recognises postcodes of the wrong format', async () => {
 		const testedPostcode = birmingham
 
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}/validate`)
-			.reply(200, {
-				result: { isValid: false },
-			})
+		cy.intercept(
+			'GET',
+			`https://api.postcodes.io/postcodes/${testedPostcode}/validate`,
+			{
+				statusCode: 200,
+				body: {
+					result: { isValid: false },
+				},
+			}
+		)
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
@@ -74,11 +91,16 @@ describe('postcode field', () => {
 	it('recognises postcodes that are blocked', async () => {
 		const testedPostcode = 'SE1 1AP'
 
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}/validate`)
-			.reply(200, {
-				result: { isValid: false },
-			})
+		cy.intercept(
+			'GET',
+			`https://api.postcodes.io/postcodes/${testedPostcode}/validate`,
+			{
+				statusCode: 200,
+				body: {
+					result: { isValid: false },
+				},
+			}
+		)
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
@@ -93,7 +115,10 @@ describe('postcode field', () => {
 	it('recognises postcodes that are out of range', async () => {
 		const testedPostcode = birmingham
 
-		mock.onPost('/api/locations').reply(200, failedRangeResponse)
+		cy.intercept('POST', `/api/locations`, {
+			statusCode: 200,
+			body: failedRangeResponse,
+		})
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
