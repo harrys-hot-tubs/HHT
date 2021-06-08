@@ -48,5 +48,10 @@ export const extractBookingEnd = (bookingDuration: string): Date => {
  * @returns True if the date object is today.
  */
 export const isToday = (date: Date): boolean => {
-	return date.getTime() === new Date().getTime()
+	const today = new Date()
+	return (
+		date.getDate() === today.getDate() &&
+		date.getMonth() === today.getMonth() &&
+		date.getFullYear() === today.getFullYear()
+	)
 }
