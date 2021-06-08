@@ -1,6 +1,7 @@
 import { RefereeOptions } from '@components/CheckoutForm'
-import { formData } from '@fixtures/checkoutFixtures'
+import { formData, validCheckoutInformation } from '@fixtures/checkoutFixtures'
 import { setStorage } from '@helpers/localStorageHelper'
+import { CheckoutInformation, Fallback } from '@hooks/useCheckoutInformation'
 import { displayableMoment, stringToMoment } from '@utils/date'
 
 beforeEach(() => {
@@ -11,6 +12,12 @@ beforeEach(() => {
 
 it('sets the page title', () => {
 	cy.title().should('eq', 'Checkout')
+})
+
+it('redirects to hire if data is not present', () => {
+	cy.clearLocalStorage()
+	cy.visit('/checkout')
+	cy.location('pathname').should('eq', '/hire')
 })
 
 describe('rendering', () => {
@@ -87,6 +94,130 @@ describe('rendering', () => {
 
 	it('renders only these fields', () => {
 		cy.get('.form-group').should('have.length', 12)
+	})
+})
+
+describe('data entry', () => {
+	beforeEach(() => {
+		setStorage(formData)
+	})
+
+	it('takes in data from the first name field', () => {
+		const { firstName } = validCheckoutInformation
+		cy.get('[aria-label=first-name]').type(firstName)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				firstName,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the last name field', () => {
+		const { lastName } = validCheckoutInformation
+		cy.get('[aria-label=last-name]').type(lastName)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				lastName,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the email field', () => {
+		const { email } = validCheckoutInformation
+		cy.get('[aria-label=email]').type(email)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				email,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the telephone number field', () => {
+		const { telephoneNumber } = validCheckoutInformation
+		cy.get('[aria-label=telephone]').type(telephoneNumber)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				telephoneNumber,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the address line 1 field', () => {
+		const { addressLine1 } = validCheckoutInformation
+		cy.get('[aria-label=address1]').type(addressLine1)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				addressLine1,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the address line 2 field', () => {
+		const { addressLine2 } = validCheckoutInformation
+		cy.get('[aria-label=address2]').type(addressLine2)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				addressLine2,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the address line 3 field', () => {
+		const { addressLine3 } = validCheckoutInformation
+		cy.get('[aria-label=address3]').type(addressLine3)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				addressLine3,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the referee field', () => {
+		const { referee } = validCheckoutInformation
+		cy.get('[aria-label=referee]').type(referee)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				referee,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('takes in data from the requests field', () => {
+		const { specialRequests } = validCheckoutInformation
+		cy.get('[aria-label=requests]').type(specialRequests)
+		cy.getLocalStorage('checkoutInformation').should(
+			'eq',
+			JSON.stringify({
+				...Fallback,
+				specialRequests,
+			} as CheckoutInformation)
+		)
+	})
+
+	it('indicates invalid fields on the form', () => {
+		cy.get('.checkout-button').click()
+		cy.get('[role=alert]')
+			.should('have.length.within', 8, 12)
+			.each((message) => {
+				expect(message).to.have.css('display', 'block')
+				expect(message).not.to.have.css('display', 'none')
+			})
 	})
 })
 
