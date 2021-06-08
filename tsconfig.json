@@ -7,6 +7,7 @@
 		"allowJs": true,
 		"skipLibCheck": true,
 		"strict": false,
+		"useDefineForClassFields": true,
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
 		"esModuleInterop": true,
