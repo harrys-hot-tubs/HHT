@@ -33,7 +33,7 @@ export default class Coordinate {
 	 * @param c The coordinate to be assessed.
 	 * @returns True if the coordinates are within 30 miles of each other.
 	 */
-	private isInRangeOf(c: Coordinate) {
+	isInRangeOf(c: Coordinate) {
 		return this.distanceTo(c) < 30 * 1609.334
 	}
 
@@ -45,7 +45,7 @@ export default class Coordinate {
 	 * @param location The coordinate to be compared.
 	 * @returns The distance between the two coordinates in m.
 	 */
-	private distanceTo(location: Coordinate) {
+	distanceTo(location: Coordinate) {
 		if (this === location) return 0
 
 		const lat1 = this.latitude
