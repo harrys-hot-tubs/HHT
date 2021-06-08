@@ -4,8 +4,8 @@ export default class Coordinate {
 	/**
 	 * Radius of the Earth in km.
 	 */
-	static R = 6371e3
-	static client = new Client({})
+	private static R = 6371e3
+	private static client = new Client({})
 	public latitude: number
 	public longitude: number
 
@@ -33,7 +33,7 @@ export default class Coordinate {
 	 * @param c The coordinate to be assessed.
 	 * @returns True if the coordinates are within 30 miles of each other.
 	 */
-	isInRangeOf(c: Coordinate) {
+	private isInRangeOf(c: Coordinate) {
 		return this.distanceTo(c) < 30 * 1609.334
 	}
 
@@ -45,7 +45,7 @@ export default class Coordinate {
 	 * @param location The coordinate to be compared.
 	 * @returns The distance between the two coordinates in m.
 	 */
-	distanceTo(location: Coordinate) {
+	private distanceTo(location: Coordinate) {
 		if (this === location) return 0
 
 		const lat1 = this.latitude
