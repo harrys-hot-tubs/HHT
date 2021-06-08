@@ -102,6 +102,12 @@ export const accountIsPermitted = (
 	return accountRoles.some((role) => permittedRoles.includes(role))
 }
 
+/**
+ * Checks whether a given account has a given role.
+ * @param account The account to be checked.
+ * @param role The role the account is to be checked against.
+ * @returns true if the account has the role, false otherwise.
+ */
 export const hasRole = (
 	{ account_roles }: Pick<AccountDB, 'account_roles'>,
 	role: Role

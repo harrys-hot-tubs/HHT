@@ -1,11 +1,11 @@
 import { locations } from '@fixtures/locationFixtures'
+import SWRWrapper from '@helpers/SWRWrapper'
 import useDriverLocation from '@hooks/useDriverLocation'
-import SWRWrapper from '@test/helpers/SWRWrapper'
 import { renderHook } from '@testing-library/react-hooks'
+import { LocationDB } from '@typings/db/Location'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { cache } from 'swr'
-import { LocationDB } from '../typings/db/Location'
 
 const mock = new MockAdapter(axios)
 const successValue: Pick<LocationDB, 'name' | 'location_id'> = {

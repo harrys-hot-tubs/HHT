@@ -1,12 +1,14 @@
-import { storedOrder } from '@fixtures/orderFixtures'
-import useOrders from '@hooks/useOrders'
-import SWRWrapper from '@test/helpers/SWRWrapper'
+import { locations } from '@fixtures/locationFixtures'
+import SWRWrapper from '@helpers/SWRWrapper'
+import useLocations from '@hooks/useLocations'
 import { renderHook } from '@testing-library/react-hooks'
+import { LocationDB } from '@typings/db/Location'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { cache } from 'swr'
 
 const mock = new MockAdapter(axios)
+const successValue: LocationDB[] = locations
 
 afterEach(() => {
 	mock.reset()
@@ -15,8 +17,8 @@ afterEach(() => {
 })
 
 it('indicates loading before receiving data', async () => {
-	mock.onGet('/api/orders').replyOnce(200, ['as'])
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
+	mock.onGet('/api/locations').replyOnce(200, successValue)
+	const { result, waitForNextUpdate } = renderHook(useLocations, {
 		wrapper: SWRWrapper,
 	})
 
@@ -25,8 +27,8 @@ it('indicates loading before receiving data', async () => {
 })
 
 it('stops indicating loading after receiving data', async () => {
-	mock.onGet('/api/orders').replyOnce(200, [])
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
+	mock.onGet('/api/locations').replyOnce(200, {})
+	const { result, waitForNextUpdate } = renderHook(useLocations, {
 		wrapper: SWRWrapper,
 	})
 
@@ -36,27 +38,26 @@ it('stops indicating loading after receiving data', async () => {
 
 it('responds with an error when request fails', async () => {
 	const error = { message: 'failed' }
-	mock.onGet('/api/orders').replyOnce(400, error)
+	mock.onGet('/api/locations').replyOnce(400, error)
 
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
-		wrapper: SWRWrapper,
-	})
-
-	await waitForNextUpdate() // This await sometimes has orders change before an error is added
-	expect(result.current.isLoading).toBe(false)
-	expect(
-		result.current.isError || result.current.orders.length === 0
-	).toBeTruthy()
-})
-
-it('responds with data when request succeeds', async () => {
-	mock.onGet('/api/orders').replyOnce(200, [storedOrder])
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
+	const { result, waitForNextUpdate } = renderHook(useLocations, {
 		wrapper: SWRWrapper,
 	})
 
 	await waitForNextUpdate()
 	expect(result.current.isLoading).toBe(false)
-	expect(result.current.orders).toHaveLength(1)
-	expect(result.current.orders).toEqual([storedOrder])
+	expect(
+		result.current.isError || Object.keys(result.current.locations).length === 0
+	).toBeTruthy()
+})
+
+it('responds with data when request succeeds', async () => {
+	mock.onGet('/api/locations').replyOnce(200, successValue)
+	const { result, waitForNextUpdate } = renderHook(useLocations, {
+		wrapper: SWRWrapper,
+	})
+
+	await waitForNextUpdate()
+	expect(result.current.isLoading).toBe(false)
+	expect(result.current.locations).toEqual(successValue)
 })
