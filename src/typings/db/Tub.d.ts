@@ -1,6 +1,8 @@
+import { LocationDB } from '@typings/db/Location'
+
 export interface TubDB {
 	tub_id: number
-	location_id: number
+	location_id: LocationDB['location_id']
 	max_capacity: number
 	available: boolean
 }
