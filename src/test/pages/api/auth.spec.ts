@@ -1,4 +1,4 @@
-import { completeAccount } from '@fixtures/accountsFixtures'
+import { completeAccount } from '@fixtures/accountFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import { prepareAccount } from '@pages/api/accounts'
 import handler from '@pages/api/auth'

@@ -2,7 +2,7 @@ import { ListID } from '@components/OrderList'
 import { RefundModalVersion } from '@hooks/useRefundModal'
 import { PopulatedOrder } from '@typings/db/Order'
 import { RefundDB } from '@typings/db/Refund'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { DraggableLocation, SensorAPI } from 'react-beautiful-dnd'
 import { Button, Form, Modal } from 'react-bootstrap'
@@ -50,13 +50,19 @@ const RefundModal = ({
 
 	const addRefund: React.FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault()
-		const body: Pick<RefundDB, 'damaged' | 'damage_information'> = {
-			damaged,
-			damage_information: damageDetails,
-		}
 		setLoading(true)
+
 		try {
-			await axios.post(`/api/refunds/${order.id}`, body)
+			const { data: res } = await axios.post<
+				Pick<RefundDB, 'damaged' | 'damage_information'>,
+				AxiosResponse<{ inserted: RefundDB[] }>
+			>(`/api/refunds/${order.id}`, {
+				damaged,
+				damage_information: damageDetails,
+			})
+
+			if (res.inserted.length === 0)
+				throw new Error('No refunds were inserted.')
 		} catch (e) {
 			console.warn(e)
 		} finally {
@@ -69,7 +75,12 @@ const RefundModal = ({
 		event.preventDefault()
 		setLoading(true)
 		try {
-			await axios.delete(`/api/refunds/${order.id}`)
+			const { data: res } = await axios.delete<
+				any,
+				AxiosResponse<{ removed: RefundDB[] }>
+			>(`/api/refunds/${order.id}`)
+
+			if (res.removed.length === 0) throw new Error('No refunds were removed.')
 		} catch (e) {
 			console.warn(e)
 		} finally {
@@ -135,6 +146,7 @@ const RefundModal = ({
 								onChange={() => setDamaged(!damaged)}
 								checked={damaged}
 								label={`Did ${order?.first_name} ${order?.last_name} damage the hot tub?`}
+								data-testid='damage-checkbox'
 							/>
 						</Form.Group>
 						<Form.Group>
@@ -145,17 +157,22 @@ const RefundModal = ({
 								value={damageDetails}
 								onChange={(e) => setDamageDetails(e.currentTarget.value)}
 								as='textarea'
+								data-testid='damage-details'
 							/>
 						</Form.Group>
 						<SpinnerButton
-							data-testid='process-refund-button'
+							data-testid='submit-button'
 							type='submit'
 							activeText='Submitting...'
 							status={loading}
 						>
 							Submit
 						</SpinnerButton>
-						<Button variant='secondary' onClick={undo}>
+						<Button
+							variant='secondary'
+							onClick={undo}
+							data-testid='reset-button'
+						>
 							Go Back
 						</Button>
 					</Form>
@@ -170,10 +187,15 @@ const RefundModal = ({
 							onClick={removeRefund}
 							activeText='Removing...'
 							status={loading}
+							data-testid='submit-button'
 						>
 							Yes
 						</SpinnerButton>
-						<Button variant='secondary' onClick={undo}>
+						<Button
+							variant='secondary'
+							onClick={undo}
+							data-testid='reset-button'
+						>
 							No
 						</Button>
 					</div>

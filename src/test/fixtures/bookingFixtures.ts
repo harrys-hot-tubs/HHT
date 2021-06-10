@@ -1,4 +1,4 @@
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { mixedSizes } from '@fixtures/tubFixtures'
 import { BookingDB } from '@typings/db/Booking'
 
 export const generateStartDate = (): string => {

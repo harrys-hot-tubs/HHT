@@ -20,7 +20,11 @@ const UpcomingOrders = ({ orders }: ComponentProps) => {
 						</h5>
 						<small>
 							Starting{' '}
-							{extractBookingStart(order.booking_duration).toLocaleDateString()}
+							<span data-testid='order-date'>
+								{extractBookingStart(
+									order.booking_duration
+								).toLocaleDateString()}
+							</span>
 						</small>
 					</div>
 				))

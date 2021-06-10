@@ -3,6 +3,7 @@ import { BookingDB } from '@typings/db/Booking'
 import { FulfilmentDB } from '@typings/db/Fulfilment'
 import { LocationDB } from '@typings/db/Location'
 import { OrderDB } from '@typings/db/Order'
+import { RefundDB } from '@typings/db/Refund'
 import { StaffDB } from '@typings/db/Staff'
 import { TubDB } from '@typings/db/Tub'
 import { connector } from '@utils/db'
@@ -21,6 +22,7 @@ export const cleanupDatabase = async (db: Knex) => {
 }
 
 export const resetTables = async (db: Knex) => {
+	await db<RefundDB>('refunds').del()
 	await db<FulfilmentDB>('fulfilments').del()
 	await db<OrderDB>('orders').del()
 	await db<BookingDB>('bookings').del()

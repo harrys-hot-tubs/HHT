@@ -4,7 +4,7 @@ import {
 	managerAccount,
 	missingPassword,
 	missingRoles,
-} from '@fixtures/accountsFixtures'
+} from '@fixtures/accountFixtures'
 import { inDateAccountToken } from '@fixtures/authFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { storedStaff } from '@fixtures/staffFixtures'

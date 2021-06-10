@@ -1,4 +1,4 @@
-import { differentSizes, mixedSizes, sameSize } from '@fixtures/tubsFixtures'
+import { differentSizes, mixedSizes, sameSize } from '@fixtures/tubFixtures'
 import { displayableTubs } from '@utils/tubs'
 
 expect.extend({

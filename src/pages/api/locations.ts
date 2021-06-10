@@ -17,11 +17,20 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	}
 }
 
-const get = async (req: ConnectedRequest, res: NextApiResponse) => {
+const get = async (
+	req: ConnectedRequest,
+	res: NextApiResponse<LocationDB[]>
+) => {
 	const { db } = req
 	try {
 		const locations: LocationDB[] = await db('locations').select()
-		res.status(200).json(locations)
+		const parsedLocations = locations.map((loc) => ({
+			...loc,
+			initial_price: Number(loc.initial_price),
+			night_price: Number(loc.night_price),
+		}))
+
+		res.status(200).json(parsedLocations)
 	} catch (error) {
 		console.error(error)
 		res.status(500).end()

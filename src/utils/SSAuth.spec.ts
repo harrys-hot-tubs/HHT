@@ -1,8 +1,10 @@
+import { driverAccount } from '@fixtures/accountFixtures'
 import {
 	expiredObject,
 	inDateAccountToken,
 	nonExpiredObject,
 } from '@fixtures/authFixtures'
+import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import { AccountDB, Role } from '@typings/db/Account'
 import handleSSAuth, {
 	accountIsPermitted,
@@ -13,8 +15,6 @@ import handleSSAuth, {
 } from '@utils/SSAuth'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { driverAccount } from '../test/fixtures/accountsFixtures'
-import { cleanupDatabase, connection } from '../test/helpers/DBHelper'
 
 describe('getToken', () => {
 	it('retrieves token if it exists', () => {

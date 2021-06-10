@@ -1,7 +1,7 @@
 import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { orderRequest, storedOrder } from '@fixtures/orderFixtures'
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { mixedSizes } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/orders/index'
 import { ConnectedRequest } from '@typings/api/Request'

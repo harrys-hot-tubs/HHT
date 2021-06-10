@@ -8,8 +8,16 @@ import React from 'react'
 import DatePicker from 'react-datepicker'
 
 const DriverDashboard = () => {
-	const { location, isLoading: locationIsLoading } = useDriverLocation()
-	const { orders, isLoading: ordersAreLoading } = useOrders()
+	const {
+		location,
+		isLoading: locationIsLoading,
+		isError: locationError,
+	} = useDriverLocation()
+	const {
+		orders,
+		isLoading: ordersAreLoading,
+		isError: ordersError,
+	} = useOrders()
 	const { rangeStart, rangeEnd, setRangeStart, setRangeEnd } = useDateRange({
 		startKey: 'minDate',
 		endKey: 'maxDate',
@@ -17,6 +25,7 @@ const DriverDashboard = () => {
 	const relevant = findRelevant(orders, location?.location_id)
 
 	if (locationIsLoading || ordersAreLoading) return <h1>Loading...</h1>
+	if (locationError || ordersError) return <h1>Error</h1>
 	return (
 		<div className='outer driver'>
 			<main>

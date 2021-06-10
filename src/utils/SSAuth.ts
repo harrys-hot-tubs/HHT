@@ -55,12 +55,15 @@ export const isAuthorised = async (
 
 	if (!isTokenAccount(payload)) return { authorised: false, error: 'invalid' }
 
-	const account = await fetchAccount(payload.account_id)
+	try {
+		const account = await fetchAccount(payload.account_id)
+		if (!accountIsPermitted(permittedRoles, account.account_roles))
+			return { authorised: false, error: 'forbidden' }
 
-	if (!accountIsPermitted(permittedRoles, account.account_roles))
-		return { authorised: false, error: 'forbidden' }
-
-	return { authorised: true, payload: account }
+		return { authorised: true, payload: account }
+	} catch (error) {
+		return { authorised: false, error: 'invalid' }
+	}
 }
 
 export const fetchAccount = async (
@@ -71,6 +74,9 @@ export const fetchAccount = async (
 		.select()
 		.where('account_id', '=', accountID)
 		.first()
+
+	if (!rawAccount) throw new Error('Account does not exist.')
+
 	delete rawAccount.password_hash
 	await connection.destroy()
 	return {

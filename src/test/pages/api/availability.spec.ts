@@ -4,7 +4,7 @@ import {
 } from '@fixtures/availabilityFixtures'
 import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { mixedSizes } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/availability'
 import { ConnectedRequest } from '@typings/api/Request'

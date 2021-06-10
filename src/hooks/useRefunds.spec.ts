@@ -1,5 +1,5 @@
 import { storedOrder } from '@fixtures/orderFixtures'
-import useOrders from '@hooks/useOrders'
+import useRefunds from '@hooks/useRefunds'
 import SWRWrapper from '@test/helpers/SWRWrapper'
 import { renderHook } from '@testing-library/react-hooks'
 import axios from 'axios'
@@ -15,8 +15,8 @@ afterEach(() => {
 })
 
 it('indicates loading before receiving data', async () => {
-	mock.onGet('/api/orders').replyOnce(200, [])
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
+	mock.onGet('/api/refunds').replyOnce(200, [])
+	const { result, waitForNextUpdate } = renderHook(useRefunds, {
 		wrapper: SWRWrapper,
 	})
 
@@ -25,8 +25,8 @@ it('indicates loading before receiving data', async () => {
 })
 
 it('stops indicating loading after receiving data', async () => {
-	mock.onGet('/api/orders').replyOnce(200, [])
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
+	mock.onGet('/api/refunds').replyOnce(200, [])
+	const { result, waitForNextUpdate } = renderHook(useRefunds, {
 		wrapper: SWRWrapper,
 	})
 
@@ -36,27 +36,27 @@ it('stops indicating loading after receiving data', async () => {
 
 it('responds with an error when request fails', async () => {
 	const error = { message: 'failed' }
-	mock.onGet('/api/orders').replyOnce(400, error)
+	mock.onGet('/api/refunds').replyOnce(400, error)
 
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
+	const { result, waitForNextUpdate } = renderHook(useRefunds, {
 		wrapper: SWRWrapper,
 	})
 
 	await waitForNextUpdate() // This await sometimes has orders change before an error is added
 	expect(result.current.isLoading).toBe(false)
 	expect(
-		result.current.isError || result.current.orders.length === 0
+		result.current.isError || result.current.refunds.length === 0
 	).toBeTruthy()
 })
 
 it('responds with data when request succeeds', async () => {
-	mock.onGet('/api/orders').replyOnce(200, [storedOrder])
-	const { result, waitForNextUpdate } = renderHook(useOrders, {
+	mock.onGet('/api/refunds').replyOnce(200, [storedOrder])
+	const { result, waitForNextUpdate } = renderHook(useRefunds, {
 		wrapper: SWRWrapper,
 	})
 
 	await waitForNextUpdate()
 	expect(result.current.isLoading).toBe(false)
-	expect(result.current.orders).toHaveLength(1)
-	expect(result.current.orders).toEqual([storedOrder])
+	expect(result.current.refunds).toHaveLength(1)
+	expect(result.current.refunds).toEqual([storedOrder])
 })

@@ -22,7 +22,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 		query: { id },
 	} = req
 	const token = getToken(req)
-	const status = await isAuthorised(token, ['driver', 'manager'])
+	const status = await isAuthorised(token, ['driver', 'manager']) // ! This could cause unexpected behaviour for accounts with multiple roles.
 	if (status.authorised) {
 		const { payload: account } = status
 
@@ -39,9 +39,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 					},
 					'*'
 				)
-				return res.status(200).json({ inserted: inserted[0] })
+				return res.status(200).json({ inserted: inserted })
 			} catch (e) {
-				res.status(500).json(e)
+				return res.status(500).json(e)
 			}
 		}
 
@@ -50,19 +50,22 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			const manager_id = account.account_id
 			try {
 				const updated = await db<RefundDB>('refunds')
-					.update({
-						account_id: manager_id,
-						settled,
-					})
+					.update(
+						{
+							account_id: manager_id,
+							settled,
+						},
+						'*'
+					)
 					.where('order_id', '=', id as string)
 
-				return res.status(200).json({ updated: updated[0] })
+				return res.status(200).json({ updated: updated })
 			} catch (e) {
-				res.status(500).json(e)
+				return res.status(500).json(e)
 			}
 		}
 	}
-	res.status(400).end()
+	res.status(401).end()
 }
 
 const remove = async (req: ConnectedRequest, res: NextApiResponse) => {
@@ -82,7 +85,7 @@ const remove = async (req: ConnectedRequest, res: NextApiResponse) => {
 			res.status(500).json(e)
 		}
 	}
-	res.status(400).end()
+	res.status(401).end()
 }
 
 export default db()(handler)

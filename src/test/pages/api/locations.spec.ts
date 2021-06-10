@@ -1,7 +1,7 @@
 import { bookings } from '@fixtures/bookingFixtures'
 import { bir, esb } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { mixedSizes } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/locations'
 import { RangeResponse } from '@typings/api/Locations'
@@ -19,6 +19,20 @@ beforeAll(async () => {
 })
 
 describe('get', () => {
+	it('returns all locations', async () => {
+		const { req, res } = createMocks<
+			ConnectedRequest,
+			NextApiResponse<LocationDB[]>
+		>({
+			method: 'GET',
+		})
+		await handler(req, res)
+		expect(res._getStatusCode()).toBe(200)
+		expect(JSON.parse(res._getData())).toEqual(locations)
+	})
+})
+
+describe('post', () => {
 	it('detects locations in range', async () => {
 		const { req, res } = createMocks<
 			ConnectedRequest,

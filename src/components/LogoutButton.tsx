@@ -18,6 +18,7 @@ const LogoutButton = () => {
 
 	return (
 		<SpinnerButton
+			data-testid='logout-button'
 			type='button'
 			activeText='Logging out...'
 			status={loading}

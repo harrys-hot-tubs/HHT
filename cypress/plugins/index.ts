@@ -7,6 +7,7 @@ import {
 	arbitraryInsert,
 	cleanupConnection,
 	clearTable,
+	seedDatabase,
 } from '../helpers/databaseHelper'
 import wpConfig from '../webpack.config'
 
@@ -27,6 +28,9 @@ module.exports = (on, config) => {
 		})
 	)
 	on('task', {
+		async 'defaults:db'() {
+			return await seedDatabase()
+		},
 		async DBClear({ tableName }: { tableName: string }) {
 			return await clearTable(tableName)
 		},

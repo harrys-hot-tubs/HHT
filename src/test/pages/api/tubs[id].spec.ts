@@ -1,5 +1,5 @@
 import { locations } from '@fixtures/locationFixtures'
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { mixedSizes } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/tubs/[id]'
 import { PriceResponse } from '@typings/api/Checkout'
