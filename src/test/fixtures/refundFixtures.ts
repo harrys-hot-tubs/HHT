@@ -8,5 +8,6 @@ export const refunds: RefundDB[] = [
 		order_id: storedOrder.id,
 		damaged: false,
 		settled: false,
+		damage_information: '',
 	},
 ]
