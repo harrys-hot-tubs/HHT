@@ -32,7 +32,6 @@ const Calendar = ({
 		if (!isAvailable(startDate)) resetDates({ startDate: true })
 		if (!isAvailable(endDate)) resetDates({ endDate: true })
 		if (isWrongDuration(startDate, endDate)) resetDates({ endDate: true })
-		// TODO if the duration is altered, change which month the calendar opens up on
 	}, [startDate, endDate])
 
 	return (
