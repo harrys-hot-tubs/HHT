@@ -27,12 +27,17 @@ const useStoredState = <T>({
 	fallback,
 	toString,
 	fromString,
-}: UseStoredStateArgs<T>): [T, (value: T) => void] => {
+}: UseStoredStateArgs<T>): [T, (value: T) => void, () => void] => {
 	const [state, setState] = useState<T>(fallback)
 
 	const updateState = (value: T): void => {
 		localStorage.setItem(key, toString(value))
 		setState(value)
+	}
+
+	const resetState = () => {
+		localStorage.removeItem(key)
+		setState(fallback)
 	}
 
 	useEffect(() => {
@@ -42,7 +47,7 @@ const useStoredState = <T>({
 		}
 	}, [])
 
-	return [state, updateState]
+	return [state, updateState, resetState]
 }
 
 export default useStoredState

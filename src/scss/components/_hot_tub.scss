@@ -38,7 +38,7 @@
 	border-radius: 10px;
 }
 
-.card-body span {
+.card-body > span {
 	font-size: 15pt;
 	display: block;
 	width: fit-content;
@@ -68,11 +68,11 @@
 		width: 200px;
 	}
 
-	.card.tub > .card-body span {
+	.card.tub > .card-body > span {
 		font-size: 24pt;
 	}
 
-	span:nth-child(2) {
+	.card.tub > .card-body > span:nth-child(2) {
 		font-size: 20pt;
 	}
 }

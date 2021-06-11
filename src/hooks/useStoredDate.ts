@@ -1,6 +1,4 @@
 import useStoredState from '@hooks/useStoredState'
-import { stringToMoment } from '@utils/date'
-import moment from 'moment'
 
 /**
  * Stores a date in localStorage.
@@ -8,18 +6,12 @@ import moment from 'moment'
  */
 const useStoredDate = (
 	key: string
-): [moment.Moment, (value: moment.Moment) => void] =>
-	useStoredState<moment.Moment>({
+): [Date, (value: Date) => void, () => void] =>
+	useStoredState<Date>({
 		key,
 		fallback: null,
 		toString: (v) => v?.toISOString(),
-		fromString: (v) => {
-			try {
-				return stringToMoment(v)
-			} catch (error) {
-				return null
-			}
-		},
+		fromString: (v) => new Date(v),
 	})
 
 export default useStoredDate

@@ -4,6 +4,10 @@
 	background-color: transparent !important;
 }
 
+.outer.hire > :not(img) {
+	z-index: 1;
+}
+
 .hire-background {
 	height: 96%;
 	width: 96%;
@@ -18,7 +22,6 @@
 .primary-container {
 	display: grid;
 	place-items: center;
-	z-index: 1;
 	margin: 1em;
 	height: 100%;
 }
@@ -29,11 +32,18 @@
 	margin-right: 10px;
 }
 
+.hire-form-container {
+	// This increases the stacking context for the popper.
+	z-index: 2 !important;
+}
+
 .hire-form {
+	color: white;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-around;
+	position: relative;
 }
 
 .description p {
@@ -53,7 +63,6 @@
 	background-color: $secondary-blue;
 	color: $primary-light;
 	width: 6em;
-	z-index: 1;
 }
 
 @media (min-width: 1080px) {
@@ -63,10 +72,28 @@
 	}
 }
 
+.inline-picker.hire {
+	background-color: transparent;
+	color: white;
+}
+
+.date-pickers {
+	font-size: 20pt;
+	display: inline-block;
+	width: 100%;
+}
+
+.postcode-validate-button {
+	height: 100%;
+	border: none !important;
+}
+
+//TODO move popper on top.
+
 // TODO move hiring information to center and use row on large screens.
 @media screen and (orientation: landscape) {
 	.outer.hire {
-		grid-template-columns: 2fr 1fr;
+		grid-template-columns: 1fr 1fr;
 	}
 
 	.hire-container {
@@ -80,5 +107,6 @@
 
 	.tub-list {
 		flex-direction: column !important;
+		grid-column: span 2;
 	}
 }

@@ -6,21 +6,21 @@ export interface UseDateRangeArgs {
 }
 
 const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
-	const [rangeStart, setRangeStart] = useStoredState<Date>({
-		fallback: new Date(),
+	const [rangeStart, setRangeStart, resetStart] = useStoredState<Date>({
+		fallback: null,
 		fromString: (v) => new Date(v),
-		toString: (v) => v.toISOString(),
+		toString: (v) => v?.toISOString(),
 		key: startKey,
 	})
-	const [rangeEnd, setRangeEnd] = useStoredState<Date>({
-		fallback: new Date(),
+	const [rangeEnd, setRangeEnd, resetEnd] = useStoredState<Date>({
+		fallback: null,
 		fromString: (v) => new Date(v),
-		toString: (v) => v.toISOString(),
+		toString: (v) => v?.toISOString(),
 		key: endKey,
 	})
 
 	const updateRangeStart = (value: Date) => {
-		if (value > rangeEnd) {
+		if (value > rangeEnd && rangeEnd !== null) {
 			setRangeStart(rangeEnd)
 			setRangeEnd(value)
 		} else {
@@ -29,7 +29,7 @@ const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
 	}
 
 	const updateRangeEnd = (value: Date) => {
-		if (value < rangeStart) {
+		if (value < rangeStart && rangeStart !== null) {
 			setRangeEnd(rangeStart)
 			setRangeStart(value)
 		} else {
@@ -42,6 +42,8 @@ const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
 		rangeEnd,
 		setRangeStart: updateRangeStart,
 		setRangeEnd: updateRangeEnd,
+		resetRangeStart: resetStart,
+		resetRangeEnd: resetEnd,
 	}
 }
 
