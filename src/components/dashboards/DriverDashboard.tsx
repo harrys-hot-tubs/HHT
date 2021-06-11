@@ -21,6 +21,7 @@ const DriverDashboard = () => {
 	const { rangeStart, rangeEnd, setRangeStart, setRangeEnd } = useDateRange({
 		startKey: 'minDate',
 		endKey: 'maxDate',
+		swap: true,
 	})
 	const relevant = findRelevant(orders, location?.location_id)
 

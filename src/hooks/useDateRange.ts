@@ -3,9 +3,10 @@ import useStoredState from '@hooks/useStoredState'
 export interface UseDateRangeArgs {
 	startKey: string
 	endKey: string
+	swap?: boolean
 }
 
-const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
+const useDateRange = ({ startKey, endKey, swap = false }: UseDateRangeArgs) => {
 	const [rangeStart, setRangeStart, resetStart] = useStoredState<Date>({
 		fallback: null,
 		fromString: (v) => new Date(v),
@@ -20,7 +21,7 @@ const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
 	})
 
 	const updateRangeStart = (value: Date) => {
-		if (value > rangeEnd && rangeEnd !== null) {
+		if (value > rangeEnd && rangeEnd !== null && swap) {
 			setRangeStart(rangeEnd)
 			setRangeEnd(value)
 		} else {
@@ -29,7 +30,7 @@ const useDateRange = ({ startKey, endKey }: UseDateRangeArgs) => {
 	}
 
 	const updateRangeEnd = (value: Date) => {
-		if (value < rangeStart && rangeStart !== null) {
+		if (value < rangeStart && rangeStart !== null && swap) {
 			setRangeEnd(rangeStart)
 			setRangeStart(value)
 		} else {

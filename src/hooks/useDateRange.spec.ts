@@ -67,7 +67,9 @@ it('swaps dates when a range of an incorrect order is entered', () => {
 	const earlierDate = new Date('2002-09-12')
 	const laterDate = new Date('2005-11-09')
 
-	const { result } = renderHook(() => useDateRange({ startKey, endKey }))
+	const { result } = renderHook(() =>
+		useDateRange({ startKey, endKey, swap: true })
+	)
 	act(() => result.current.setRangeStart(laterDate))
 	act(() => result.current.setRangeEnd(earlierDate))
 

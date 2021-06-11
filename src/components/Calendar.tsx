@@ -32,6 +32,7 @@ const Calendar = ({
 		if (!isAvailable(startDate)) resetDates({ startDate: true })
 		if (!isAvailable(endDate)) resetDates({ endDate: true })
 		if (isWrongDuration(startDate, endDate)) resetDates({ endDate: true })
+		// TODO if the duration is altered, change which month the calendar opens up on
 	}, [startDate, endDate])
 
 	return (
@@ -42,15 +43,18 @@ const Calendar = ({
 					startDate={startDate}
 					endDate={endDate}
 					selectsStart
-					onChange={(date: Date) => updateDates({ startDate: date })}
+					onChange={(date: Date) => {
+						updateDates({ startDate: date })
+						endRef.current.setFocus()
+					}}
 					minDate={new Date()}
 					filterDate={isAvailable}
-					onCalendarClose={() => endRef.current.setOpen(true)}
 					todayButton='Today'
 					className='inline-picker hire'
 					id='start'
 					dateFormat='dd/MM/yyyy'
 					placeholderText='Start Date'
+					disabledKeyboardNavigation
 				/>
 				<span> to </span>
 				<DatePicker
@@ -58,6 +62,7 @@ const Calendar = ({
 					startDate={startDate}
 					endDate={endDate}
 					selectsEnd
+					openToDate={endDate ? endDate : startDate ? startDate : new Date()}
 					onChange={(date: Date) => updateDates({ endDate: date })}
 					minDate={addBusinessDays(
 						startDate ? startDate : new Date(),
@@ -70,6 +75,7 @@ const Calendar = ({
 					dateFormat='dd/MM/yyyy'
 					placeholderText='End Date'
 					ref={endRef}
+					disabledKeyboardNavigation
 				/>
 			</span>
 		</React.Fragment>
