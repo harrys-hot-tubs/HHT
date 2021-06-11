@@ -1,7 +1,5 @@
 import CheckoutForm from '@components/CheckoutForm'
 import useCheckoutInformation from '@hooks/useCheckoutInformation'
-import { stringToMoment } from '@utils/date'
-import moment from 'moment'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -18,14 +16,14 @@ const Checkout = ({ tubID }: PageProps) => {
 	const router = useRouter()
 
 	const [postcode, setPostcode] = useState<string>('')
-	const [startDate, setStartDate] = useState<moment.Moment>(null)
-	const [endDate, setEndDate] = useState<moment.Moment>(null)
+	const [startDate, setStartDate] = useState<Date>(null)
+	const [endDate, setEndDate] = useState<Date>(null)
 	const [user, setUser] = useCheckoutInformation()
 
 	useEffect(() => {
 		try {
-			const startDate = stringToMoment(localStorage.getItem('startDate'))
-			const endDate = stringToMoment(localStorage.getItem('endDate'))
+			const startDate = new Date(localStorage.getItem('startDate'))
+			const endDate = new Date(localStorage.getItem('endDate'))
 			const postcode = localStorage.getItem('postcode')
 			if (!postcode || !startDate || !endDate) throw new Error('Invalid state.')
 			else {

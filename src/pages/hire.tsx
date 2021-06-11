@@ -80,7 +80,7 @@ const Hire = () => {
 					</p>
 				</div>
 			</main>
-			<aside>
+			<aside className='hire-form-container'>
 				<Form onSubmit={onSubmit} className='hire-form'>
 					<Calendar {...calendar} />
 					<PostcodeField

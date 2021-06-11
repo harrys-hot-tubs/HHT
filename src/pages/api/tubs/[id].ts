@@ -2,10 +2,9 @@ import { PriceResponse } from '@typings/api/Checkout'
 import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'
-import { stringToMoment } from '@utils/date'
 import db from '@utils/db'
+import { differenceInDays } from 'date-fns'
 import { Knex } from 'knex'
-import moment from 'moment'
 import { NextApiResponse } from 'next'
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
@@ -49,8 +48,8 @@ const post = async (
 	} = req
 	try {
 		const tubID = Number(id as string)
-		const parsedStartDate = stringToMoment(startDate)
-		const parsedEndDate = stringToMoment(endDate)
+		const parsedStartDate = new Date(startDate)
+		const parsedEndDate = new Date(endDate)
 
 		const price = await getPrice({
 			tubID,
@@ -71,12 +70,11 @@ const getPrice = async ({
 	db,
 }: {
 	tubID: number
-	startDate: moment.Moment
-	endDate: moment.Moment
+	startDate: Date
+	endDate: Date
 	db: Knex
 }): Promise<number> => {
-	const booking_duration = moment.duration(endDate.diff(startDate))
-	const nights = booking_duration.days()
+	const nights = differenceInDays(endDate, startDate)
 
 	if (nights > 7 || nights < 2) throw new Error('Duration is invalid.')
 

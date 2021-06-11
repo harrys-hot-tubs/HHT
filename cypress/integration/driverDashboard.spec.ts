@@ -6,6 +6,7 @@ import {
 import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
 import { extractBookingStart } from '@utils/date'
+import { isSameDay } from 'date-fns'
 import { fulfilments } from '../../src/test/fixtures/fulfilmentFixtures'
 import { refunds } from '../../src/test/fixtures/refundFixtures'
 import { setStorage } from '../helpers/localStorageHelper'
@@ -131,7 +132,7 @@ describe('calendar interaction', () => {
 		)
 
 		cy.getLocalStorage('minDate').then((minDate) => {
-			expect(minDate).to.contain(new Date().toISOString().substr(0, 10))
+			expect(isSameDay(new Date(minDate), new Date())).to.be.true
 		})
 	})
 
@@ -145,7 +146,7 @@ describe('calendar interaction', () => {
 		)
 
 		cy.getLocalStorage('maxDate').then((maxDate) => {
-			expect(maxDate).to.contain(new Date().toISOString().substr(0, 10))
+			expect(isSameDay(new Date(maxDate), new Date())).to.be.true
 		})
 	})
 
@@ -167,15 +168,12 @@ describe('calendar interaction', () => {
 		)
 	})
 
-	it('swaps dates of incorrect order', () => {
-		setStorage({ maxDate: generateEndDate() })
+	it('is impossible to mis-order dates', () => {
+		setStorage({ minDate: generateEndDate() })
+		cy.reload()
 		cy.get('input#end').click()
 		cy.get('div.react-datepicker__today-button').click()
-		cy.get('input#start').should(
-			'have.attr',
-			'value',
-			new Date().toLocaleDateString('en-GB')
-		)
+		cy.get('input#end').should('have.attr', 'value', '')
 	})
 })
 

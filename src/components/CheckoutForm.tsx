@@ -6,7 +6,6 @@ import {
 	PriceResponse,
 } from '@typings/api/Checkout'
 import { CreateOrderRequest } from '@typings/api/Order'
-import { displayableMoment } from '@utils/date'
 import { getStripe } from '@utils/stripe'
 import axios from 'axios'
 import React, { FormEventHandler, useState } from 'react'
@@ -25,11 +24,11 @@ interface ComponentProps {
 	/**
 	 * The start date of the customer's booking.
 	 */
-	startDate: moment.Moment
+	startDate: Date
 	/**
 	 * The end date of the customer's booking.
 	 */
-	endDate: moment.Moment
+	endDate: Date
 	/**
 	 * All other information about the customer needed to dispatch a hot tub to them.
 	 */
@@ -313,7 +312,7 @@ const CheckoutForm = ({
 						aria-label='start-date'
 						required
 						disabled
-						placeholder={startDate ? displayableMoment(startDate) : null}
+						placeholder={startDate ? startDate.toLocaleDateString() : null}
 					/>
 				</Form.Group>
 				<Form.Group as={Col}>
@@ -322,7 +321,7 @@ const CheckoutForm = ({
 						aria-label='end-date'
 						required
 						disabled
-						placeholder={endDate ? displayableMoment(endDate) : null}
+						placeholder={endDate ? endDate.toLocaleDateString() : null}
 					/>
 				</Form.Group>
 			</Form.Row>

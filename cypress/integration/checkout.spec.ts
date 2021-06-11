@@ -2,7 +2,6 @@ import { RefereeOptions } from '@components/CheckoutForm'
 import { formData, validCheckoutInformation } from '@fixtures/checkoutFixtures'
 import { setStorage } from '@helpers/localStorageHelper'
 import { CheckoutInformation, Fallback } from '@hooks/useCheckoutInformation'
-import { displayableMoment, stringToMoment } from '@utils/date'
 
 beforeEach(() => {
 	setStorage({ consent: 'true' })
@@ -72,7 +71,7 @@ describe('rendering', () => {
 
 	it('renders start date field', () => {
 		const storedDate = formData.startDate
-		const expectedOutput = displayableMoment(stringToMoment(storedDate))
+		const expectedOutput = new Date(storedDate).toLocaleDateString()
 
 		cy.get('[aria-label=start-date]')
 
@@ -83,7 +82,7 @@ describe('rendering', () => {
 
 	it('renders end date field', () => {
 		const storedDate = formData.endDate
-		const expectedOutput = displayableMoment(stringToMoment(storedDate))
+		const expectedOutput = new Date(storedDate).toLocaleDateString()
 
 		cy.get('[aria-label=end-date]')
 

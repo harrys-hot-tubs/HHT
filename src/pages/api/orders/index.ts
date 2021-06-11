@@ -4,7 +4,7 @@ import { BookingDB } from '@typings/db/Booking'
 import { OrderDB, PopulatedOrder } from '@typings/db/Order'
 import db from '@utils/db'
 import { forEachAsync } from '@utils/index'
-import moment from 'moment'
+import { subMinutes } from 'date-fns'
 import { NextApiResponse } from 'next'
 import Stripe from 'stripe'
 
@@ -84,7 +84,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 	try {
 		const { db } = req
-		const maxAge = moment(new Date()).subtract(10, 'minutes')
+		const maxAge = subMinutes(new Date(), 10)
 		const orders: Pick<OrderDB, 'booking_id' | 'id'>[] = await db<OrderDB>(
 			'orders'
 		)

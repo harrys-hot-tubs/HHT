@@ -1,7 +1,7 @@
 import { CheckoutRequest } from '@typings/api/Checkout'
 import { APIError } from '@typings/api/Error'
-import { displayableMoment, stringToMoment } from '@utils/date'
 import { formatAmount } from '@utils/stripe'
+import { differenceInDays } from 'date-fns'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Stripe } from 'stripe'
 
@@ -28,9 +28,9 @@ const post = async (
 ) => {
 	const { price, startDate, endDate } = req.body as CheckoutRequest
 	try {
-		const parsedStartDate = stringToMoment(startDate)
-		const parsedEndDate = stringToMoment(endDate)
-		if (parsedEndDate.diff(parsedStartDate, 'days') <= 0)
+		const parsedStartDate = new Date(startDate)
+		const parsedEndDate = new Date(endDate)
+		if (differenceInDays(parsedEndDate, parsedStartDate) <= 0)
 			throw new RangeError('Order duration must be greater than 0.')
 
 		if (price < 0.3)
@@ -44,9 +44,7 @@ const post = async (
 			payment_method_types: ['card'],
 			line_items: [
 				{
-					name: `Booking from ${displayableMoment(
-						parsedStartDate
-					)} to ${displayableMoment(parsedEndDate)}.`,
+					name: `Booking from ${parsedStartDate.toLocaleDateString()} to ${parsedEndDate.toLocaleDateString()}.`,
 					amount: formatAmount(price),
 					currency: 'GBP',
 					quantity: 1,
@@ -63,9 +61,8 @@ const post = async (
 			allow_promotion_codes: true,
 		}
 
-		const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(
-			params
-		)
+		const checkoutSession: Stripe.Checkout.Session =
+			await stripe.checkout.sessions.create(params)
 
 		res.status(200).json(checkoutSession)
 	} catch (e) {

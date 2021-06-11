@@ -1,24 +1,4 @@
 import { FormatError } from '@utils/errors'
-import moment from 'moment'
-
-export const stringToMoment = (date: string): moment.Moment => {
-	const formattedDate = moment.utc(date, true)
-	if (!formattedDate.isValid()) {
-		throw new FormatError('Malformed date.')
-	} else {
-		return formattedDate
-	}
-}
-
-/**
- * Converts a moment object into a human readable string.
- * @param date A moment object.
- * @returns A string representation of the moment that can be displayed to the user.
- */
-export const displayableMoment = (date: moment.Moment): string => {
-	if (!date) throw new FormatError('Date is not a valid moment')
-	return date.format('D/M/YYYY')
-}
 
 /**
  * Determines the date at which a booking begins.
@@ -48,6 +28,7 @@ export const extractBookingEnd = (bookingDuration: string): Date => {
  * @returns True if the date object is today.
  */
 export const isToday = (date: Date): boolean => {
+	if (!date) throw new Error('Date is missing.')
 	const today = new Date()
 	return (
 		date.getDate() === today.getDate() &&

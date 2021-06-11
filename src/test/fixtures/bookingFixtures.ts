@@ -1,17 +1,13 @@
 import { mixedSizes } from '@fixtures/tubFixtures'
 import { BookingDB } from '@typings/db/Booking'
+import { addDays } from 'date-fns'
 
 export const generateStartDate = (): string => {
-	const bookingStart = new Date('2302-09-19')
-	bookingStart.setDate(bookingStart.getDate() + 1) // Day after tomorrow
-	return bookingStart.toISOString().substr(0, 10)
+	return addDays(new Date('2302-09-19'), 1).toISOString().substr(0, 10)
 }
 
-export const generateEndDate = (): string => {
-	const bookingEnd = new Date(generateStartDate())
-	bookingEnd.setDate(bookingEnd.getDate() + 3) // Four days from now
-	return bookingEnd.toISOString().substr(0, 10)
-}
+export const generateEndDate = (): string =>
+	addDays(new Date(generateStartDate()), 3).toISOString().substr(0, 10)
 
 const generateDuration = (): string => {
 	return `[${generateStartDate()},${generateEndDate()})`

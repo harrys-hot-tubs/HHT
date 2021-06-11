@@ -34,6 +34,9 @@ const DriverDashboard = () => {
 					Showing orders from{' '}
 					<DatePicker
 						selected={rangeStart}
+						startDate={rangeStart}
+						endDate={rangeEnd}
+						selectsStart
 						onChange={(date: Date) => setRangeStart(date)}
 						maxDate={rangeEnd}
 						todayButton='Today'
@@ -44,6 +47,9 @@ const DriverDashboard = () => {
 					to{' '}
 					<DatePicker
 						selected={rangeEnd}
+						startDate={rangeStart}
+						endDate={rangeEnd}
+						selectsEnd
 						onChange={(date: Date) => setRangeEnd(date)}
 						minDate={rangeStart}
 						todayButton='Today'
