@@ -2,6 +2,7 @@ import { bir } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { birmingham } from '@fixtures/postcodeFixtures'
 import { failedRangeResponse } from '@fixtures/rangeFixtures'
+import { addMonths, format, isSameDay } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
 beforeEach(() => {
@@ -135,9 +136,48 @@ describe('postcode field', () => {
 })
 
 describe('date picker', () => {
-	//TODO add date picker tests.
-	it('lets the user pick dates', () => {})
-	it('lets the user change months', () => {})
-	it('lets the user type the dates they want', () => {})
-	it('notifies the user ', () => {})
+	it('lets the user pick dates', () => {
+		cy.get('input#start').as('startDate').click()
+		cy.get('div.react-datepicker__today-button').click()
+		cy.get('@startDate').should(
+			'have.attr',
+			'value',
+			new Date().toLocaleDateString('en-GB')
+		)
+
+		cy.getLocalStorage('startDate').then((startDate) => {
+			expect(isSameDay(new Date(startDate), new Date())).to.be.true
+		})
+	})
+
+	it('lets the user change months', () => {
+		cy.get('input#start').as('startDate').click()
+		cy.get('div.react-datepicker__today-button').click()
+		cy.get('@startDate').click()
+		cy.get('.react-datepicker__current-month').should(
+			'contain.text',
+			format(new Date(), 'MMMM')
+		)
+		cy.get('[aria-label="Next Month"]').click()
+		cy.get('.react-datepicker__current-month').should(
+			'contain.text',
+			format(addMonths(new Date(), 1), 'MMMM')
+		)
+
+		cy.get('@startDate').should(
+			'have.attr',
+			'value',
+			new Date().toLocaleDateString('en-GB')
+		)
+	})
+
+	it('lets the user type the dates they want', () => {
+		cy.get('input#start').as('startDate').click()
+
+		cy.get('@startDate').type(new Date().toLocaleDateString('en-GB'))
+
+		cy.getLocalStorage('startDate').then((startDate) => {
+			expect(isSameDay(new Date(startDate), new Date())).to.be.true
+		})
+	})
 })

@@ -3,12 +3,12 @@ import {
 	generateEndDate,
 	generateStartDate,
 } from '@fixtures/bookingFixtures'
+import { fulfilments } from '@fixtures/fulfilmentFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
+import { refunds } from '@fixtures/refundFixtures'
 import { extractBookingStart } from '@utils/date'
 import { isSameDay } from 'date-fns'
-import { fulfilments } from '../../src/test/fixtures/fulfilmentFixtures'
-import { refunds } from '../../src/test/fixtures/refundFixtures'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {

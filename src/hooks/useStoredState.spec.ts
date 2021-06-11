@@ -1,8 +1,6 @@
 import useStoredState, { UseStoredStateArgs } from '@hooks/useStoredState'
 import { act, renderHook } from '@testing-library/react-hooks'
 
-//TODO test reset function
-
 const key = 'test'
 
 afterEach(() => {
