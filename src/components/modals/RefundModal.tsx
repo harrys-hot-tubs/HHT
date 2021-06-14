@@ -1,4 +1,5 @@
 import { ListID } from '@components/OrderList'
+import SpinnerButton from '@components/SpinnerButton'
 import { RefundModalVersion } from '@hooks/useRefundModal'
 import { PopulatedOrder } from '@typings/db/Order'
 import { RefundDB } from '@typings/db/Refund'
@@ -6,7 +7,6 @@ import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { DraggableLocation, SensorAPI } from 'react-beautiful-dnd'
 import { Button, Form, Modal } from 'react-bootstrap'
-import SpinnerButton from './SpinnerButton'
 
 interface ComponentProps {
 	show: boolean

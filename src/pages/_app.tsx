@@ -1,5 +1,5 @@
-import CookieConsentModal from '@components/CookieConsentModal'
 import FacebookPixel from '@components/FacebookPixel'
+import CookieConsentModal from '@components/modals/CookieConsentModal'
 import { enGB } from 'date-fns/locale'
 import { AppProps } from 'next/app'
 import React from 'react'

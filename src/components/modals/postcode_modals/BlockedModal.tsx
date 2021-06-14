@@ -1,4 +1,4 @@
-import { PostcodeModalProps } from '@components/postcode_modals/PostcodeModal'
+import { PostcodeModalProps } from '@components/modals/postcode_modals/PostcodeModal'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
 

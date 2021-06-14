@@ -1,7 +1,7 @@
-import { PostcodeModalProps } from '@components/postcode_modals/PostcodeModal'
+import InstagramIcon from '@components/icons/InstagramIcon'
+import { PostcodeModalProps } from '@components/modals/postcode_modals/PostcodeModal'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
-import InstagramIcon from '../icons/InstagramIcon'
 
 const InsuranceModal = ({ display, hide }: PostcodeModalProps) => (
 	<Modal show={display} onHide={hide} centered>

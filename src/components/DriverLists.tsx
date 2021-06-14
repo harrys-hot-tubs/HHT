@@ -1,11 +1,11 @@
+import RefundModal from '@components/modals/RefundModal'
 import OrderList, { ListID } from '@components/OrderList'
-import RefundModal from '@components/RefundModal'
 import useDriverLists from '@hooks/useDriverLists'
 import useRefundModal from '@hooks/useRefundModal'
+import useStateWithPromise from '@hooks/useStateWithPromise'
 import { PopulatedOrder } from '@typings/db/Order'
 import React, { useRef } from 'react'
 import { DragDropContext, DropResult, SensorAPI } from 'react-beautiful-dnd'
-import useStateWithPromise from '../hooks/useStateWithPromise'
 
 export interface ComponentProps {
 	orders: PopulatedOrder[]
@@ -26,9 +26,8 @@ const DriverLists = ({ orders, maxDate, minDate }: ComponentProps) => {
 		setShow: setShowRefundModal,
 		logMove,
 	} = useRefundModal()
-	const [programmedMove, setProgrammedMove] = useStateWithPromise<boolean>(
-		false
-	)
+	const [programmedMove, setProgrammedMove] =
+		useStateWithPromise<boolean>(false)
 
 	const sensorAPIRef = useRef<SensorAPI>(null)
 

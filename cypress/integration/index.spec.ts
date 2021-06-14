@@ -37,3 +37,29 @@ it('links to terms and conditions', () => {
 it('sets the page title', () => {
 	cy.title().should('equal', "Harry's Hot Tubs")
 })
+
+describe('tracking', () => {
+	beforeEach(() => {
+		cy.clearLocalStorage()
+		cy.visit('/')
+	})
+
+	it('displays the consent modal when no consent value is stored', () => {
+		cy.get('.modal-dialog').should('exist')
+		cy.get('.modal-title').should('have.text', 'This website uses cookies')
+		cy.get('button').contains('Accept').should('exist')
+		cy.get('button').contains('Reject').should('exist')
+	})
+
+	it('does not display the consent modal when consent is already provided', () => {
+		setStorage({ consent: 'true' })
+		cy.reload()
+		cy.get('.modal-dialog').should('not.exist')
+	})
+
+	it('displays the consent modal when consent is not provided', () => {
+		setStorage({ consent: 'false' })
+		cy.reload()
+		cy.get('.modal-dialog').should('exist')
+	})
+})
