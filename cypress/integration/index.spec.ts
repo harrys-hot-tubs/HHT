@@ -1,3 +1,4 @@
+import { ValueWithExpiration } from '../../src/hooks/useStoredStateWithExpiration'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {
@@ -52,13 +53,34 @@ describe('tracking', () => {
 	})
 
 	it('does not display the consent modal when consent is already provided', () => {
-		setStorage({ consent: 'true' })
+		setStorage({
+			consent: JSON.stringify({
+				value: 'true',
+				exp: Date.now() + 3600 * 1000,
+			} as ValueWithExpiration),
+		})
 		cy.reload()
 		cy.get('.modal-dialog').should('not.exist')
 	})
 
-	it('displays the consent modal when consent is not provided', () => {
-		setStorage({ consent: 'false' })
+	it('does not display the consent modal when consent is not provided', () => {
+		setStorage({
+			consent: JSON.stringify({
+				value: 'false',
+				exp: Date.now() + 3600 * 1000,
+			} as ValueWithExpiration),
+		})
+		cy.reload()
+		cy.get('.modal-dialog').should('exist')
+	})
+
+	it('displays the consent modal if consent has expired', () => {
+		setStorage({
+			consent: JSON.stringify({
+				value: 'true',
+				exp: Date.now() - 3600 * 1000,
+			} as ValueWithExpiration),
+		})
 		cy.reload()
 		cy.get('.modal-dialog').should('exist')
 	})
