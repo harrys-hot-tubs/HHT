@@ -4,7 +4,7 @@ import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
 import { refunds } from '@fixtures/refundFixtures'
-import { mixedSizes } from '@fixtures/tubFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/refunds/[id]'
 import { ConnectedRequest } from '@typings/api/Request'
@@ -23,7 +23,7 @@ beforeAll(async () => {
 		managerAccount,
 	])
 	await connection<LocationDB[]>('locations').insert(locations)
-	await connection<TubDB[]>('tubs').insert(mixedSizes)
+	await connection<TubDB[]>('tubs').insert(tubs)
 	await connection<BookingDB[]>('bookings').insert(bookings)
 	await connection<OrderDB[]>('orders').insert([storedOrder])
 })

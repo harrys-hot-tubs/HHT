@@ -36,4 +36,11 @@ export const differentSizes: TubDB[] = [
 	},
 ]
 
-export const mixedSizes: TubDB[] = sameSize.concat(differentSizes)
+export const zeroPrice: TubDB = {
+	location_id: 2,
+	max_capacity: 4,
+	tub_id: 6,
+	available: true,
+}
+
+export const tubs: TubDB[] = [...sameSize, ...differentSizes, zeroPrice]

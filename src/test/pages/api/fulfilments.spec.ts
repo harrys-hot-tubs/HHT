@@ -3,7 +3,7 @@ import { bookings } from '@fixtures/bookingFixtures'
 import { fulfilments } from '@fixtures/fulfilmentFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
-import { mixedSizes } from '@fixtures/tubFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/fulfilments'
 import { ConnectedRequest } from '@typings/api/Request'
@@ -19,7 +19,7 @@ import { createMocks } from 'node-mocks-http'
 beforeAll(async () => {
 	await connection<AccountDB[]>('accounts').insert([driverAccount])
 	await connection<LocationDB[]>('locations').insert(locations)
-	await connection<TubDB[]>('tubs').insert(mixedSizes)
+	await connection<TubDB[]>('tubs').insert(tubs)
 	await connection<BookingDB[]>('bookings').insert(bookings)
 	await connection<OrderDB[]>('orders').insert([storedOrder])
 	await connection<FulfilmentDB[]>('fulfilments').insert(fulfilments)

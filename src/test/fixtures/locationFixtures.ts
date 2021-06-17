@@ -10,4 +10,13 @@ export const locations: LocationDB[] = [
 		initial_price: 109.0,
 		night_price: 20.0,
 	},
+	{
+		location_id: 2,
+		name: 'Stevenage',
+		postcode: 'SG1',
+		latitude: 51.905962,
+		longitude: -0.20867,
+		initial_price: 0,
+		night_price: 0,
+	},
 ]

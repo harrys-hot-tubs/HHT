@@ -1,7 +1,7 @@
 import { bookings } from '@fixtures/bookingFixtures'
 import { bir, esb } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { mixedSizes } from '@fixtures/tubFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/locations'
 import { RangeResponse } from '@typings/api/Locations'
@@ -14,7 +14,7 @@ import { createMocks } from 'node-mocks-http'
 
 beforeAll(async () => {
 	await connection<LocationDB>('locations').insert(locations)
-	await connection<TubDB>('tubs').insert(mixedSizes)
+	await connection<TubDB>('tubs').insert(tubs)
 	await connection<BookingDB>('bookings').insert(bookings)
 })
 
