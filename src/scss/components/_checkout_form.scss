@@ -1,3 +1,5 @@
+@import '../variables.scss';
+
 .checkout-wrapper {
 	height: fit-content;
 	display: flex;
@@ -8,6 +10,40 @@
 	padding: 1em;
 	background-color: #ffffff;
 	border-radius: 5px;
+}
+
+.title-bar {
+	display: flex;
+}
+
+.title-bar > :first-child {
+	margin-right: 0.5em;
+	height: min-content;
+}
+
+.title-bar > .back-button {
+	margin-left: auto;
+	margin-top: 0.25rem;
+}
+
+.title-bar > h2 {
+	font-size: 1.8rem;
+}
+
+.price-info {
+	margin-top: 2em;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	color: $primary-light;
+	background-color: $primary-pink;
+	border-radius: 10px;
+	padding: 1em;
+}
+
+.price-info > .price {
+	font-size: 40pt;
 }
 
 .checkout-button {
@@ -21,4 +57,14 @@
 
 .checkout-button:disabled {
 	background-color: grey;
+}
+
+.card-field {
+	font-size: 15pt !important;
+}
+
+@media (min-width: 768px) {
+	.title-bar > h2 {
+		font-size: 2rem;
+	}
 }

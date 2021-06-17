@@ -10,7 +10,7 @@ import {
 } from '@typings/api/Availability'
 import { TubDB } from '@typings/db/Tub'
 import { getClosestDispatcher } from '@utils/postcode'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
@@ -31,15 +31,14 @@ const Hire = () => {
 		event.preventDefault()
 		event.stopPropagation()
 
-		const params: AvailabilityRequest = {
+		const { data } = await axios.post<
+			AvailabilityRequest,
+			AxiosResponse<AvailabilityResponse>
+		>('/api/availability', {
 			closest: await getClosestDispatcher(postcode.value),
 			startDate: calendar.startDate.toISOString(),
 			endDate: calendar.endDate.toISOString(),
-		}
-		const { data } = await axios.post<AvailabilityResponse>(
-			'/api/availability',
-			params
-		)
+		})
 		if (data.available) setTubs(data.tubs)
 		else setTubs([])
 		setLoading(false)
@@ -111,4 +110,6 @@ const Hire = () => {
 		</div>
 	)
 }
+
+// TODO add query string to provide error message when redirecting from checkout.
 export default Hire

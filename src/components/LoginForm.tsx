@@ -19,12 +19,11 @@ const LoginForm = () => {
 		event.preventDefault()
 		event.stopPropagation()
 		try {
-			const params: AuthRequest = { email: email.toLowerCase(), password }
 			setLoading(true)
-			const res = await axios.post<AuthRequest, AuthResponse>(
-				'/api/auth',
-				params
-			)
+			const res = await axios.post<AuthRequest, AuthResponse>('/api/auth', {
+				email: email.toLowerCase(),
+				password,
+			})
 			const { token } = res.data as AuthResponse
 			router.push('/dashboard')
 			Cookies.set('token', token)

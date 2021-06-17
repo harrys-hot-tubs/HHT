@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, ReactNode } from 'react'
-import { Spinner } from 'react-bootstrap'
+import { Button, Spinner } from 'react-bootstrap'
 
 type Type = 'button' | 'submit' | 'reset'
 
@@ -37,7 +37,7 @@ const SpinnerButton = ({
 	onClick,
 	'data-testid': dataTestID,
 }: ComponentProps) => (
-	<button
+	<Button
 		id={id}
 		type={type}
 		value={value}
@@ -60,7 +60,7 @@ const SpinnerButton = ({
 		) : (
 			<>{children}</>
 		)}
-	</button>
+	</Button>
 )
 
 export default SpinnerButton

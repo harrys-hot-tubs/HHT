@@ -1,9 +1,9 @@
 import HotTub, { DisplayableTub } from '@components/HotTub'
 import NoAvailabilities from '@components/NoAvailabilities'
-import { PriceRequest, PriceResponse } from '@typings/api/Checkout'
+import { PriceRequest, PriceResponse } from '@typings/api/Payment'
 import { TubDB } from '@typings/db/Tub'
 import { displayableTubs } from '@utils/tubs'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
@@ -78,12 +78,14 @@ const determinePrice = async (
 	startDate: string,
 	endDate: string
 ) => {
-	const params: PriceRequest = {
-		startDate,
-		endDate,
-	}
-	const { data } = await axios.post(`/api/tubs/${id}`, params)
-	const { price } = data as PriceResponse
+	const { data } = await axios.post<PriceRequest, AxiosResponse<PriceResponse>>(
+		`/api/tubs/${id}`,
+		{
+			startDate,
+			endDate,
+		}
+	)
+	const { price } = data
 	return price
 }
 

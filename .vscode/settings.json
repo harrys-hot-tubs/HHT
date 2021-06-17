@@ -10,5 +10,6 @@
 		"mailjet",
 		"outcode",
 		"testid"
-	]
+	],
+	"window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}"
 }
