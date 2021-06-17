@@ -1,6 +1,6 @@
 import { bookings } from '@fixtures/bookingFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
-import { mixedSizes } from '@fixtures/tubFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import useRefundModal, { RefundModalState } from '@hooks/useRefundModal'
 import { act, renderHook } from '@testing-library/react-hooks'
 import { PopulatedOrder } from '@typings/db/Order'
@@ -9,7 +9,7 @@ import { DraggableLocation } from 'react-beautiful-dnd'
 const movedOrder: PopulatedOrder = {
 	...storedOrder,
 	...bookings[0],
-	...mixedSizes[0],
+	...tubs[0],
 }
 
 it('updates internal state when logging a move', () => {

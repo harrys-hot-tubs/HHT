@@ -2,8 +2,7 @@ import { bookings } from '@fixtures/bookingFixtures'
 import { CreateOrderRequest } from '@typings/api/Order'
 import { OrderDB } from '@typings/db/Order'
 
-export const orderRequest: CreateOrderRequest = {
-	checkout_session_id: 'checkout_session_id',
+export const orderRequest: Omit<CreateOrderRequest, 'paymentIntentID'> = {
 	first_name: 'John',
 	last_name: 'Doe',
 	email: 'email@doe.com',
@@ -14,9 +13,7 @@ export const orderRequest: CreateOrderRequest = {
 	special_requests: '',
 	referee: 'Instagram',
 	postcode: 'AB2 2CD',
-	start_date: '2021-03-01',
-	end_date: '2021-03-04',
-	tub_id: 1,
+	booking_id: 1,
 }
 
 export const storedOrder: OrderDB = {

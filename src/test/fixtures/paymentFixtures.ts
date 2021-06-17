@@ -1,27 +1,34 @@
 import { birmingham } from '@fixtures/postcodeFixtures'
+import { tubs, zeroPrice } from '@fixtures/tubFixtures'
 import { CheckoutInformation } from '@hooks/useCheckoutInformation'
-import { CheckoutRequest } from '@typings/api/Checkout'
+import { PaymentIntentRequest } from '@typings/api/Payment'
 
-export const validCheckoutRequest: CheckoutRequest = {
-	price: 109,
+export const validPaymentIntentRequest: PaymentIntentRequest = {
+	tubID: tubs[0].tub_id,
 	startDate: '2017-01-01',
 	endDate: '2017-01-03',
 }
 
-export const invalidCheckoutRequestZeroTime: CheckoutRequest = {
-	price: 109,
+export const invalidPaymentIntentRequestZeroTime: PaymentIntentRequest = {
+	tubID: tubs[0].tub_id,
 	startDate: '2017-01-01',
 	endDate: '2017-01-01',
 }
 
-export const invalidCheckoutRequestNegativeTime: CheckoutRequest = {
-	price: 109,
+export const invalidPaymentIntentRequestNegativeTime: PaymentIntentRequest = {
+	tubID: tubs[0].tub_id,
 	startDate: '2017-01-01',
 	endDate: '2016-01-01',
 }
 
-export const invalidCheckoutRequestPrice: CheckoutRequest = {
-	price: 0,
+export const invalidPaymentIntentRequestZeroPrice: PaymentIntentRequest = {
+	tubID: zeroPrice.tub_id,
+	startDate: '2017-01-01',
+	endDate: '2017-01-03',
+}
+
+export const invalidPaymentIntentRequestTubID: PaymentIntentRequest = {
+	tubID: 45893,
 	startDate: '2017-01-01',
 	endDate: '2017-01-03',
 }

@@ -1,4 +1,4 @@
-import { mixedSizes } from '@fixtures/tubFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { BookingDB } from '@typings/db/Booking'
 import { addDays } from 'date-fns'
 
@@ -16,7 +16,9 @@ const generateDuration = (): string => {
 export const bookings: BookingDB[] = [
 	{
 		booking_id: 1,
-		tub_id: mixedSizes[0].tub_id,
+		tub_id: tubs[0].tub_id,
 		booking_duration: generateDuration(),
+		reserved: false,
+		reservation_end: '2029-02-07T00:00:00.000Z',
 	},
 ]

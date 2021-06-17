@@ -1,5 +1,6 @@
 import useConsent from '@hooks/useConsent'
 import { act, renderHook } from '@testing-library/react-hooks'
+import { ValueWithExpiration } from './useStoredStateWithExpiration'
 
 const name = 'consent'
 
@@ -9,8 +10,11 @@ afterEach(() => {
 })
 
 it('accesses stored data if available', () => {
-	const storedValue = 'false'
-	localStorage.setItem(name, storedValue)
+	const stored: ValueWithExpiration = {
+		value: 'false',
+		exp: Date.now() + 3600 * 1000,
+	}
+	localStorage.setItem(name, JSON.stringify(stored))
 
 	const { result } = renderHook(() => useConsent())
 	const [value] = result.current
@@ -31,7 +35,10 @@ it('sets stored data when updated', () => {
 		result.current[1](newValue)
 	})
 
-	expect(localStorage.setItem).toHaveBeenLastCalledWith(name, String(newValue))
+	expect(localStorage.setItem).toHaveBeenLastCalledWith(
+		name,
+		expect.stringContaining(`"value":"${newValue}"`)
+	)
 })
 
 it('sets active data when updated', () => {
@@ -46,9 +53,12 @@ it('sets active data when updated', () => {
 })
 
 it('overwrites stored data when updated', () => {
-	const storedValue = 'false'
+	const stored: ValueWithExpiration = {
+		value: 'false',
+		exp: Date.now() + 3600 * 1000,
+	}
 	const nextValue = true
-	localStorage.setItem(name, storedValue)
+	localStorage.setItem(name, JSON.stringify(stored))
 
 	const { result } = renderHook(() => useConsent())
 	expect(result.current[0]).toBe(false)
@@ -56,6 +66,9 @@ it('overwrites stored data when updated', () => {
 		result.current[1](nextValue)
 	})
 
-	expect(localStorage.setItem).toHaveBeenLastCalledWith(name, String(nextValue))
+	expect(localStorage.setItem).toHaveBeenLastCalledWith(
+		name,
+		expect.stringContaining(`"value":"${nextValue}"`)
+	)
 	expect(result.current[0]).toBe(nextValue)
 })
