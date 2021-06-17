@@ -1,4 +1,4 @@
-import { PriceResponse } from '@typings/api/Checkout'
+import { PriceResponse } from '@typings/api/Payment'
 import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'
@@ -63,7 +63,7 @@ const post = async (
 	}
 }
 
-const getPrice = async ({
+export const getPrice = async ({
 	tubID,
 	startDate,
 	endDate,
@@ -76,13 +76,17 @@ const getPrice = async ({
 }): Promise<number> => {
 	const nights = differenceInDays(endDate, startDate)
 
-	if (nights > 7 || nights < 2) throw new Error('Duration is invalid.')
+	if (nights > 7 || nights < 2) throw new RangeError('Duration is invalid.')
 
-	const { initial_price, night_price } = await db<LocationDB>('locations')
+	const location = await db<LocationDB>('locations')
 		.select('initial_price', 'night_price')
 		.first()
 		.join('tubs', 'tubs.location_id', '=', 'locations.location_id')
 		.where('tubs.tub_id', '=', tubID)
+
+	if (!location) throw new ReferenceError('Location of tub not found.')
+
+	const { initial_price, night_price } = location
 
 	const finalPrice = Number(initial_price) + (nights - 2) * Number(night_price)
 	return finalPrice

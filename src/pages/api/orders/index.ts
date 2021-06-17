@@ -46,21 +46,24 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	const { db } = req
 	const orderDetails: CreateOrderRequest = req.body
 	try {
-		const booking_id = (
+		const storedBooking = (
 			await db<BookingDB>('bookings')
-				.insert({
-					booking_duration: `[${orderDetails.start_date.substring(
-						0,
-						10
-					)},${orderDetails.end_date.substring(0, 10)})`,
-					tub_id: orderDetails.tub_id,
-				})
-				.returning('booking_id')
+				.update({ reserved: false })
+				.where('booking_id', '=', orderDetails.booking_id)
+				.returning('*')
 		)[0]
 
+		if (!storedBooking) throw new Error('No order exists for the provided ID.')
+
+		const { id: paymentIntentID } = await stripe.paymentIntents.retrieve(
+			orderDetails.paymentIntentID
+		)
+		if (!paymentIntentID)
+			throw new Error('No payment intent exists for the provided client_secret')
+
 		await db<OrderDB>('orders').insert({
-			id: orderDetails.checkout_session_id,
-			booking_id,
+			id: paymentIntentID,
+			booking_id: storedBooking.booking_id,
 			paid: false,
 			fulfilled: false,
 			first_name: orderDetails.first_name,
@@ -76,8 +79,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 		})
 
 		res.status(200).json({ added: true })
-	} catch (e) {
-		res.status(400).json(e)
+	} catch (error) {
+		console.error(error)
+		res.status(400).json(error)
 	}
 }
 
