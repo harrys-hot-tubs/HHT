@@ -40,5 +40,5 @@ describe('get', () => {
 })
 
 afterAll(async () => {
-	cleanupDatabase(connection)
+	await cleanupDatabase(connection)
 })
