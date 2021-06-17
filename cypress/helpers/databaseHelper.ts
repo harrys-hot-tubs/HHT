@@ -2,7 +2,7 @@ require('dotenv').config({ path: '.env.test' })
 import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
-import { mixedSizes } from '@fixtures/tubFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase } from '@helpers/DBHelper'
 import { AccountDB } from '@typings/db/Account'
 import { connector } from '@utils/db'
@@ -24,7 +24,7 @@ export const seedDatabase = async () => {
 				location_id: locations[0].location_id,
 			},
 		])
-		await arbitraryInsert('tubs', mixedSizes)
+		await arbitraryInsert('tubs', tubs)
 		await arbitraryInsert('bookings', [bookings[0]])
 		await arbitraryInsert('orders', [storedOrder])
 		return true

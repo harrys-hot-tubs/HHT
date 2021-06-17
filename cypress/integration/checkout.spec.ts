@@ -1,12 +1,22 @@
 import { RefereeOptions } from '@components/CheckoutForm'
-import { formData, validCheckoutInformation } from '@fixtures/checkoutFixtures'
-import { setStorage } from '@helpers/localStorageHelper'
+import { formData, validCheckoutInformation } from '@fixtures/paymentFixtures'
 import { CheckoutInformation, Fallback } from '@hooks/useCheckoutInformation'
+import { BookingData } from '@pages/checkout'
+import { addHours } from 'date-fns'
+import { setStorage } from '../helpers/localStorageHelper'
 
 beforeEach(() => {
-	setStorage({ consent: 'true' })
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
+	cy.task('defaults:db')
+	cy.task('DBClear', { tableName: 'orders' })
+	cy.task('DBClear', { tableName: 'bookings' })
 	setStorage(formData)
-	cy.visit('/checkout?tub_id=91')
+	cy.visit('/checkout?tub_id=1')
 })
 
 it('sets the page title', () => {
@@ -20,34 +30,6 @@ it('redirects to hire if data is not present', () => {
 })
 
 describe('rendering', () => {
-	it('renders first name field', () => {
-		cy.get('[aria-label=first-name]').should('exist')
-	})
-
-	it('renders last name field', () => {
-		cy.get('[aria-label=last-name]').should('exist')
-	})
-
-	it('renders email field', () => {
-		cy.get('[aria-label=email]').should('exist')
-	})
-
-	it('renders telephone number field', () => {
-		cy.get('[aria-label=telephone]').should('exist')
-	})
-
-	it('renders address line 1 field', () => {
-		cy.get('[aria-label=address1]').should('exist')
-	})
-
-	it('renders address line 2 field', () => {
-		cy.get('[aria-label=address2]').should('exist')
-	})
-
-	it('renders address line 3 field', () => {
-		cy.get('[aria-label=address3]').should('exist')
-	})
-
 	it('renders postcode field', () => {
 		cy.get('[aria-label=postcode]')
 
@@ -210,6 +192,10 @@ describe('data entry', () => {
 	})
 
 	it('indicates invalid fields on the form', () => {
+		cy.fillElementsInput('cardNumber', '4242424242424242')
+		cy.fillElementsInput('cardExpiry', '1225')
+		cy.fillElementsInput('cardCvc', '123')
+
 		cy.get('.checkout-button').click()
 		cy.get('[role=alert]')
 			.should('have.length.within', 8, 12)
@@ -220,6 +206,176 @@ describe('data entry', () => {
 	})
 })
 
+describe('credit card field', () => {
+	beforeEach(() => {
+		cy.setLocalStorage(
+			'checkoutInformation',
+			JSON.stringify(validCheckoutInformation)
+		)
+		cy.reload()
+	})
+
+	it('shows error messages on card_error', () => {
+		cy.fillElementsInput('cardNumber', '4000000000000002')
+		cy.fillElementsInput('cardExpiry', '1225')
+		cy.fillElementsInput('cardCvc', '123')
+		cy.get('.checkout-button').click()
+
+		cy.get('[data-testid=payment-alert]').should('be.visible')
+		cy.get('[data-testid=payment-alert-heading]')
+			.should('be.visible')
+			.should('contain.text', 'Payment Failed')
+		cy.get('[data-testid=payment-alert-message]').should('be.visible')
+	})
+
+	it('shows error messages on validation_error', () => {
+		cy.fillElementsInput('cardNumber', '4000000000000069')
+		cy.fillElementsInput('cardExpiry', '1225')
+		cy.fillElementsInput('cardCvc', '123')
+		cy.get('.checkout-button').click()
+
+		cy.get('[data-testid=payment-alert]').should('be.visible')
+		cy.get('[data-testid=payment-alert-heading]')
+			.should('be.visible')
+			.should('contain.text', 'Payment Failed')
+		cy.get('[data-testid=payment-alert-message]').should('be.visible')
+	})
+
+	it('shows error messages on api_error', () => {
+		cy.fillElementsInput('cardNumber', '4000000000000119')
+		cy.fillElementsInput('cardExpiry', '1225')
+		cy.fillElementsInput('cardCvc', '123')
+		cy.get('.checkout-button').click()
+
+		cy.get('[data-testid=payment-alert]').should('be.visible')
+		cy.get('[data-testid=payment-alert-heading]')
+			.should('be.visible')
+			.should('contain.text', 'Payment Failed')
+		cy.get('[data-testid=payment-alert-message]').should('be.visible')
+	})
+
+	it('shows error messages on authentication_error', () => {
+		cy.fillElementsInput('cardNumber', '4000002760003184')
+		cy.fillElementsInput('cardExpiry', '1225')
+		cy.fillElementsInput('cardCvc', '123')
+		cy.get('.checkout-button').click()
+
+		// cy.contains('Fail Authentication').click()
+		// TODO find out how to click the fail authentication button.
+	})
+})
+
+it('redirects to the success page on a successful checkout', () => {
+	cy.setLocalStorage(
+		'checkoutInformation',
+		JSON.stringify(validCheckoutInformation)
+	)
+	cy.reload()
+
+	cy.fillElementsInput('cardNumber', '4242424242424242')
+	cy.fillElementsInput('cardExpiry', '1225')
+	cy.fillElementsInput('cardCvc', '123')
+
+	cy.get('.checkout-button').click()
+
+	cy.location('pathname').should('contain', '/success')
+})
+
+describe('countdown', () => {
+	it('decreases over time', () => {
+		cy.get('.time')
+			.invoke('text')
+			.invoke('toString')
+			.invoke('split', ':')
+			.its(1)
+			.as('startSeconds')
+
+		// Cannot use cy.clock as the timer does not user setInterval, it uses CSS animation
+		cy.wait(1000)
+
+		cy.get('@startSeconds').then((startSeconds) => {
+			cy.get('.time').then(($time) => {
+				const endSeconds = Number($time.text().toString().split(':')[1])
+				expect(endSeconds).to.be.lessThan(Number(startSeconds))
+			})
+		})
+	})
+
+	it('persists between reloads', () => {
+		cy.get('.time').then(($time) => {
+			const [startMinutes, startSeconds] = $time.text().toString().split(':')
+			cy.wrap(startSeconds).as('startSeconds')
+			cy.wrap(startMinutes).as('startMinutes')
+		})
+
+		cy.getLocalStorage('bookingData').then((data) => {
+			const parsedData: BookingData = JSON.parse(data)
+			const mutated: BookingData = {
+				...parsedData,
+				exp: parsedData.exp - 5.2 * 60 * 1000,
+			}
+			cy.setLocalStorage('bookingData', JSON.stringify(mutated))
+		})
+		cy.reload()
+
+		cy.get('.time').then(($time) => {
+			const [endMinutes, endSeconds] = $time
+				.text()
+				.toString()
+				.split(':')
+				.map((str) => Number(str))
+			cy.get('@startMinutes').then((startMinutes) => {
+				cy.get('@startSeconds').then((startSeconds) => {
+					expect(endSeconds).to.be.lessThan(Number(startSeconds))
+					expect(endMinutes).to.be.lessThan(Number(startMinutes))
+				})
+			})
+		})
+	})
+
+	it('redirects to the hire page when opened after expiration', () => {
+		cy.getLocalStorage('bookingData').then((data) => {
+			const bookingData: BookingData = JSON.parse(data)
+			const mutated: BookingData = {
+				...bookingData,
+				exp: bookingData.exp - 10 * 60 * 1000,
+			}
+			cy.setLocalStorage('bookingData', JSON.stringify(mutated))
+		})
+		cy.reload()
+
+		cy.location('pathname').should('eq', '/hire')
+	})
+
+	it('sends a request to delete booking on expiration', () => {
+		cy.getLocalStorage('bookingData').then((data) => {
+			const bookingData: BookingData = JSON.parse(data)
+			cy.wrap(bookingData.bookingID).as('bookingID')
+			cy.intercept('DELETE', `/api/bookings/${bookingData.bookingID}`).as(
+				'delete'
+			)
+			const mutated: BookingData = {
+				...bookingData,
+				exp: bookingData.exp - 10 * 60 * 1000,
+			}
+			cy.setLocalStorage('bookingData', JSON.stringify(mutated))
+		})
+		cy.reload()
+
+		cy.wait('@delete').then((intercept) => {
+			cy.get('@bookingID').then((bookingID) => {
+				expect(intercept.request.url).to.contain(bookingID)
+			})
+		})
+	})
+})
+
 afterEach(() => {
 	cy.clearLocalStorage()
+	cy.task('DBClear', { tableName: 'orders' })
+	cy.task('DBClear', { tableName: 'bookings' })
+})
+
+after(() => {
+	cy.task('cleanup')
 })

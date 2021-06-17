@@ -1,3 +1,4 @@
+import injectDevServer from '@cypress/react/plugins/next'
 import wp from '@cypress/webpack-batteries-included-preprocessor'
 import { TokenAccount } from '@typings/api/Auth'
 import jwt from 'jsonwebtoken'
@@ -65,4 +66,6 @@ module.exports = (on, config) => {
 			})
 		},
 	})
+	injectDevServer(on, config)
+	return config
 }

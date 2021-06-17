@@ -8,7 +8,7 @@ import { locations } from '@fixtures/locationFixtures'
 import { storedOrder } from '@fixtures/orderFixtures'
 import { refunds } from '@fixtures/refundFixtures'
 import { extractBookingStart } from '@utils/date'
-import { isSameDay } from 'date-fns'
+import { addHours, isSameDay } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {
@@ -18,7 +18,12 @@ before(() => {
 beforeEach(() => {
 	cy.clearCookies()
 	cy.clearLocalStorage()
-	setStorage({ consent: 'true' })
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
 	cy.task('generateToken', { index: 1 }).then((token: string) =>
 		cy.setCookie('token', token)
 	)

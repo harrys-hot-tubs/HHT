@@ -2,11 +2,16 @@ import { bir } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { birmingham } from '@fixtures/postcodeFixtures'
 import { failedRangeResponse } from '@fixtures/rangeFixtures'
-import { addMonths, format, isSameDay } from 'date-fns'
+import { addHours, addMonths, format, isSameDay } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
 beforeEach(() => {
-	setStorage({ consent: 'true' })
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
 	cy.visit('/hire')
 })
 

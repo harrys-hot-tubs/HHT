@@ -1,8 +1,14 @@
-import { ValueWithExpiration } from '../../src/hooks/useStoredStateWithExpiration'
+import { ValueWithExpiration } from '@hooks/useStoredStateWithExpiration'
+import { addHours } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {
-	setStorage({ consent: 'true' })
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
 	cy.visit('/')
 })
 

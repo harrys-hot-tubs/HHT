@@ -1,3 +1,4 @@
+import { addHours } from 'date-fns'
 import accounts from '../fixtures/accounts.json'
 import { setStorage } from '../helpers/localStorageHelper'
 
@@ -7,7 +8,12 @@ before(() => {
 
 beforeEach(() => {
 	cy.clearLocalStorage()
-	setStorage({ consent: 'true' })
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
 	cy.visit('/login')
 })
 
@@ -62,5 +68,5 @@ it('redirects authenticated users to the dashboard', () => {
 })
 
 after(() => {
-	cy.task('cleanup').then(() => {})
+	cy.task('cleanup')
 })
