@@ -10,6 +10,7 @@ const Failure = () => {
 			<Head>
 				<title>Payment Unsuccessful</title>
 			</Head>
+			<div>
 			<h1>Oh no!</h1>
 			<h2>For some reason we were unable to accept your payment.</h2>
 			<span className='home-text'>
@@ -19,6 +20,7 @@ const Failure = () => {
 				</a>
 				.
 			</span>
+			</div>
 		</div>
 	)
 }

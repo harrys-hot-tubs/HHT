@@ -22,7 +22,7 @@ const HotTub = ({ tub_id, max_capacity, price, onClick }: ComponentProps) => {
 				<img src={getImageHREF(max_capacity)} className='thumbnail' />
 				<div className='card-body'>
 					<span>{max_capacity}-Person</span>
-					<span>£{price} + £70 refundable deposit</span>
+					<span>£{price}</span>
 				</div>
 			</div>
 		</>
