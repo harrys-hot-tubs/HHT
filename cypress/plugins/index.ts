@@ -36,19 +36,19 @@ module.exports = (on, config) => {
 	)
 	on('task', {
 		async 'defaults:db'() {
-			return await seedDatabase()
+			return seedDatabase()
 		},
 		async DBClear({ tableName }: { tableName: string }) {
-			return await clearTable(tableName)
+			return clearTable(tableName)
 		},
 		async DBInsert({ tableName, data }: { tableName: string; data: any[] }) {
-			return await arbitraryInsert(tableName, data)
+			return arbitraryInsert(tableName, data)
 		},
 		async addAccounts() {
-			return await addAccountsToDatabase()
+			return addAccountsToDatabase()
 		},
 		async cleanup() {
-			return await cleanupConnection()
+			return cleanupConnection()
 		},
 		generateToken({ index }: { index: number }) {
 			return new Promise((resolve, reject) => {
