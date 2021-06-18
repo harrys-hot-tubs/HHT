@@ -34,7 +34,7 @@ beforeEach(() => {
 	setStorage({
 		bookingData: JSON.stringify({
 			bookingID: 1,
-			exp: Date.now() + 10 * 60 * 1000,
+			exp: Date.now() + 9.5 * 60 * 1000,
 			startTime: new Date(),
 		} as BookingData),
 	})
@@ -216,7 +216,10 @@ describe('data entry', () => {
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
 
-		cy.get('.checkout-button').click()
+		cy.get('.checkout-button', { timeout: 10000 })
+			.should('not.be.disabled')
+			.click()
+
 		cy.get('[role=alert]')
 			.should('have.length.within', 8, 12)
 			.each((message) => {
@@ -240,9 +243,13 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000000000000002')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').should('not.be.disabled').click()
+		cy.get('.checkout-button', { timeout: 10000 })
+			.should('not.be.disabled')
+			.click()
 
-		cy.get('[data-testid=payment-alert]').should('be.visible')
+		cy.get('[data-testid=payment-alert]', { timeout: 10000 }).should(
+			'be.visible'
+		)
 		cy.get('[data-testid=payment-alert-heading]')
 			.should('be.visible')
 			.should('contain.text', 'Payment Failed')
@@ -254,9 +261,13 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000000000000069')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').should('not.be.disabled').click()
+		cy.get('.checkout-button', { timeout: 10000 })
+			.should('not.be.disabled')
+			.click()
 
-		cy.get('[data-testid=payment-alert]').should('be.visible')
+		cy.get('[data-testid=payment-alert]', { timeout: 10000 }).should(
+			'be.visible'
+		)
 		cy.get('[data-testid=payment-alert-heading]')
 			.should('be.visible')
 			.should('contain.text', 'Payment Failed')
@@ -268,9 +279,13 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000000000000119')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').should('not.be.disabled').click()
+		cy.get('.checkout-button', { timeout: 10000 })
+			.should('not.be.disabled')
+			.click()
 
-		cy.get('[data-testid=payment-alert]').should('be.visible')
+		cy.get('[data-testid=payment-alert]', { timeout: 10000 }).should(
+			'be.visible'
+		)
 		cy.get('[data-testid=payment-alert-heading]')
 			.should('be.visible')
 			.should('contain.text', 'Payment Failed')
@@ -282,7 +297,9 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000002760003184')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').should('not.be.disabled').click()
+		cy.get('.checkout-button', { timeout: 10000 })
+			.should('not.be.disabled')
+			.click()
 
 		// cy.contains('Fail Authentication').click()
 		// TODO find out how to click the fail authentication button.
@@ -294,7 +311,9 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
 
-		cy.get('.checkout-button').should('not.be.disabled').click()
+		cy.get('.checkout-button', { timeout: 10000 })
+			.should('not.be.disabled')
+			.click()
 
 		cy.location('pathname').should('contain', '/success')
 	})
@@ -370,7 +389,7 @@ describe('countdown', () => {
 		})
 		cy.reload()
 
-		cy.location('pathname').should('eq', '/hire')
+		cy.location('pathname', { timeout: 10000 }).should('eq', '/hire')
 	})
 
 	it('sends a request to delete booking on expiration', () => {
