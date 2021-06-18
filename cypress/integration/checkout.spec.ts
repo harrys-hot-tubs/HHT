@@ -1,9 +1,11 @@
 import { RefereeOptions } from '@components/CheckoutForm'
+import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { formData, validCheckoutInformation } from '@fixtures/paymentFixtures'
 import { tubs } from '@fixtures/tubFixtures'
 import { CheckoutInformation, Fallback } from '@hooks/useCheckoutInformation'
 import { BookingData } from '@pages/checkout'
+import { BookingDB } from '@typings/db/Booking'
 import { addHours } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
@@ -18,6 +20,23 @@ beforeEach(() => {
 			value: 'true',
 			exp: addHours(new Date(), 2).getTime(),
 		}),
+	})
+
+	cy.task('DBInsert', {
+		tableName: 'bookings',
+		data: {
+			...bookings[0],
+			reserved: true,
+			booking_duration: `[${formData.startDate},${formData.endDate})`,
+		} as BookingDB,
+	})
+
+	setStorage({
+		bookingData: JSON.stringify({
+			bookingID: 1,
+			exp: Date.now() + 10 * 60 * 1000,
+			startTime: new Date(),
+		} as BookingData),
 	})
 
 	setStorage(formData)
