@@ -217,6 +217,7 @@ describe('credit card field', () => {
 	})
 
 	it('shows error messages on card_error', () => {
+		cy.get('.time').should('be.visible')
 		cy.fillElementsInput('cardNumber', '4000000000000002')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
@@ -230,6 +231,7 @@ describe('credit card field', () => {
 	})
 
 	it('shows error messages on validation_error', () => {
+		cy.get('.time').should('be.visible')
 		cy.fillElementsInput('cardNumber', '4000000000000069')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
@@ -243,6 +245,7 @@ describe('credit card field', () => {
 	})
 
 	it('shows error messages on api_error', () => {
+		cy.get('.time').should('be.visible')
 		cy.fillElementsInput('cardNumber', '4000000000000119')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
@@ -256,6 +259,7 @@ describe('credit card field', () => {
 	})
 
 	it('shows error messages on authentication_error', () => {
+		cy.get('.time').should('be.visible')
 		cy.fillElementsInput('cardNumber', '4000002760003184')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
@@ -266,6 +270,7 @@ describe('credit card field', () => {
 	})
 
 	it('redirects to the success page on a successful checkout', () => {
+		cy.get('.time').should('be.visible')
 		cy.fillElementsInput('cardNumber', '4242424242424242')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
