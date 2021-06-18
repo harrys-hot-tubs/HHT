@@ -385,8 +385,7 @@ describe('countdown', () => {
 
 afterEach(() => {
 	cy.clearLocalStorage()
-	cy.task('DBClear', { tableName: 'orders' })
-	cy.task('DBClear', { tableName: 'bookings' })
+	cy.task('cleanup')
 })
 
 after(() => {
