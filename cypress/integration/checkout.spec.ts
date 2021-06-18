@@ -220,7 +220,7 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000000000000002')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').click()
+		cy.get('.checkout-button').should('not.be.disabled').click()
 
 		cy.get('[data-testid=payment-alert]').should('be.visible')
 		cy.get('[data-testid=payment-alert-heading]')
@@ -233,7 +233,7 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000000000000069')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').click()
+		cy.get('.checkout-button').should('not.be.disabled').click()
 
 		cy.get('[data-testid=payment-alert]').should('be.visible')
 		cy.get('[data-testid=payment-alert-heading]')
@@ -246,7 +246,7 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000000000000119')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').click()
+		cy.get('.checkout-button').should('not.be.disabled').click()
 
 		cy.get('[data-testid=payment-alert]').should('be.visible')
 		cy.get('[data-testid=payment-alert-heading]')
@@ -259,7 +259,7 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardNumber', '4000002760003184')
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
-		cy.get('.checkout-button').click()
+		cy.get('.checkout-button').should('not.be.disabled').click()
 
 		// cy.contains('Fail Authentication').click()
 		// TODO find out how to click the fail authentication button.
@@ -270,7 +270,7 @@ describe('credit card field', () => {
 		cy.fillElementsInput('cardExpiry', '1225')
 		cy.fillElementsInput('cardCvc', '123')
 
-		cy.get('.checkout-button').click()
+		cy.get('.checkout-button').should('not.be.disabled').click()
 
 		cy.location('pathname').should('contain', '/success')
 	})

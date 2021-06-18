@@ -51,28 +51,27 @@ const Checkout = ({ tubID }: PageProps) => {
 			const startDate = new Date(localStorage.getItem('startDate'))
 			const endDate = new Date(localStorage.getItem('endDate'))
 			const postcode = localStorage.getItem('postcode')
-			if (!postcode || !startDate || !endDate) throw new Error('Invalid state.')
-			else {
+			if (!postcode || !startDate || !endDate) {
+				throw new Error('Invalid state.')
+			} else {
 				;(async () => {
-					if (startDate && endDate && tubID) {
-						try {
-							const price = await getPrice(
-								startDate.toISOString(),
-								endDate.toISOString(),
-								tubID
-							)
-							setPrice(price)
+					try {
+						const price = await getPrice(
+							startDate.toISOString(),
+							endDate.toISOString(),
+							tubID
+						)
+						setPrice(price)
 
-							const secret = await getPaymentIntentSecret(
-								startDate.toISOString(),
-								endDate.toISOString(),
-								tubID
-							)
-							setPaymentIntent(secret)
-						} catch (error) {
-							console.error(error.message)
-							router.push('/hire')
-						}
+						const secret = await getPaymentIntentSecret(
+							startDate.toISOString(),
+							endDate.toISOString(),
+							tubID
+						)
+						setPaymentIntent(secret)
+					} catch (error) {
+						console.error(error.message)
+						router.push('/hire')
 					}
 				})()
 				setPostcode(postcode)
@@ -89,7 +88,8 @@ const Checkout = ({ tubID }: PageProps) => {
 		if (tubID && startDate && endDate) {
 			;(async () => {
 				try {
-					if (bookingData === undefined) {
+					const storedBookingData = localStorage.getItem('bookingData')
+					if (!storedBookingData) {
 						const bookingData = await reserveBooking(
 							startDate.toISOString(),
 							endDate.toISOString(),
@@ -103,7 +103,7 @@ const Checkout = ({ tubID }: PageProps) => {
 				}
 			})()
 		}
-	}, [tubID, startDate, endDate, bookingData])
+	}, [tubID, startDate, endDate])
 
 	return (
 		<div className='checkout-wrapper'>
