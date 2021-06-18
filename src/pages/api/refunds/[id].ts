@@ -40,8 +40,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 					'*'
 				)
 				return res.status(200).json({ inserted: inserted })
-			} catch (e) {
-				return res.status(500).json(e)
+			} catch (error) {
+				console.error(error.message)
+				return res.status(500).json(error)
 			}
 		}
 
@@ -60,8 +61,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 					.where('order_id', '=', id as string)
 
 				return res.status(200).json({ updated: updated })
-			} catch (e) {
-				return res.status(500).json(e)
+			} catch (error) {
+				console.error(error.message)
+				return res.status(500).json(error)
 			}
 		}
 	}
@@ -81,8 +83,9 @@ const remove = async (req: ConnectedRequest, res: NextApiResponse) => {
 				.del('*')
 				.where('order_id', '=', id)
 			return res.status(200).json({ removed })
-		} catch (e) {
-			res.status(500).json(e)
+		} catch (error) {
+			console.error(error.message)
+			res.status(500).json(error)
 		}
 	}
 	res.status(401).end()

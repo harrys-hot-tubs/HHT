@@ -34,8 +34,8 @@ const post = async (
 		if (!match) throw new Error('Passwords do not match.')
 
 		return res.status(200).json({ token: tokeniseAccount(account) })
-	} catch (e) {
-		console.error(e)
+	} catch (error) {
+		console.error(error.message)
 		return res
 			.status(400)
 			.json({ type: 'AuthError', message: 'Failed to create account.' })

@@ -27,8 +27,8 @@ const LoginForm = () => {
 			const { token } = res.data as AuthResponse
 			router.push('/dashboard')
 			Cookies.set('token', token)
-		} catch (e) {
-			console.error(e)
+		} catch (error) {
+			console.error(error.message)
 		} finally {
 			setLoading(false)
 		}

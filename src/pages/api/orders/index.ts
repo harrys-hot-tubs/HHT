@@ -37,8 +37,9 @@ const get = async (
 			.join('bookings', 'orders.booking_id', '=', 'bookings.booking_id')
 			.join('tubs', 'tubs.tub_id', '=', 'bookings.tub_id')
 		return res.status(200).json(orders)
-	} catch (e) {
-		return res.status(400).json(e)
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json(error)
 	}
 }
 
@@ -80,7 +81,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 
 		res.status(200).json({ added: true })
 	} catch (error) {
-		console.error(error)
+		console.error(error.message)
 		res.status(400).json(error)
 	}
 }
@@ -112,6 +113,7 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 			},
 		})
 	} catch (error) {
+		console.error(error.message)
 		res.status(500).send(error.message)
 	}
 }

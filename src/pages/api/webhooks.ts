@@ -67,9 +67,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			sig,
 			process.env.WEBHOOK_SECRET
 		)
-	} catch (err) {
-		console.log(err.message)
-		return res.status(400).json({ error: `Webhook Error: ${err.message}` })
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json({ error: `Webhook Error: ${error.message}` })
 	}
 
 	console.log('Success: ', event.id)
@@ -98,9 +98,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 				},
 			})
 			return
-		} catch (err) {
-			console.log(err.message)
-			return res.status(200).json({ received: true, error: err.message })
+		} catch (error) {
+			console.error(error.message)
+			return res.status(200).json({ received: true, error: error.message })
 		}
 	} else {
 		return res.status(200).json({ received: true })
@@ -176,8 +176,8 @@ const sendEmailNotification = async (
 				},
 			],
 		})
-	} catch (e) {
-		console.log('e', e)
+	} catch (error) {
+		console.error(error.message)
 	}
 }
 

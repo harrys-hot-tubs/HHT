@@ -28,8 +28,8 @@ const validatePostcode = async (
 		if (valid && inRange && requiresImage(postcode)) return [true, 'insurance']
 
 		return [valid && inRange, null]
-	} catch (e) {
-		console.error(e.message)
+	} catch (error) {
+		console.error(error.message)
 		return [false, 'other']
 	}
 }

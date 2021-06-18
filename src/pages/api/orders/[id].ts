@@ -36,9 +36,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 				status.payload.account_id
 			)
 			res.status(200).json({ updated: updated[0] })
-		} catch (e) {
-			console.log(`e`, e)
-			res.status(400).json(e)
+		} catch (error) {
+			console.error(error.message)
+			res.status(400).json(error)
 		}
 	}
 }

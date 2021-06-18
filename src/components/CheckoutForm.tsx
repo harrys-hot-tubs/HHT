@@ -92,6 +92,7 @@ const CheckoutForm = ({
 					bookingData.bookingID
 				)
 			} catch (error) {
+				console.error(error.message)
 				setCheckoutError(
 					"Failed to create an order. Don't worry, we haven't charged you."
 				)

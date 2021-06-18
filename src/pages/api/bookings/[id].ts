@@ -29,6 +29,7 @@ const remove = async (req: ConnectedRequest, res: NextApiResponse) => {
 			removed,
 		})
 	} catch (error) {
+		console.error(error.message)
 		return res.status(500).json({ error: error.message })
 	}
 }

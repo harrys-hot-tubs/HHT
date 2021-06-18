@@ -29,6 +29,7 @@ export const seedDatabase = async () => {
 		await arbitraryInsert('orders', [storedOrder])
 		return true
 	} catch (error) {
+		console.error(error.message)
 		return error
 	}
 }

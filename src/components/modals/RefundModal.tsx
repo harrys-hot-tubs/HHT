@@ -63,8 +63,8 @@ const RefundModal = ({
 
 			if (res.inserted.length === 0)
 				throw new Error('No refunds were inserted.')
-		} catch (e) {
-			console.warn(e)
+		} catch (error) {
+			console.error(error.message)
 		} finally {
 			setLoading(false)
 			setShow(false)
@@ -81,8 +81,8 @@ const RefundModal = ({
 			>(`/api/refunds/${order.id}`)
 
 			if (res.removed.length === 0) throw new Error('No refunds were removed.')
-		} catch (e) {
-			console.warn(e)
+		} catch (error) {
+			console.error(error.message)
 		} finally {
 			setLoading(false)
 			setShow(false)

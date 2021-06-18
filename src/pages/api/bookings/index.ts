@@ -30,8 +30,9 @@ const get = async (
 		const { db } = req
 		const bookings = await db<BookingDB>('bookings').select()
 		return res.status(200).json(bookings)
-	} catch (e) {
-		return res.status(400).json(e)
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json(error)
 	}
 }
 
@@ -94,6 +95,7 @@ const removeStale = async (req: ConnectedRequest, res: NextApiResponse) => {
 			removed,
 		})
 	} catch (error) {
+		console.error(error.message)
 		return res.status(500).json({ error: error.message })
 	}
 }

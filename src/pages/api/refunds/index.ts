@@ -18,8 +18,9 @@ const get = async (req: ConnectedRequest, res: NextApiResponse<RefundDB[]>) => {
 		const { db } = req
 		const refunds = await db<RefundDB>('refunds').select()
 		return res.status(200).json(refunds)
-	} catch (e) {
-		return res.status(400).json(e)
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json(error)
 	}
 }
 

@@ -17,7 +17,7 @@ export const cleanupDatabase = async (db: Knex) => {
 		await resetSequences(db)
 		await db.destroy()
 	} catch (error) {
-		console.error(error)
+		console.error(error.message)
 	}
 }
 

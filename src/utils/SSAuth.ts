@@ -62,6 +62,7 @@ export const isAuthorised = async (
 
 		return { authorised: true, payload: account }
 	} catch (error) {
+		console.error(error.message)
 		return { authorised: false, error: 'invalid' }
 	}
 }

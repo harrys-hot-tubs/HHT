@@ -35,8 +35,8 @@ const post = async (
 		)[0]
 		delete storedAccount.password_hash
 		return res.status(200).json(storedAccount)
-	} catch (e) {
-		console.error(e)
+	} catch (error) {
+		console.error(error.message)
 		return res
 			.status(400)
 			.json({ type: 'Error', message: 'Failed to create account.' })
@@ -85,7 +85,7 @@ const get = async (req: ConnectedRequest, res: NextApiResponse) => {
 			return res.status(401).send('Not authorised.')
 		}
 	} catch (error) {
-		console.error(error)
+		console.error(error.message)
 		return res.status(500).send('A problem occurred.')
 	}
 }

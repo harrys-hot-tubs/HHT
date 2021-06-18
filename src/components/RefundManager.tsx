@@ -40,7 +40,7 @@ const RefundManager = ({ orders }: ComponentProps) => {
 
 			setRefunds(refunds.filter((refund) => refund.order.id !== id))
 		} catch (error) {
-			console.error(error)
+			console.error(error.message)
 			console.warn(`Could not settle refund ${id}`)
 		} finally {
 			setLoading(false)

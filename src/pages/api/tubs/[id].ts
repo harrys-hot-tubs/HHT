@@ -33,6 +33,7 @@ const get = async (req: ConnectedRequest, res: NextApiResponse<TubDB>) => {
 		if (!tub) throw new Error(`Tub with id ${id} doesn't exist`)
 		return res.status(200).json(tub)
 	} catch (error) {
+		console.error(error.message)
 		return res.status(400).json(error)
 	}
 }
@@ -59,6 +60,7 @@ const post = async (
 		})
 		return res.status(200).json({ price })
 	} catch (error) {
+		console.error(error.message)
 		return res.status(400).json(error)
 	}
 }

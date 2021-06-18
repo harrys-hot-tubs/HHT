@@ -70,6 +70,7 @@ const Checkout = ({ tubID }: PageProps) => {
 							)
 							setPaymentIntent(secret)
 						} catch (error) {
+							console.error(error.message)
 							router.push('/hire')
 						}
 					}
@@ -78,7 +79,8 @@ const Checkout = ({ tubID }: PageProps) => {
 				setStartDate(startDate)
 				setEndDate(endDate)
 			}
-		} catch (e) {
+		} catch (error) {
+			console.error(error.message)
 			router.push('/hire')
 		}
 	}, [])
@@ -95,8 +97,8 @@ const Checkout = ({ tubID }: PageProps) => {
 						)
 						setBookingData({ ...bookingData, startTime: new Date() })
 					}
-				} catch (e) {
-					console.error(e.message)
+				} catch (error) {
+					console.error(error.message)
 					router.push('/hire')
 				}
 			})()
@@ -200,6 +202,7 @@ const reserveBooking = async (
 		if (res.status !== 200) throw new Error('Booking reservation failed.')
 		if (res.data.error === false) return res.data
 	} catch (error) {
+		console.error(error.message)
 		throw error
 	}
 }

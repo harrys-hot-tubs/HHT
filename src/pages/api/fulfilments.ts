@@ -31,8 +31,9 @@ const get = async (
 			)
 			.select()
 		return res.status(200).json(mostRecentFulfilments)
-	} catch (e) {
-		return res.status(400).json(e)
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json(error)
 	}
 }
 

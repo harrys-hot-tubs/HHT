@@ -100,6 +100,7 @@ const deleteBookingReservation = async (bookingID: BookingDB['booking_id']) => {
 		if (res.status !== 200)
 			throw new Error('Could not delete reserved booking.')
 	} catch (error) {
+		console.error(error.message)
 		throw error
 	}
 }

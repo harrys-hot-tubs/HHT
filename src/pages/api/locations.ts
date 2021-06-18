@@ -32,7 +32,7 @@ const get = async (
 
 		res.status(200).json(parsedLocations)
 	} catch (error) {
-		console.error(error)
+		console.error(error.message)
 		res.status(500).end()
 	}
 }

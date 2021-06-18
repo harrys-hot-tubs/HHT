@@ -62,16 +62,18 @@ const post = async (
 			client_secret: paymentIntent.client_secret,
 			id: paymentIntent.id,
 		})
-	} catch (e) {
-		if (e instanceof RangeError) {
-			return res.status(400).json({ type: 'RangeError', message: e.message })
-		} else if (e instanceof ReferenceError) {
+	} catch (error) {
+		if (error instanceof RangeError) {
 			return res
 				.status(400)
-				.json({ type: 'ReferenceError', message: e.message })
+				.json({ type: 'RangeError', message: error.message })
+		} else if (error instanceof ReferenceError) {
+			return res
+				.status(400)
+				.json({ type: 'ReferenceError', message: error.message })
 		} else {
-			console.log(`e`, e)
-			return res.status(500).json({ type: 'Error', message: e.message })
+			console.error(error.message)
+			return res.status(500).json({ type: 'Error', message: error.message })
 		}
 	}
 }

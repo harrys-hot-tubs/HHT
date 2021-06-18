@@ -61,6 +61,7 @@ module.exports = (on, config) => {
 					})
 					resolve(token)
 				} catch (error) {
+					console.error(error.message)
 					reject(error)
 				}
 			})

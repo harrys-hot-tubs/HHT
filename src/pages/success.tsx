@@ -72,7 +72,8 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 					totalPrice: priceToString(intent.amount),
 				},
 			}
-		} catch (err) {
+		} catch (error) {
+			console.error(error.message)
 			return redirectHome()
 		}
 	}
