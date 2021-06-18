@@ -13,7 +13,6 @@ before(() => {
 })
 
 beforeEach(() => {
-	cy.clearLocalStorage()
 	setStorage({
 		consent: JSON.stringify({
 			value: 'true',
@@ -85,10 +84,6 @@ describe('rendering', () => {
 })
 
 describe('data entry', () => {
-	beforeEach(() => {
-		setStorage(formData)
-	})
-
 	it('takes in data from the first name field', () => {
 		const { firstName } = validCheckoutInformation
 		cy.get('[aria-label=first-name]').type(firstName)
