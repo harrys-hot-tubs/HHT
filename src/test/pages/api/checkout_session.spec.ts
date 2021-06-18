@@ -34,7 +34,7 @@ describe('post', () => {
 			expect.objectContaining({
 				object: 'checkout.session',
 				allow_promotion_codes: true,
-				amount_subtotal: (validCheckoutRequest.price + 70) * 100,
+				amount_subtotal: (validCheckoutRequest.price) * 100,
 				cancel_url: `${req.headers.origin}/failure`,
 				success_url:
 					'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',

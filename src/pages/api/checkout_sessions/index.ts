@@ -51,12 +51,6 @@ const post = async (
 					currency: 'GBP',
 					quantity: 1,
 				},
-				{
-					name: `Refundable Security Deposit`,
-					amount: formatAmount(70),
-					currency: 'GBP',
-					quantity: 1,
-				},
 			],
 			success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${req.headers.origin}/failure`,
