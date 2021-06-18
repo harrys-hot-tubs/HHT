@@ -1,20 +1,22 @@
 import { RefereeOptions } from '@components/CheckoutForm'
+import { locations } from '@fixtures/locationFixtures'
 import { formData, validCheckoutInformation } from '@fixtures/paymentFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { CheckoutInformation, Fallback } from '@hooks/useCheckoutInformation'
 import { BookingData } from '@pages/checkout'
 import { addHours } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
 beforeEach(() => {
+	cy.clearLocalStorage()
 	setStorage({
 		consent: JSON.stringify({
 			value: 'true',
 			exp: addHours(new Date(), 2).getTime(),
 		}),
 	})
-	cy.task('defaults:db')
-	cy.task('DBClear', { tableName: 'orders' })
-	cy.task('DBClear', { tableName: 'bookings' })
+	cy.task('DBInsert', { tableName: 'locations', data: locations })
+	cy.task('DBInsert', { tableName: 'tubs', data: tubs })
 	setStorage(formData)
 	cy.visit('/checkout?tub_id=1')
 })
@@ -263,22 +265,16 @@ describe('credit card field', () => {
 		// cy.contains('Fail Authentication').click()
 		// TODO find out how to click the fail authentication button.
 	})
-})
 
-it('redirects to the success page on a successful checkout', () => {
-	cy.setLocalStorage(
-		'checkoutInformation',
-		JSON.stringify(validCheckoutInformation)
-	)
-	cy.reload()
+	it('redirects to the success page on a successful checkout', () => {
+		cy.fillElementsInput('cardNumber', '4242424242424242')
+		cy.fillElementsInput('cardExpiry', '1225')
+		cy.fillElementsInput('cardCvc', '123')
 
-	cy.fillElementsInput('cardNumber', '4242424242424242')
-	cy.fillElementsInput('cardExpiry', '1225')
-	cy.fillElementsInput('cardCvc', '123')
+		cy.get('.checkout-button').click()
 
-	cy.get('.checkout-button').click()
-
-	cy.location('pathname').should('contain', '/success')
+		cy.location('pathname').should('contain', '/success')
+	})
 })
 
 describe('countdown', () => {
