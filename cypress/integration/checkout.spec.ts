@@ -7,6 +7,11 @@ import { BookingData } from '@pages/checkout'
 import { addHours } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
+before(() => {
+	cy.task('DBInsert', { tableName: 'locations', data: locations })
+	cy.task('DBInsert', { tableName: 'tubs', data: tubs })
+})
+
 beforeEach(() => {
 	cy.clearLocalStorage()
 	setStorage({
@@ -15,8 +20,7 @@ beforeEach(() => {
 			exp: addHours(new Date(), 2).getTime(),
 		}),
 	})
-	cy.task('DBInsert', { tableName: 'locations', data: locations })
-	cy.task('DBInsert', { tableName: 'tubs', data: tubs })
+
 	setStorage(formData)
 	cy.visit('/checkout?tub_id=1')
 })
@@ -381,7 +385,8 @@ describe('countdown', () => {
 
 afterEach(() => {
 	cy.clearLocalStorage()
-	cy.task('cleanup')
+	cy.task('DBClear', { tableName: 'orders' })
+	cy.task('DBClear', { tableName: 'bookings' })
 })
 
 after(() => {
