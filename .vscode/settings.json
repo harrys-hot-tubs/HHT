@@ -5,11 +5,14 @@
 		"Unavailabilities",
 		"datepicker",
 		"distancematrix",
+		"fontawesome",
+		"fortawesome",
 		"googlemaps",
 		"localstorage",
 		"mailjet",
 		"outcode",
-		"testid"
+		"testid",
+		"zxcvbn"
 	],
 	"window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}"
 }

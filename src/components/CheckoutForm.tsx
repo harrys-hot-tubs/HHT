@@ -19,10 +19,6 @@ import { Stripe } from 'stripe'
 
 interface ComponentProps {
 	/**
-	 * The tubID that the customer is booking.
-	 */
-	tubID: number
-	/**
 	 * The postcode the customer will have their booking sent to.
 	 */
 	postcode: string
@@ -57,7 +53,6 @@ export const RefereeOptions = [
  * The form the customer must fill out in order to complete their booking.
  */
 const CheckoutForm = ({
-	tubID,
 	postcode,
 	startDate,
 	endDate,
@@ -139,7 +134,7 @@ const CheckoutForm = ({
 
 	return (
 		<Form
-			noValidate={true}
+			noValidate
 			validated={validated}
 			onSubmit={handleSubmit}
 			className='checkout-form'

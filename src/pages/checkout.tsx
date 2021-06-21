@@ -113,7 +113,6 @@ const Checkout = ({ tubID }: PageProps) => {
 
 			<Elements stripe={getStripe()}>
 				<CheckoutForm
-					tubID={tubID}
 					postcode={postcode}
 					startDate={startDate}
 					endDate={endDate}
