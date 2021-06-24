@@ -5,6 +5,7 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Form } from 'react-bootstrap'
+import Alert from './Alert'
 
 /**
  * Form used by the user to login to the application.
@@ -13,12 +14,14 @@ const LoginForm = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState(undefined)
 	const router = useRouter()
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault()
 		event.stopPropagation()
 		try {
+			setError(undefined)
 			setLoading(true)
 			const {
 				data: { token },
@@ -31,6 +34,7 @@ const LoginForm = () => {
 			router.push('/dashboard')
 		} catch (error) {
 			console.error(error.message)
+			setError('Email address and password do not match.')
 		} finally {
 			setLoading(false)
 		}
@@ -38,6 +42,7 @@ const LoginForm = () => {
 
 	return (
 		<Form onSubmit={handleSubmit}>
+			<Alert error={error} />
 			<Form.Group>
 				<Form.Label>Email Address</Form.Label>
 				<Form.Control

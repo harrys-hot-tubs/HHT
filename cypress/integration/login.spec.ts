@@ -67,6 +67,14 @@ it('redirects authenticated users to the dashboard', () => {
 	cy.url().should('eq', Cypress.config().baseUrl + '/dashboard')
 })
 
+it('shows the user an error if their credentials are invalid', () => {
+	cy.get('[aria-label=email]').type(accounts[0].email_address)
+	cy.get('[aria-label=password]').type('zxcvbn')
+	cy.get('[data-testid=submit]').click()
+
+	cy.get('[data-testid=alert-message]').should('be.visible')
+})
+
 after(() => {
 	cy.task('cleanup')
 })

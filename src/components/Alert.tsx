@@ -16,6 +16,7 @@ const Alert = ({ error, ...props }: ComponentProps) => {
 	return (
 		<BootstrapAlert
 			variant='danger'
+			dismissible
 			onClose={() => setShow(false)}
 			show={show}
 			{...props}
