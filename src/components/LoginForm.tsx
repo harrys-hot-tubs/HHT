@@ -1,5 +1,5 @@
 import SpinnerButton from '@components/SpinnerButton'
-import { AuthRequest, AuthResponse } from '@typings/api/Auth'
+import { AuthRequest } from '@typings/api/Auth'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
@@ -20,13 +20,15 @@ const LoginForm = () => {
 		event.stopPropagation()
 		try {
 			setLoading(true)
-			const res = await axios.post<AuthRequest, AuthResponse>('/api/auth', {
-				email: email.toLowerCase(),
+			const {
+				data: { token },
+			} = await axios.post<{ token: string }>('/api/auth', {
+				email,
 				password,
-			})
-			const { token } = res.data as AuthResponse
-			router.push('/dashboard')
+			} as AuthRequest)
+
 			Cookies.set('token', token)
+			router.push('/dashboard')
 		} catch (error) {
 			console.error(error.message)
 		} finally {

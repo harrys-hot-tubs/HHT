@@ -1,4 +1,6 @@
 import SignUpForm from '@components/SignUpForm'
+import handleSSAuth from '@utils/SSAuth'
+import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import React from 'react'
 
@@ -14,6 +16,19 @@ const Signup = () => {
 			</div>
 		</div>
 	)
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const status = await handleSSAuth(context, ['*'])
+	if (status.authorised)
+		return {
+			redirect: {
+				destination: '/dashboard',
+				permanent: false,
+			},
+		}
+
+	return { props: {} }
 }
 
 export default Signup

@@ -17,9 +17,7 @@ const CheckoutErrors = ({ error }: ComponentProps) => {
 		<Alert
 			data-testid='payment-alert'
 			variant='danger'
-			onClose={() => {
-				setShow(false)
-			}}
+			onClose={() => setShow(false)}
 			dismissible
 			show={show}
 		>

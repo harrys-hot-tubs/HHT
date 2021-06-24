@@ -5,7 +5,9 @@
 		"first_name": "John",
 		"last_name": "Doe",
 		"telephone_number": "123456",
-		"account_roles": ["manager"]
+		"account_roles": ["manager"],
+		"confirmation_code": "ABC123",
+		"confirmed": true
 	},
 	{
 		"account_id": 2,
@@ -13,6 +15,8 @@
 		"first_name": "John",
 		"last_name": "Smith",
 		"telephone_number": "123456",
-		"account_roles": ["driver"]
+		"account_roles": ["driver"],
+		"confirmation_code": "ABC123",
+		"confirmed": true
 	}
 ]

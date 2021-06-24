@@ -27,6 +27,7 @@ const PasswordField: BsPrefixRefForwardingComponent<
 							onClick={onClick}
 							onMouseDown={(e) => e.preventDefault()}
 							className='eye-icon'
+							data-testid='visibility-toggle'
 						/>
 					</span>
 				</InputGroup.Text>

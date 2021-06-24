@@ -1,6 +1,7 @@
 import injectDevServer from '@cypress/react/plugins/next'
 import wp from '@cypress/webpack-batteries-included-preprocessor'
 import { TokenAccount } from '@typings/api/Auth'
+import { addHours } from 'date-fns'
 import jwt from 'jsonwebtoken'
 import accounts from '../fixtures/accounts.json'
 import {
@@ -10,6 +11,7 @@ import {
 	clearTable,
 	seedDatabase,
 } from '../helpers/databaseHelper'
+import { setStorage } from '../helpers/localStorageHelper'
 import wpConfig from '../webpack.config'
 
 /**
@@ -35,6 +37,17 @@ module.exports = (on, config) => {
 		})
 	)
 	on('task', {
+		GiveConsent() {
+			return new Promise((resolve, reject) => {
+				setStorage({
+					consent: JSON.stringify({
+						value: 'true',
+						exp: addHours(new Date(), 2).getTime(),
+					}),
+				})
+				resolve(true)
+			})
+		},
 		async 'defaults:db'() {
 			return seedDatabase()
 		},

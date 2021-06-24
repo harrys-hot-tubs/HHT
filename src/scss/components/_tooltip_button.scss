@@ -1,0 +1,10 @@
+.tooltip-button-helper {
+	display: inline-block;
+	vertical-align: top;
+	cursor: not-allowed;
+	width: fit-content;
+
+	button {
+		pointer-events: none;
+	}
+}

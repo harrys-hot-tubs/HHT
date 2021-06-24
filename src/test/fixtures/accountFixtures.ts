@@ -1,4 +1,4 @@
-import { NewAccount } from '@typings/api/Accounts'
+import { CreateAccountRequest, NewAccount } from '@typings/api/Accounts'
 import { AccountDB } from '@typings/db/Account'
 
 export const missingPassword: Omit<NewAccount, 'password'> = {
@@ -9,21 +9,22 @@ export const missingPassword: Omit<NewAccount, 'password'> = {
 	accountRoles: ['driver'],
 }
 
-export const missingRoles: NewAccount = {
+export const missingRoles: CreateAccountRequest = {
 	firstName: 'John',
 	lastName: 'Doe',
 	emailAddress: 'john@doe.com',
 	password: 'password',
 	telephoneNumber: '12345',
+	confirmationCode: 'ABC123',
 }
 
-export const completeAccount: NewAccount = {
+export const completeAccount: CreateAccountRequest = {
 	firstName: 'John',
 	lastName: 'Doe',
 	emailAddress: 'john@doe.com',
 	password: 'password',
 	telephoneNumber: '12345',
-	accountRoles: ['driver'],
+	confirmationCode: 'ABC123',
 }
 
 export const driverAccount: AccountDB = {
@@ -34,6 +35,8 @@ export const driverAccount: AccountDB = {
 	email_address: 'john@doe.com',
 	password_hash: 'TESTHASH',
 	telephone_number: '12345',
+	confirmed: true,
+	confirmation_code: 'ABC123',
 }
 
 export const managerAccount: AccountDB = {
@@ -44,4 +47,6 @@ export const managerAccount: AccountDB = {
 	email_address: 'john@smith.com',
 	password_hash: 'TESTHASH',
 	telephone_number: '12345',
+	confirmed: true,
+	confirmation_code: 'ABC123',
 }

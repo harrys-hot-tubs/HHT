@@ -317,7 +317,7 @@ describe('credit card field', () => {
 			.should('not.be.disabled')
 			.click()
 
-		cy.location('pathname').should('contain', '/success')
+		cy.location('pathname').should('eq', '/success')
 	})
 })
 

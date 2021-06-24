@@ -19,7 +19,7 @@ import { createMocks } from 'node-mocks-http'
 
 describe('post', () => {
 	afterEach(async () => {
-		await connection<AccountDB[]>('accounts').del()
+		await connection<AccountDB>('accounts').del()
 	})
 
 	it('fails to add an empty account', async () => {
@@ -47,6 +47,11 @@ describe('post', () => {
 	})
 
 	it('add an account with unspecified roles as a customer', async () => {
+		await connection<AccountDB>('accounts').insert({
+			confirmation_code: missingRoles.confirmationCode,
+			email_address: missingRoles.emailAddress,
+			confirmed: false,
+		})
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'POST',
 			body: missingRoles,
@@ -62,6 +67,11 @@ describe('post', () => {
 	})
 
 	it('correctly adds a valid account', async () => {
+		await connection<AccountDB>('accounts').insert({
+			email_address: completeAccount.emailAddress,
+			confirmation_code: completeAccount.confirmationCode,
+			confirmed: false,
+		})
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'POST',
 			body: completeAccount,
@@ -75,15 +85,18 @@ describe('post', () => {
 			first_name: completeAccount.firstName,
 			last_name: completeAccount.lastName,
 			telephone_number: completeAccount.telephoneNumber,
-			account_roles: `{${completeAccount.accountRoles[0]}}`,
+			account_roles: `{customer}`,
 		})
 	})
 
-	it('does not add an account with duplicate email address', async () => {
+	it('does not add an account to an already confirmed email address', async () => {
 		const preparedAccount = await prepareAccount(completeAccount)
-		await connection<AccountDB[]>('accounts').insert([
-			preparedAccount as AccountDB,
-		])
+		await connection<AccountDB>('accounts').insert({
+			...preparedAccount,
+			account_roles: ['driver'],
+			confirmation_code: 'ABC123',
+			confirmed: true,
+		})
 
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'POST',
@@ -105,13 +118,13 @@ describe('get', () => {
 	}
 
 	beforeAll(async () => {
-		await connection<AccountDB[]>('accounts').insert([
+		await connection<AccountDB>('accounts').insert([
 			driverAccount,
 			managerAccount,
 			altDriver,
 		])
-		await connection<LocationDB[]>('locations').insert(locations)
-		await connection<StaffDB[]>('staff').insert([storedStaff])
+		await connection<LocationDB>('locations').insert(locations)
+		await connection<StaffDB>('staff').insert(storedStaff)
 	})
 
 	it('returns an error for an unauthorized account', async () => {

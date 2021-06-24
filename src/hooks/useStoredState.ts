@@ -41,9 +41,13 @@ const useStoredState = <T>({
 	}
 
 	useEffect(() => {
-		const storedString = localStorage.getItem(key)
-		if (storedString !== null) {
-			setState(fromString(storedString))
+		try {
+			const storedString = localStorage.getItem(key)
+			if (storedString !== null) {
+				setState(fromString(storedString))
+			}
+		} catch (error) {
+			setState(fallback)
 		}
 	}, [])
 

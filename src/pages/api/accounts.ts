@@ -1,12 +1,14 @@
-import { NewAccount } from '@typings/api/Accounts'
-import { APIError } from '@typings/api/Error'
+import {
+	CreateAccountRequest,
+	CreateAccountResponse,
+} from '@typings/api/Accounts'
 import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
+import { LocationDB } from '@typings/db/Location'
 import db from '@utils/db'
 import { getToken, isAuthorised } from '@utils/SSAuth'
 import bcrypt from 'bcryptjs'
 import { NextApiResponse } from 'next'
-import { LocationDB } from '../../typings/db/Location'
 
 export const SALT_ROUNDS = 10
 
@@ -24,16 +26,35 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 
 const post = async (
 	req: ConnectedRequest,
-	res: NextApiResponse<Omit<AccountDB, 'password_hash'> | APIError>
+	res: NextApiResponse<CreateAccountResponse>
 ) => {
 	const { db } = req
-	const newAccount: NewAccount = req.body
+	const newAccount: CreateAccountRequest = req.body
+
 	try {
+		const isValidRequest =
+			(
+				await db<AccountDB>('accounts')
+					.select('account_id')
+					.where('email_address', '=', newAccount.emailAddress)
+					.andWhere('confirmation_code', '=', newAccount.confirmationCode)
+					.andWhere('confirmed', '=', false)
+			).length === 1
+
+		if (!isValidRequest)
+			throw new Error(
+				`Email address ${newAccount.emailAddress} could not be validated.`
+			)
+
 		const preparedAccount = await prepareAccount(newAccount)
-		const storedAccount: AccountDB = (
-			await db<AccountDB>('accounts').insert(preparedAccount, '*')
+		const { confirmation_code, password_hash, ...storedAccount } = (
+			await db<AccountDB>('accounts')
+				.update(preparedAccount, '*')
+				.where('email_address', '=', newAccount.emailAddress)
+				.andWhere('confirmation_code', '=', newAccount.confirmationCode)
+				.andWhere('confirmed', '=', false)
 		)[0]
-		delete storedAccount.password_hash
+
 		return res.status(200).json(storedAccount)
 	} catch (error) {
 		console.error(error.message)
@@ -45,20 +66,39 @@ const post = async (
 
 /**
  * Transforms the constituent parts of an account into the final form to be stored in the database.
+ *
  * @param account The components of an account to be created.
  * @returns An account object to be stored in the database.
  */
 export const prepareAccount = async (
-	account: NewAccount
-): Promise<Omit<AccountDB, 'account_id'>> => {
+	account: CreateAccountRequest
+): Promise<
+	Pick<
+		AccountDB,
+		| 'email_address'
+		| 'password_hash'
+		| 'first_name'
+		| 'last_name'
+		| 'telephone_number'
+		| 'confirmed'
+	>
+> => {
 	const hashedPassword = await bcrypt.hash(account.password, SALT_ROUNDS)
-	const preparedAccount: Omit<AccountDB, 'account_id'> = {
+	const preparedAccount: Pick<
+		AccountDB,
+		| 'email_address'
+		| 'password_hash'
+		| 'first_name'
+		| 'last_name'
+		| 'telephone_number'
+		| 'confirmed'
+	> = {
 		email_address: account.emailAddress,
 		password_hash: hashedPassword,
 		first_name: account.firstName,
 		last_name: account.lastName,
-		account_roles: account.accountRoles,
 		telephone_number: account.telephoneNumber,
+		confirmed: true,
 	}
 	return preparedAccount
 }

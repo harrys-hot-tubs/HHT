@@ -1,17 +1,23 @@
-import { CSSProperties } from 'react'
+import { CSSProperties, useEffect } from 'react'
 import zxcvbn from 'zxcvbn'
 
 interface ComponentProps {
 	password: string
+	onChange: (acceptable: boolean) => void
 }
 
 const strengths = ['Terrible', 'Very Weak', 'Weak', 'Good', 'Strong']
 
-const PasswordStrengthChecker = ({ password }: ComponentProps) => {
+const PasswordStrengthChecker = ({ password, onChange }: ComponentProps) => {
 	const res = checkStrength(password)
+
+	useEffect(() => {
+		onChange(res.score >= 3)
+	}, [res.score])
+
 	return (
 		<div className='password-strength-checker'>
-			<span>
+			<span data-testid='password-strength'>
 				<strong>Password Strength:</strong> {strengths[res.score]}
 			</span>
 			<span className='strength-meter'>
@@ -22,12 +28,15 @@ const PasswordStrengthChecker = ({ password }: ComponentProps) => {
 					}}
 				/>
 			</span>
-			<span className='strength-warning'>{res.feedback.warning}</span>
+			{res.feedback.warning !== '' ? (
+				<span className='strength-warning'>{res.feedback.warning}</span>
+			) : null}
+
 			{res.feedback.suggestions.length > 0 && password ? (
 				<>
 					<hr />
 					<strong>Recommendations</strong>
-					<ul className='recommendations'>
+					<ul className='recommendations' data-testid='recommendations'>
 						{res.feedback.suggestions.map((suggestion, idx) => (
 							<li key={idx}>{suggestion}</li>
 						))}

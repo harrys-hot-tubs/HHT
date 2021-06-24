@@ -1,61 +1,127 @@
 import PasswordField from '@components/PasswordField'
+import PasswordStrengthMeter from '@components/PasswordStrengthMeter'
+import SpinnerButton from '@components/SpinnerButton'
+import TooltipButton from '@components/TooltipButton'
+import ValidatedEmailField from '@components/ValidatedEmailField'
+import useStoredState from '@hooks/useStoredState'
+import {
+	CreateAccountRequest,
+	CreateAccountResponse,
+} from '@typings/api/Accounts'
+import { AuthRequest } from '@typings/api/Auth'
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import {
 	Col,
 	Form,
-	InputGroup,
 	OverlayTrigger,
 	Popover,
 	PopoverContent,
 } from 'react-bootstrap'
-import PasswordStrengthMeter from './PasswordStrengthMeter'
-import SpinnerButton from './SpinnerButton'
+import Alert from './Alert'
+
+export interface UserInformation {
+	emailAddress: string
+	firstName: string
+	lastName: string
+	telephoneNumber: string
+}
+
+interface EmailStatus {
+	confirmationCode: string
+	valid: boolean
+}
+
+interface PasswordStatus {
+	password: string
+	acceptable: boolean
+}
 
 const SignUpForm = () => {
+	const router = useRouter()
 	const [validated, setValidated] = useState(false)
 	const [loading, setLoading] = useState(false)
-	const [user, setUserInformation] = useState<{
-		email: string
-		password: string
-		firstName: string
-		lastName: string
-		phoneNumber: string
-	}>({
-		email: '',
-		password: '',
-		firstName: '',
-		lastName: '',
-		phoneNumber: '',
+	const [emailStatus, setEmailStatus] = useState<EmailStatus>({
+		confirmationCode: '',
+		valid: false,
 	})
+	const [passwordStatus, setPasswordStatus] = useState<PasswordStatus>({
+		acceptable: false,
+		password: '',
+	})
+	const [user, setUserInformation] = useStoredState<UserInformation>({
+		fallback: {
+			emailAddress: '',
+			firstName: '',
+			lastName: '',
+			telephoneNumber: '',
+		},
+		key: 'signUpInformation',
+		fromString: JSON.parse,
+		toString: JSON.stringify,
+	})
+	const [error, setError] = useState(undefined)
+	const submitDisabled = !emailStatus.valid || !passwordStatus.acceptable
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+		setLoading(true)
+		const form = event.currentTarget
 		event.preventDefault()
+		event.stopPropagation()
+		if (form.checkValidity() === false) {
+			setValidated(true)
+		} else {
+			try {
+				await createAccount(
+					user,
+					passwordStatus.password,
+					emailStatus.confirmationCode
+				)
+				const {
+					data: { token },
+				} = await axios.post<{ token: string }>('/api/auth', {
+					email: user.emailAddress,
+					password: passwordStatus.password,
+				} as AuthRequest)
+
+				Cookies.set('token', token)
+				router.push('/dashboard')
+			} catch (error) {
+				console.error(error.message)
+				setError('Failed to create your account.')
+				return setLoading(false)
+			}
+		}
 	}
 
 	return (
 		<Form noValidate validated={validated} role='main' onSubmit={handleSubmit}>
+			<Alert error={error} />
 			<Form.Group>
 				<Form.Label>Email Address</Form.Label>
-				<InputGroup>
-					<Form.Control
-						aria-label='email'
-						required
-						autoComplete='email'
-						value={user.email}
-						onChange={(e) =>
-							setUserInformation({
-								...user,
-								email: e.currentTarget.value,
-							})
-						}
-						aria-describedby='email-error'
-					/>
-					<InputGroup.Append>
-						<SpinnerButton status={false} activeText='Validating...'>
-							Validate
-						</SpinnerButton>
-					</InputGroup.Append>
-				</InputGroup>
+				<ValidatedEmailField
+					isValid={emailStatus.valid}
+					email={user.emailAddress}
+					onEmailChange={(e) => {
+						setUserInformation({
+							...user,
+							emailAddress: e.currentTarget.value,
+						})
+						setEmailStatus({ confirmationCode: '', valid: false })
+					}}
+					confirmationCode={emailStatus.confirmationCode}
+					onConfirmationCodeChange={(e) =>
+						setEmailStatus({
+							...emailStatus,
+							confirmationCode: e.currentTarget.value,
+						})
+					}
+					setConfirmed={(value) =>
+						setEmailStatus({ ...emailStatus, valid: value })
+					}
+				/>
 			</Form.Group>
 			<Form.Control.Feedback type='invalid' id='email-error' role='alert'>
 				This field is required.
@@ -68,7 +134,12 @@ const SignUpForm = () => {
 					overlay={
 						<Popover id='password-popover' className='strength-popover'>
 							<PopoverContent>
-								<PasswordStrengthMeter password={user.password} />
+								<PasswordStrengthMeter
+									password={passwordStatus.password}
+									onChange={(acceptable) =>
+										setPasswordStatus({ ...passwordStatus, acceptable })
+									}
+								/>
 							</PopoverContent>
 						</Popover>
 					}
@@ -77,10 +148,11 @@ const SignUpForm = () => {
 						aria-label='password'
 						required
 						autoComplete='new-password'
-						value={user.password}
+						spellCheck={false}
+						value={passwordStatus.password}
 						onChange={(e) =>
-							setUserInformation({
-								...user,
+							setPasswordStatus({
+								...passwordStatus,
 								password: e.currentTarget.value,
 							})
 						}
@@ -135,11 +207,11 @@ const SignUpForm = () => {
 					aria-label='telephone'
 					required
 					autoComplete='tel'
-					value={user.phoneNumber}
+					value={user.telephoneNumber}
 					onChange={(e) =>
 						setUserInformation({
 							...user,
-							phoneNumber: e.currentTarget.value,
+							telephoneNumber: e.currentTarget.value,
 						})
 					}
 					aria-describedby='telephone-error'
@@ -148,8 +220,60 @@ const SignUpForm = () => {
 					This field is required.
 				</Form.Control.Feedback>
 			</Form.Group>
+			<TooltipButton
+				placement='right'
+				overlay={
+					<Popover id='submit-button-tooltip' show={submitDisabled}>
+						<Popover.Content>
+							{generateTooltip(!emailStatus.valid, !passwordStatus.acceptable)}
+						</Popover.Content>
+					</Popover>
+				}
+				disabled={submitDisabled}
+			>
+				<SpinnerButton
+					type='submit'
+					disabled={submitDisabled}
+					status={loading}
+					activeText='Creating your account...'
+					data-testid='submit-button'
+				>
+					Submit
+				</SpinnerButton>
+			</TooltipButton>
 		</Form>
 	)
+}
+
+/**
+ * Generates a tooltip for the user to explain what needs to be done in order to submit the form.
+ *
+ * @param emailInvalid True if the email has not yet been validated.
+ * @param passwordUnacceptable True if the password is not strong enough to be accepted.
+ * @returns A message to the user that explains what needs to be done in order to submit their request to create a new account.
+ */
+const generateTooltip = (
+	emailInvalid: boolean,
+	passwordUnacceptable: boolean
+) => {
+	if (emailInvalid && passwordUnacceptable)
+		return 'Please confirm your email address and increase the strength of your password.'
+	if (emailInvalid) return 'Please confirm your email address.'
+	if (passwordUnacceptable)
+		return 'Please increase the strength of your password.'
+}
+
+const createAccount = async (
+	user: UserInformation,
+	password: string,
+	confirmationCode: string
+) => {
+	const { status } = await axios.post<CreateAccountResponse>('/api/accounts', {
+		...user,
+		password,
+		confirmationCode,
+	} as CreateAccountRequest)
+	if (status !== 200) throw new Error('Account creation failed.')
 }
 
 export default SignUpForm

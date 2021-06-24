@@ -10,9 +10,12 @@ import { createMocks } from 'node-mocks-http'
 
 beforeAll(async () => {
 	const preparedAccount = await prepareAccount(completeAccount)
-	await connection<AccountDB[]>('accounts').insert([
-		preparedAccount as AccountDB,
-	])
+	await connection<AccountDB>('accounts').insert({
+		...preparedAccount,
+		account_roles: ['driver'],
+		confirmation_code: 'ABC123',
+		confirmed: true,
+	})
 })
 
 describe('post', () => {
