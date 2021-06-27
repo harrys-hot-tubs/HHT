@@ -1,5 +1,5 @@
 const MAX_NIGHTS = 7
-const MIN_NIGHTS = 2
+const MIN_NIGHTS = 3
 
 export type DateError = 'missing' | 'long' | 'short' | 'impossible'
 

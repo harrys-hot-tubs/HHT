@@ -11,7 +11,7 @@ const MAX_NIGHTS = 7
 /**
  * The minimum duration of a customer's booking.
  */
-const MIN_NIGHTS = 2
+const MIN_NIGHTS = 3
 
 /**
  * Stores and validates user inputted booking dates.
