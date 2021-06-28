@@ -7,7 +7,8 @@
 		"telephone_number": "123456",
 		"account_roles": ["manager"],
 		"confirmation_code": "ABC123",
-		"confirmed": true
+		"confirmed": true,
+		"active_information_request": false
 	},
 	{
 		"account_id": 2,
@@ -17,6 +18,18 @@
 		"telephone_number": "123456",
 		"account_roles": ["driver"],
 		"confirmation_code": "ABC123",
-		"confirmed": true
+		"confirmed": true,
+		"active_information_request": false
+	},
+	{
+		"account_id": 3,
+		"email_address": "dansmith@gmail.com",
+		"first_name": "Dan",
+		"last_name": "Smith",
+		"telephone_number": "123456",
+		"account_roles": ["customer"],
+		"confirmation_code": "ABC123",
+		"confirmed": true,
+		"active_information_request": false
 	}
 ]

@@ -38,7 +38,7 @@ module.exports = (on, config) => {
 	)
 	on('task', {
 		GiveConsent() {
-			return new Promise((resolve, reject) => {
+			return new Promise((resolve, _reject) => {
 				setStorage({
 					consent: JSON.stringify({
 						value: 'true',

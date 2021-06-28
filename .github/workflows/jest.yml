@@ -11,7 +11,8 @@ jobs:
       - name: Install modules
         run: yarn install
       - name: Run tests
-        run: yarn test
+        # Suppress normal error logs.
+        run: yarn test --silent
     env:
       NODE_ENV: test
       AWS_DB: ${{ secrets.AWS_DB }}

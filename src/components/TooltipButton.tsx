@@ -12,7 +12,7 @@ const TooltipButton = ({ children, disabled, ...props }: ComponentProps) => {
 		<OverlayTrigger {...props}>
 			<div
 				className='tooltip-button-helper'
-				data-testid='submit-button-container'
+				data-testid='tooltip-button-container'
 			>
 				{children}
 			</div>

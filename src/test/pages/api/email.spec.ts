@@ -1,6 +1,6 @@
 import { completeAccount } from '@fixtures/accountFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
-import { prepareAccount } from '@pages/api/accounts'
+import { prepareAccount } from '@pages/api/accounts/index'
 import handler from '@pages/api/email'
 import {
 	ValidateConfirmationCodeRequest,
@@ -11,26 +11,21 @@ import {
 import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import { NextApiResponse } from 'next'
+import nock from 'nock'
 import { Email } from 'node-mailjet'
 import { createMocks } from 'node-mocks-http'
-import superagent from 'superagent'
-import mockSuperagent, { TearDown } from 'superagent-mock'
 
-let superagentMock: TearDown
 let mailJetParams: Email.SendParams
 
 const mailJetServerEndpoint = 'https://api.mailjet.com/v3.1'
 beforeAll(() => {
-	superagentMock = mockSuperagent(superagent, [
-		{
-			pattern: `${mailJetServerEndpoint}`,
-			fixtures: (_match, params) => {
-				mailJetParams = params as unknown as Email.SendParams
-				return {}
-			},
-			post: (_match, data) => ({ body: data }),
-		},
-	])
+	nock(mailJetServerEndpoint)
+		.persist()
+		.post('/send')
+		.reply(200, (_uri, requestBody) => {
+			mailJetParams = requestBody as Email.SendParams
+			return {}
+		})
 })
 
 describe('post', () => {
@@ -97,7 +92,6 @@ describe('post', () => {
 					inserted: true,
 				})
 			)
-			// TODO find cause of open handle
 
 			const { confirmation_code: confirmationCode } =
 				await connection<AccountDB>('accounts')
@@ -181,5 +175,5 @@ describe('post', () => {
 
 afterAll(async () => {
 	await cleanupDatabase(connection)
-	superagentMock.unset()
+	nock.cleanAll()
 })

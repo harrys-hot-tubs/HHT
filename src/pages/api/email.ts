@@ -29,9 +29,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	const body = req.body as EmailRequest
 
 	if (body.validate === false) {
-		return await verifyEmail(db, body, res)
+		return verifyEmail(db, body, res)
 	} else {
-		return await confirmCode(db, body, res)
+		return confirmCode(db, body, res)
 	}
 }
 

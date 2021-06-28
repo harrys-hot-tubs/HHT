@@ -1,8 +1,6 @@
-import { Role } from '@typings/db/Account'
+import { AccountDB, Role } from '@typings/db/Account'
 
-export type CreateAccountResponse =
-	| Omit<AccountDB, 'password_hash' | 'confirmation_code'>
-	| APIError
+export type CreateAccountResponse = FormattedAccount | APIError
 
 export interface CreateAccountRequest {
 	emailAddress: string
@@ -22,3 +20,36 @@ export interface NewAccount {
 	telephoneNumber: string
 	accountRoles?: Role[]
 }
+
+export type FormattedAccount = Omit<
+	AccountDB,
+	'password_hash' | 'confirmation_code'
+>
+
+export type GetAccountResponse =
+	| GetAccountSuccess
+	| {
+			error: true
+			message: string
+	  }
+
+export type GetAccountSuccess = {
+	error: false
+	account: FormattedAccount
+}
+
+export type PostAccountRequest = {
+	type: AccountRequestType
+}
+
+export type AccountRequestType = 'GDPR'
+
+export type PostAccountResponse =
+	| {
+			error: false
+			sent: boolean
+	  }
+	| {
+			error: true
+			message: string
+	  }

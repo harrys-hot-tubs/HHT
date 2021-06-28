@@ -1,3 +1,4 @@
+import { TokenAccount } from '@typings/api/Auth'
 import { AccountDB, Role } from '@typings/db/Account'
 import { connector } from '@utils/db'
 import validateToken, {
@@ -6,6 +7,7 @@ import validateToken, {
 } from '@utils/validators/tokenValidator'
 import { IncomingMessage } from 'http'
 import jwt from 'jsonwebtoken'
+import { Knex } from 'knex'
 import { GetServerSidePropsContext } from 'next'
 import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils'
 import { ParsedUrlQuery } from 'querystring'
@@ -46,16 +48,8 @@ export const isAuthorised = async (
 	token: string,
 	permittedRoles: Role[]
 ): Promise<AuthResponse> => {
-	if (!token) return { authorised: false, error: 'missing' }
-
-	const [isValid, error] = validateToken(token)
-	if (!isValid) return { authorised: false, error }
-
-	const payload: unknown = jwt.decode(token)
-
-	if (!isTokenAccount(payload)) return { authorised: false, error: 'invalid' }
-
 	try {
+		const payload = parseToken(token)
 		const account = await fetchAccount(payload.account_id)
 		if (!accountIsPermitted(permittedRoles, account.account_roles))
 			return { authorised: false, error: 'forbidden' }
@@ -63,26 +57,63 @@ export const isAuthorised = async (
 		return { authorised: true, payload: account }
 	} catch (error) {
 		console.error(error.message)
-		return { authorised: false, error: 'invalid' }
+		switch (error.message) {
+			case 'expired':
+			case 'malformed':
+			case 'missing':
+			case 'invalid':
+			case 'forbidden':
+				return { authorised: false, error: error.message }
+			default:
+				return { authorised: false, error: 'invalid' }
+		}
 	}
+}
+
+/**
+ * Transforms a string into a tokenised account, if the string is a valid token.
+ *
+ * @param token The string to be turned into a tokenised account, if it is valid.
+ * @returns The account represented by the token if it is valid.
+ * @throws An error describing how the token is not valid.
+ */
+export const parseToken = (token: string): TokenAccount => {
+	if (!token) throw new Error('missing')
+
+	const [isValid, error] = validateToken(token)
+	if (!isValid) throw new Error(error)
+
+	const payload: unknown = jwt.decode(token)
+
+	if (!isTokenAccount(payload)) throw new Error('invalid')
+
+	return payload
 }
 
 export const fetchAccount = async (
 	accountID: number
 ): Promise<Omit<AccountDB, 'password_hash'>> => {
-	const connection = connector()()
-	const rawAccount = await connection<AccountDB>('accounts')
-		.select()
-		.where('account_id', '=', accountID)
-		.first()
+	let connection: Knex
+	try {
+		connection = connector()()
+		const rawAccount = await connection<AccountDB>('accounts')
+			.select()
+			.where('account_id', '=', accountID)
+			.first()
 
-	if (!rawAccount) throw new Error('Account does not exist.')
+		if (!rawAccount) throw new Error('Account does not exist.')
 
-	delete rawAccount.password_hash
-	await connection.destroy()
-	return {
-		...rawAccount,
-		account_roles: convertRoles(rawAccount.account_roles as unknown as string),
+		delete rawAccount.password_hash
+		return {
+			...rawAccount,
+			account_roles: convertRoles(
+				rawAccount.account_roles as unknown as string
+			),
+		}
+	} catch (error) {
+		throw error
+	} finally {
+		await connection.destroy()
 	}
 }
 

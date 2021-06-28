@@ -10,6 +10,7 @@ export interface AccountDB {
 	/** Defaults to false. */
 	confirmed: boolean
 	confirmation_code: string
+	active_information_request: boolean
 }
 
 // '*' type does not exist in the database, but it's useful for authorisation.
