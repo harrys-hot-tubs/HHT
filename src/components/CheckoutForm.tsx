@@ -4,6 +4,7 @@ import SpinnerButton from '@components/SpinnerButton'
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CheckoutInformation } from '@hooks/useCheckoutInformation'
+import useStoredStateWithExpiration from '@hooks/useStoredStateWithExpiration'
 import { BookingData } from '@pages/checkout'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { StripeError } from '@stripe/stripe-js'
@@ -11,6 +12,7 @@ import { CreateOrderRequest } from '@typings/api/Order'
 import { BookingDB } from '@typings/db/Booking'
 import { priceToString } from '@utils/stripe'
 import axios, { AxiosResponse } from 'axios'
+import { isNumber } from 'lodash'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
@@ -68,8 +70,17 @@ const CheckoutForm = ({
 	const [validated, setValidated] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [cardComplete, setCardComplete] = useState(false)
-	const [checkoutError, setCheckoutError] =
-		useState<StripeError | string>(undefined)
+	const [checkoutError, setCheckoutError] = useState<StripeError | string>(
+		undefined
+	)
+	const [viewers] = useStoredStateWithExpiration<number>({
+		fallback: 2 + Math.ceil(Math.random() * 4),
+		key: 'productViewers',
+		isType: isNumber,
+		ttl: 10 * 1000 * 60,
+		toString: (v) => v.toString(),
+		fromString: (v) => Number(v),
+	})
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		setLoading(true)
@@ -142,7 +153,12 @@ const CheckoutForm = ({
 		>
 			<span className='title-bar'>
 				<BookingCountdownTimer bookingData={bookingData} />
-				<h2>Payment Details</h2>
+				<div>
+					<h2 className='checkout-title'>Checkout</h2>
+					<small>
+						<strong>{viewers}</strong> people are looking at this.
+					</small>
+				</div>
 				<Link href='/hire'>
 					<div className='back-button'>
 						<FontAwesomeIcon icon={faAngleLeft} /> Back

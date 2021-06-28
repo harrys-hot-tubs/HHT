@@ -187,7 +187,7 @@ const reserveBooking = async (
 	startDate: string,
 	endDate: string,
 	id: number
-): Promise<CreateBookingSuccess> => {
+): Promise<Omit<CreateBookingSuccess, 'error'>> => {
 	try {
 		const res = await axios.post<
 			CreateBookingRequest,
@@ -199,7 +199,11 @@ const reserveBooking = async (
 			expiryTime: 10,
 		})
 		if (res.status !== 200) throw new Error('Booking reservation failed.')
-		if (res.data.error === false) return res.data
+		if (res.data.error === false)
+			return {
+				bookingID: res.data.bookingID,
+				exp: res.data.exp,
+			}
 	} catch (error) {
 		console.error(error.message)
 		throw error

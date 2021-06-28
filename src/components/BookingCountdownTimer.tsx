@@ -68,7 +68,7 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 					onComplete={() => {
 						clear()
 					}}
-					size={46}
+					size={60}
 					strokeWidth={3}
 				>
 					{({ remainingTime }) => {
