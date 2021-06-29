@@ -7,7 +7,7 @@ import _ from 'lodash'
  * @returns An array of hot tubs unique by capacity.
  */
 export const displayableTubs = (tubs: TubDB[]): TubDB[] => {
-	const shuffled = _.shuffle(tubs) // TODO write own fisher-yates shuffle
+	const shuffled = _.shuffle(tubs)
 	const displayable = []
 	shuffled.forEach((tub) => {
 		if (!containsSize(displayable, tub.max_capacity)) displayable.push(tub)
