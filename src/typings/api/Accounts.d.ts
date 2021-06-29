@@ -60,3 +60,14 @@ export type DeleteAccountResponse =
 			deleted: boolean
 	  }
 	| { error: true; message: string }
+
+export type UpdateAccountRequest = Partial<
+	Omit<AccountDB, 'password_hash' | 'account_id'> & { password: string }
+>
+
+export type UpdateAccountResponse =
+	| {
+			error: false
+			updated: FormattedAccount
+	  }
+	| { error: true; message: string }

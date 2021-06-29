@@ -7,7 +7,13 @@ import { expiredAccountToken, inDateAccountToken } from '@fixtures/authFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler, { DPO_EMAIL, formatAccount } from '@pages/api/accounts/[id]'
 import { ConnectedRequest } from '@typings/api'
-import { GetAccountResponse, PostAccountRequest } from '@typings/api/Accounts'
+import {
+	FormattedAccount,
+	GetAccountResponse,
+	PostAccountRequest,
+	UpdateAccountRequest,
+	UpdateAccountResponse,
+} from '@typings/api/Accounts'
 import { AccountDB } from '@typings/db/Account'
 import { NextApiResponse } from 'next'
 import nock from 'nock'
@@ -252,6 +258,62 @@ describe('delete', () => {
 			await connection<AccountDB>('accounts').select('account_id')
 		).map((account) => account.account_id)
 		expect(accountIDs).toContain(driverAccount.account_id)
+	})
+})
+
+describe('patch', () => {
+	it('updates the account of an authorised user', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'PATCH',
+			query: { id: driverAccount.account_id },
+			cookies: {
+				token: inDateAccountToken(driverAccount),
+			},
+			body: {
+				password: 'password',
+				first_name: 'Wendell',
+			} as UpdateAccountRequest,
+		})
+
+		await handler(req, res)
+
+		expect(res._getStatusCode()).toBe(200)
+		expect(JSON.parse(res._getData())).toEqual<UpdateAccountResponse>({
+			error: false,
+			updated: expect.objectContaining<Partial<FormattedAccount>>({
+				first_name: 'Wendell',
+			}),
+		})
+
+		const newPasswordHash: string = await connection<AccountDB>('accounts')
+			.select('password_hash')
+			.where('account_id', '=', driverAccount.account_id)
+			.first()
+
+		expect(newPasswordHash).not.toEqual(driverAccount.password_hash)
+	})
+
+	it('does not delete the account of an unauthorised user', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'PATCH',
+			query: { id: driverAccount.account_id },
+			cookies: {
+				token: expiredAccountToken(driverAccount),
+			},
+			body: {
+				password: 'password',
+				first_name: 'Wendell',
+			} as UpdateAccountRequest,
+		})
+
+		await handler(req, res)
+
+		expect(res._getStatusCode()).toBe(401)
+		expect(JSON.parse(res._getData())).toEqual(
+			expect.objectContaining({
+				error: true,
+			})
+		)
 	})
 })
 

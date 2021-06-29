@@ -1,10 +1,12 @@
 import { ConnectedRequest } from '@typings/api'
 import {
-	AccountRequestType,
 	DeleteAccountResponse,
 	FormattedAccount,
 	GetAccountResponse,
+	PostAccountRequest,
 	PostAccountResponse,
+	UpdateAccountRequest,
+	UpdateAccountResponse,
 } from '@typings/api/Accounts'
 import { AccountDB } from '@typings/db/Account'
 import db from '@utils/db'
@@ -12,6 +14,7 @@ import { AuthResponse, getToken, isAuthorised } from '@utils/SSAuth'
 import { addDays } from 'date-fns'
 import { NextApiResponse } from 'next'
 import mj, { Email } from 'node-mailjet'
+import { hashPassword } from './index'
 
 export const DPO_EMAIL = 'bridges.wood@gmail.com'
 const mailjet = mj.connect(process.env.MJ_PUBLIC, process.env.MJ_SECRET)
@@ -24,6 +27,8 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 			return post(req, res)
 		case 'DELETE':
 			return remove(req, res)
+		case 'PATCH':
+			return patch(req, res)
 		default:
 			res.setHeader('Allow', ['GET', 'POST', 'DELETE', 'PATCH'])
 			res.status(405).end('Method not allowed.')
@@ -31,7 +36,7 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 }
 
 const get = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<{}>,
 	res: NextApiResponse<GetAccountResponse>
 ) => {
 	try {
@@ -87,7 +92,7 @@ export const formatAccount = (account: AccountDB): FormattedAccount => {
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<PostAccountRequest>,
 	res: NextApiResponse<PostAccountResponse>
 ) => {
 	try {
@@ -115,7 +120,7 @@ const post = async (
 				message: 'Account has been deleted.',
 			})
 
-		switch (type as AccountRequestType) {
+		switch (type) {
 			case 'GDPR':
 				await sendGDPRNotificationEmails(account)
 				await db<AccountDB>('accounts')
@@ -133,6 +138,7 @@ const post = async (
 				})
 		}
 	} catch (error) {
+		console.error(error.message)
 		return res.status(500).json({
 			error: true,
 			message: error.message,
@@ -202,7 +208,7 @@ const sendGDPRNotificationEmails = async (account: AccountDB) => {
 }
 
 const remove = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<{}>,
 	res: NextApiResponse<DeleteAccountResponse>
 ) => {
 	try {
@@ -227,6 +233,61 @@ const remove = async (
 			deleted: true,
 		})
 	} catch (error) {
+		console.error(error.message)
+		return res.status(500).json({
+			error: true,
+			message: error.message,
+		})
+	}
+}
+
+const patch = async (
+	req: ConnectedRequest<UpdateAccountRequest>,
+	res: NextApiResponse<UpdateAccountResponse>
+) => {
+	try {
+		const {
+			db,
+			query: { id },
+			body,
+		} = req
+		const token = getToken(req)
+		const status = await isAuthorised(token, ['*'])
+		if (!status.authorised || status.payload.account_id !== Number(id))
+			return res.status(401).json({
+				error: true,
+				message: 'Not authorised.',
+			})
+
+		let updated: AccountDB
+
+		if (body.password) {
+			const passwordHash = await hashPassword(body.password)
+			delete body.password
+
+			updated = (
+				await db<AccountDB>('accounts')
+					.update({
+						...body,
+						password_hash: passwordHash,
+					})
+					.where('account_id', '=', status.payload.account_id)
+					.returning('*')
+			)[0]
+		} else {
+			updated = (
+				await db<AccountDB>('accounts')
+					.update(body)
+					.where('account_id', '=', status.payload.account_id)
+					.returning('*')
+			)[0]
+		}
+
+		return res
+			.status(200)
+			.json({ error: false, updated: formatAccount(updated) })
+	} catch (error) {
+		console.error(error.message)
 		return res.status(500).json({
 			error: true,
 			message: error.message,

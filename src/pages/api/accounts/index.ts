@@ -82,7 +82,7 @@ export const prepareAccount = async (
 		| 'confirmed'
 	>
 > => {
-	const hashedPassword = await bcrypt.hash(account.password, SALT_ROUNDS)
+	const hashedPassword = await hashPassword(account.password)
 	const preparedAccount: Pick<
 		AccountDB,
 		| 'email_address'
@@ -100,6 +100,16 @@ export const prepareAccount = async (
 		confirmed: true,
 	}
 	return preparedAccount
+}
+
+/**
+ * Hashes a password to be stored in the database.
+ *
+ * @param password The password to be hashed.
+ * @returns A promise that resolves to the hashed representation of the password.
+ */
+export const hashPassword = async (password: string) => {
+	return bcrypt.hash(password, SALT_ROUNDS)
 }
 
 const get = async (req: ConnectedRequest, res: NextApiResponse) => {
