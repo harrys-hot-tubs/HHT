@@ -36,7 +36,33 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 		}
 	}, [bookingData])
 
-	if (!bookingData || duration === undefined) return null // TODO Default show non playing ten minutes
+	if (!bookingData || duration === undefined)
+		return (
+			<CountdownCircleTimer
+				isPlaying={false}
+				duration={10 * 60}
+				colors={[
+					['#004777', 0.33],
+					['#F7B801', 0.33],
+					['#A30000', 0.33],
+				]}
+				size={60}
+				strokeWidth={3}
+			>
+				{({ remainingTime }) => {
+					const mins = Math.floor(remainingTime / 60)
+					const secs = remainingTime % 60
+					return (
+						<div className='time-wrapper'>
+							<div className='time'>{`${mins}:${String(secs).padStart(
+								2,
+								'0'
+							)}`}</div>
+						</div>
+					)
+				}}
+			</CountdownCircleTimer>
+		)
 
 	return (
 		<OverlayTrigger

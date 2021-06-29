@@ -321,20 +321,27 @@ describe('credit card field', () => {
 
 describe('countdown', () => {
 	it('decreases over time', () => {
-		cy.get('.time')
-			.invoke('text')
-			.invoke('toString')
-			.invoke('split', ':')
-			.its(1)
-			.as('startSeconds')
+		cy.get('.time').then(($time) => {
+			const [startMinutes, startSeconds] = $time.text().toString().split(':')
+			cy.wrap(startSeconds).as('startSeconds')
+			cy.wrap(startMinutes).as('startMinutes')
+		})
 
-		// Cannot use cy.clock as the timer does not user setInterval, it uses CSS animation
+		// ! Cannot use cy.clock as the timer does not user setInterval, it uses CSS animation
 		cy.wait(1000)
 
-		cy.get('@startSeconds').then((startSeconds) => {
-			cy.get('.time').then(($time) => {
-				const endSeconds = Number($time.text().toString().split(':')[1])
-				expect(endSeconds).to.be.lessThan(Number(startSeconds))
+		cy.get('.time').then(($time) => {
+			const [endMinutes, endSeconds] = $time
+				.text()
+				.toString()
+				.split(':')
+				.map((str) => Number(str))
+			cy.get('@startMinutes').then((startMinutes) => {
+				cy.get('@startSeconds').then((startSeconds) => {
+					expect(endSeconds + endMinutes * 60).to.be.lessThan(
+						Number(startSeconds) + Number(startMinutes) * 60
+					)
+				})
 			})
 		})
 	})
@@ -356,6 +363,9 @@ describe('countdown', () => {
 		})
 		cy.reload()
 
+		// Wait for localStora
+		cy.wait(1000)
+
 		cy.get('.time').then(($time) => {
 			const [endMinutes, endSeconds] = $time
 				.text()
@@ -364,8 +374,9 @@ describe('countdown', () => {
 				.map((str) => Number(str))
 			cy.get('@startMinutes').then((startMinutes) => {
 				cy.get('@startSeconds').then((startSeconds) => {
-					expect(endSeconds).to.be.lessThan(Number(startSeconds))
-					expect(endMinutes).to.be.lessThan(Number(startMinutes))
+					expect(endSeconds + endMinutes * 60).to.be.lessThan(
+						Number(startSeconds) + Number(startMinutes) * 60
+					)
 				})
 			})
 		})
