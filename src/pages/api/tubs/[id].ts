@@ -1,5 +1,5 @@
+import { ConnectedRequest } from '@typings/api'
 import { PriceResponse } from '@typings/api/Payment'
-import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'
 import db from '@utils/db'
@@ -39,7 +39,7 @@ const get = async (req: ConnectedRequest, res: NextApiResponse<TubDB>) => {
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<{ startDate: string; endDate: string }>,
 	res: NextApiResponse<PriceResponse>
 ) => {
 	const {
@@ -52,12 +52,14 @@ const post = async (
 		const parsedStartDate = new Date(startDate)
 		const parsedEndDate = new Date(endDate)
 
-		const price = await getPrice({
-			tubID,
-			startDate: parsedStartDate,
-			endDate: parsedEndDate,
-			db,
-		})
+		const price = await calculateHirePrice(
+			{
+				tubID,
+				startDate: parsedStartDate,
+				endDate: parsedEndDate,
+			},
+			db
+		)
 		return res.status(200).json({ price })
 	} catch (error) {
 		console.error(error.message)
@@ -65,17 +67,25 @@ const post = async (
 	}
 }
 
-export const getPrice = async ({
-	tubID,
-	startDate,
-	endDate,
-	db,
-}: {
-	tubID: number
-	startDate: Date
-	endDate: Date
+/**
+ * Calculates the price (in pounds) of hiring a hot tub for a specific duration.
+ *
+ * @param tubInfo Information about the tub to have its price calculated.
+ * @param db Database instance.
+ * @returns The price of hiring the tub for the duration specified in pounds.
+ */
+export const calculateHirePrice = async (
+	{
+		tubID,
+		startDate,
+		endDate,
+	}: {
+		tubID: number
+		startDate: Date
+		endDate: Date
+	},
 	db: Knex
-}): Promise<number> => {
+): Promise<number> => {
 	const nights = differenceInDays(endDate, startDate)
 
 	if (nights > 7 || nights < 2) throw new RangeError('Duration is invalid.')

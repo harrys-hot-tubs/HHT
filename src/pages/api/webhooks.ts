@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { LocationDB } from '@typings/db/Location'
 import { OrderDB } from '@typings/db/Order'
 import { TubDB } from '@typings/db/Tub'
@@ -47,7 +47,7 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	await runMiddleware(req, res, cors)
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		default:
 			res.setHeader('Allow', 'POST')
 			res.status(405).end('Method not allowed.')

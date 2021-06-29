@@ -2,13 +2,13 @@ import { completeAccount } from '@fixtures/accountFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import { prepareAccount } from '@pages/api/accounts/index'
 import handler from '@pages/api/email'
+import { ConnectedRequest } from '@typings/api'
 import {
 	ValidateConfirmationCodeRequest,
 	ValidateConfirmationCodeResponse,
 	VerifyEmailRequest,
 	VerifyEmailResponse,
 } from '@typings/api/Email'
-import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import { NextApiResponse } from 'next'
 import nock from 'nock'

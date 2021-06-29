@@ -1,8 +1,8 @@
+import { ConnectedRequest } from '@typings/api'
 import {
 	CreateAccountRequest,
 	CreateAccountResponse,
 } from '@typings/api/Accounts'
-import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import { LocationDB } from '@typings/db/Location'
 import db from '@utils/db'
@@ -15,9 +15,9 @@ export const SALT_ROUNDS = 10
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		case 'GET':
-			return await get(req, res)
+			return get(req, res)
 		default:
 			res.setHeader('Allow', ['POST', 'GET'])
 			res.status(405).end('Method not allowed.')
@@ -25,33 +25,32 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<CreateAccountRequest>,
 	res: NextApiResponse<CreateAccountResponse>
 ) => {
-	const { db } = req
-	const newAccount: CreateAccountRequest = req.body
+	const { db, body } = req
 
 	try {
 		const isValidRequest =
 			(
 				await db<AccountDB>('accounts')
 					.select('account_id')
-					.where('email_address', '=', newAccount.emailAddress)
-					.andWhere('confirmation_code', '=', newAccount.confirmationCode)
+					.where('email_address', '=', body.emailAddress)
+					.andWhere('confirmation_code', '=', body.confirmationCode)
 					.andWhere('confirmed', '=', false)
 			).length === 1
 
 		if (!isValidRequest)
 			throw new Error(
-				`Email address ${newAccount.emailAddress} could not be validated.`
+				`Email address ${body.emailAddress} could not be validated.`
 			)
 
-		const preparedAccount = await prepareAccount(newAccount)
+		const preparedAccount = await prepareAccount(body)
 		const { confirmation_code, password_hash, ...storedAccount } = (
 			await db<AccountDB>('accounts')
 				.update(preparedAccount, '*')
-				.where('email_address', '=', newAccount.emailAddress)
-				.andWhere('confirmation_code', '=', newAccount.confirmationCode)
+				.where('email_address', '=', body.emailAddress)
+				.andWhere('confirmation_code', '=', body.confirmationCode)
 				.andWhere('confirmed', '=', false)
 		)[0]
 

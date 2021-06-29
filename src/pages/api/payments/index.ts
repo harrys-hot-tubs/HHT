@@ -1,7 +1,7 @@
-import { getPrice } from '@pages/api/tubs/[id]'
+import { calculateHirePrice } from '@pages/api/tubs/[id]'
+import { ConnectedRequest } from '@typings/api'
 import { APIError } from '@typings/api/Error'
 import { PaymentIntentRequest } from '@typings/api/Payment'
-import { ConnectedRequest } from '@typings/api/Request'
 import db from '@utils/db'
 import { formatAmount } from '@utils/stripe'
 import { differenceInDays } from 'date-fns'
@@ -15,7 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET, {
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		default:
 			res.setHeader('Allow', 'POST')
 			res.status(405).end('Method not allowed.')
@@ -23,25 +23,29 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<PaymentIntentRequest>,
 	res: NextApiResponse<
 		Pick<Stripe.PaymentIntent, 'client_secret' | 'id'> | APIError
 	>
 ) => {
-	const { tubID, startDate, endDate } = req.body as PaymentIntentRequest
-	const { db } = req
+	const {
+		db,
+		body: { tubID, startDate, endDate },
+	} = req
 	try {
 		const parsedStartDate = new Date(startDate)
 		const parsedEndDate = new Date(endDate)
 		if (differenceInDays(parsedEndDate, parsedStartDate) <= 0)
 			throw new RangeError('Order duration must be greater than 0.')
 
-		const price = await getPrice({
-			tubID,
-			startDate: parsedStartDate,
-			endDate: parsedEndDate,
-			db,
-		})
+		const price = await calculateHirePrice(
+			{
+				tubID,
+				startDate: parsedStartDate,
+				endDate: parsedEndDate,
+			},
+			db
+		)
 
 		if (price < 0.3)
 			throw new RangeError(

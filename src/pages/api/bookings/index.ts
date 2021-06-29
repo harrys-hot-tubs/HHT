@@ -1,8 +1,8 @@
+import { ConnectedRequest } from '@typings/api'
 import {
 	CreateBookingRequest,
 	CreateBookingResponse,
 } from '@typings/api/Bookings'
-import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/db/Booking'
 import db from '@utils/db'
 import { addMinutes } from 'date-fns'
@@ -11,11 +11,11 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'GET':
-			return await get(req, res)
+			return get(req, res)
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		case 'DELETE':
-			return await removeStale(req, res)
+			return removeStale(req, res)
 		default:
 			res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
 			res.status(405).end('Method not allowed.')
@@ -37,27 +37,23 @@ const get = async (
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<CreateBookingRequest>,
 	res: NextApiResponse<CreateBookingResponse>
 ) => {
 	try {
-		const { db } = req
-		const bookingDetails: CreateBookingRequest = req.body
+		const { db, body } = req
 		const now = new Date()
 
 		const booking_id = (
 			await db<BookingDB>('bookings')
 				.insert({
-					booking_duration: `[${bookingDetails.startDate.substring(
+					booking_duration: `[${body.startDate.substring(
 						0,
 						10
-					)},${bookingDetails.endDate.substring(0, 10)})`,
-					tub_id: bookingDetails.tubID,
+					)},${body.endDate.substring(0, 10)})`,
+					tub_id: body.tubID,
 					reserved: true,
-					reservation_end: addMinutes(
-						now,
-						bookingDetails.expiryTime
-					).toISOString(),
+					reservation_end: addMinutes(now, body.expiryTime).toISOString(),
 				})
 				.returning('booking_id')
 		)[0]
@@ -65,7 +61,7 @@ const post = async (
 		return res.status(200).json({
 			bookingID: booking_id,
 			error: false,
-			exp: addMinutes(now, bookingDetails.expiryTime).getTime(),
+			exp: addMinutes(now, body.expiryTime).getTime(),
 		})
 	} catch (error) {
 		console.error(error?.message)

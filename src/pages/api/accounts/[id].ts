@@ -1,3 +1,4 @@
+import { ConnectedRequest } from '@typings/api'
 import {
 	AccountRequestType,
 	DeleteAccountResponse,
@@ -5,7 +6,6 @@ import {
 	GetAccountResponse,
 	PostAccountResponse,
 } from '@typings/api/Accounts'
-import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import db from '@utils/db'
 import { AuthResponse, getToken, isAuthorised } from '@utils/SSAuth'
@@ -19,13 +19,13 @@ const mailjet = mj.connect(process.env.MJ_PUBLIC, process.env.MJ_SECRET)
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'GET':
-			return await get(req, res)
+			return get(req, res)
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		case 'DELETE':
-			return await remove(req, res)
+			return remove(req, res)
 		default:
-			res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
+			res.setHeader('Allow', ['GET', 'POST', 'DELETE', 'PATCH'])
 			res.status(405).end('Method not allowed.')
 	}
 }

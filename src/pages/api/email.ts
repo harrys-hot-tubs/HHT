@@ -1,3 +1,4 @@
+import { ConnectedRequest } from '@typings/api'
 import {
 	EmailRequest,
 	ValidateConfirmationCodeRequest,
@@ -5,7 +6,6 @@ import {
 	VerifyEmailRequest,
 	VerifyEmailResponse,
 } from '@typings/api/Email'
-import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import db from '@utils/db'
 import { Knex } from 'knex'
@@ -17,16 +17,18 @@ const mailjet = mj.connect(process.env.MJ_PUBLIC, process.env.MJ_SECRET)
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		default:
 			res.setHeader('Allow', ['POST'])
 			res.status(405).end('Method not allowed.')
 	}
 }
 
-const post = async (req: ConnectedRequest, res: NextApiResponse) => {
-	const { db } = req
-	const body = req.body as EmailRequest
+const post = async (
+	req: ConnectedRequest<EmailRequest>,
+	res: NextApiResponse
+) => {
+	const { db, body } = req
 
 	if (body.validate === false) {
 		return verifyEmail(db, body, res)
@@ -35,6 +37,14 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	}
 }
 
+/**
+ * Verifies that an email address is valid by sending a confirmation email to it.
+ *
+ * @param db Database connection.
+ * @param body The body of the request containing the email address.
+ * @param res The response object to be sent to the client.
+ * @returns The response object.
+ */
 const verifyEmail = async (
 	db: Knex,
 	{ email }: VerifyEmailRequest,
@@ -94,6 +104,14 @@ const verifyEmail = async (
 	}
 }
 
+/**
+ * Confirms that the confirmation code is the one send to the user previously.
+ *
+ * @param db Database connection.
+ * @param body The body of the request containing the confirmation code and the email address it should have been sent to.
+ * @param res The response object to be sent to the client.
+ * @returns The response object.
+ */
 const confirmCode = async (
 	db: Knex,
 	{ email, confirmationCode }: ValidateConfirmationCodeRequest,

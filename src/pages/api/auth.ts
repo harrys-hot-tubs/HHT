@@ -1,5 +1,5 @@
+import { ConnectedRequest } from '@typings/api'
 import { AuthRequest, AuthResponse, TokenAccount } from '@typings/api/Auth'
-import { ConnectedRequest } from '@typings/api/Request'
 import { AccountDB } from '@typings/db/Account'
 import db from '@utils/db'
 import bcrypt from 'bcryptjs'
@@ -9,7 +9,7 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		default:
 			res.setHeader('Allow', 'POST')
 			res.status(405).end('Method not allowed.')
@@ -17,11 +17,13 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<AuthRequest>,
 	res: NextApiResponse<AuthResponse>
 ) => {
-	const { db } = req
-	const { email, password }: AuthRequest = req.body
+	const {
+		db,
+		body: { email, password },
+	} = req
 	try {
 		const account: AccountDB = await db<AccountDB>('accounts')
 			.select()

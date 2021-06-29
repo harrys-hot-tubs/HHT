@@ -9,8 +9,6 @@ import { BookingDB } from '@typings/db/Booking'
 import { addHours } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
-// TODO double check the timeouts.
-
 before(() => {
 	cy.task('DBInsert', { tableName: 'locations', data: locations })
 	cy.task('DBInsert', { tableName: 'tubs', data: tubs })

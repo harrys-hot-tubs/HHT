@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { BookingDB } from '@typings/db/Booking'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'
@@ -6,7 +6,7 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'DELETE':
-			return await remove(req, res)
+			return remove(req, res)
 		default:
 			res.setHeader('Allow', ['DELETE'])
 			res.status(405).end('Method not allowed.')

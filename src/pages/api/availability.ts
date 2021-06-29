@@ -1,8 +1,8 @@
+import { ConnectedRequest } from '@typings/api'
 import {
 	AvailabilityRequest,
 	AvailabilityResponse,
 } from '@typings/api/Availability'
-import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/db/Booking'
 import { TubDB } from '@typings/db/Tub'
 import db from '@utils/db'
@@ -12,7 +12,7 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		default:
 			res.setHeader('Allow', 'POST')
 			res.status(405).end('Method not allowed.')
@@ -20,10 +20,12 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<AvailabilityRequest>,
 	res: NextApiResponse<AvailabilityResponse>
 ) => {
-	const tubs = await findAvailableTubs(req.body, req.db)
+	const { db, body } = req
+
+	const tubs = await findAvailableTubs(body, db)
 	if (tubs.length > 0) {
 		return res.status(200).json({
 			available: true,

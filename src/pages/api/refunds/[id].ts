@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { RefundDB } from '@typings/db/Refund'
 import db from '@utils/db'
 import { getToken, hasRole, isAuthorised } from '@utils/SSAuth'
@@ -7,19 +7,25 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		case 'DELETE':
-			return await remove(req, res)
+			return remove(req, res)
 		default:
 			res.setHeader('Allow', ['POST', 'DELETE'])
 			res.status(405).end('Method not allowed.')
 	}
 }
 
-const post = async (req: ConnectedRequest, res: NextApiResponse) => {
+const post = async (
+	req: ConnectedRequest<
+		Omit<RefundDB, 'account_id' | 'order_id'> | Pick<RefundDB, 'settled'>
+	>,
+	res: NextApiResponse
+) => {
 	const {
 		db,
 		query: { id },
+		body,
 	} = req
 	const token = getToken(req)
 	const status = await isAuthorised(token, ['driver', 'manager']) // ! This could cause unexpected behaviour for accounts with multiple roles.
@@ -27,7 +33,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 		const { payload: account } = status
 
 		if (hasRole(account, 'driver')) {
-			const refundDetails: Omit<RefundDB, 'account_id' | 'order_id'> = req.body
+			const refundDetails = body as Omit<RefundDB, 'account_id' | 'order_id'>
 			const driver_id = account.account_id
 			try {
 				const inserted = await db<RefundDB>('refunds').insert(
@@ -47,7 +53,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 		}
 
 		if (hasRole(account, 'manager')) {
-			const { settled }: Pick<RefundDB, 'settled'> = req.body
+			const { settled } = body as Pick<RefundDB, 'settled'>
 			const manager_id = account.account_id
 			try {
 				const updated = await db<RefundDB>('refunds')

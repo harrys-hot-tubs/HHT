@@ -7,11 +7,11 @@ import { locations } from '@fixtures/locationFixtures'
 import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/bookings'
+import { ConnectedRequest } from '@typings/api'
 import {
 	CreateBookingRequest,
 	CreateBookingResponse,
 } from '@typings/api/Bookings'
-import { ConnectedRequest } from '@typings/api/Request'
 import { BookingDB } from '@typings/db/Booking'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'

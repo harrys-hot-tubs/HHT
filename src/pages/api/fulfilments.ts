@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { FulfilmentDB } from '@typings/db/Fulfilment'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'
@@ -6,7 +6,7 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'GET':
-			return await get(req, res)
+			return get(req, res)
 		default:
 			res.setHeader('Allow', 'GET')
 			res.status(405).end('Method not allowed.')
