@@ -1,17 +1,8 @@
 import useStoredDate from '@hooks/useStoredDate'
-import validateDates from '@utils/validators/dateValidator'
+import validateDates, { MAX_NIGHTS, MIN_NIGHTS } from '@utils/validators/dateValidator'
 import moment from 'moment'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { FocusedInputShape } from 'react-dates'
-
-/**
- * The maximum duration of a customer's booking.
- */
-const MAX_NIGHTS = 7
-/**
- * The minimum duration of a customer's booking.
- */
-const MIN_NIGHTS = 3
 
 /**
  * Stores and validates user inputted booking dates.

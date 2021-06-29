@@ -45,7 +45,7 @@ const Calendar = ({
 				focusedInput={focused}
 				onFocusChange={updateFocus}
 				isDayBlocked={isDayBlocked}
-				minimumNights={3}
+				minimumNights={isStudent ? 2 : 3}
 			/>
 			<Modal show={showModal} onHide={() => setShowModal(false)}>
 				<Modal.Header closeButton>

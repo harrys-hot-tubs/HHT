@@ -1,5 +1,11 @@
-const MAX_NIGHTS = 7
-const MIN_NIGHTS = 3
+/**
+ * The maximum duration of a customer's booking.
+ */
+export const MAX_NIGHTS = 7
+/**
+* The minimum duration of a customer's booking.
+*/
+export const MIN_NIGHTS = 2
 
 export type DateError = 'missing' | 'long' | 'short' | 'impossible'
 
