@@ -1,7 +1,7 @@
 import validateDates, { DateError } from '@utils/validators/dateValidator'
 import { addDays, subDays } from 'date-fns'
 
-it('missing dates', () => {
+it('catches missing dates', () => {
 	const response = validateDates(null, null)
 	expect(response[0]).toBe<boolean>(false)
 	expect(response[1]).toBe<DateError>('missing')
