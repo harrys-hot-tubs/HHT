@@ -4,6 +4,7 @@ import useAccountInformation from '@hooks/useAccountInformation'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { Alert, AlertProps, Popover } from 'react-bootstrap'
+import DeleteAccountButton from '../DeleteAccountButton'
 
 const CustomerDashboard = () => {
 	const { account, isLoading, isError } = useAccountInformation()
@@ -67,7 +68,10 @@ const CustomerDashboard = () => {
 				<h2>
 					{account.first_name} {account.last_name}
 				</h2>
-				<section>Account Update Form</section>
+				<section>
+					<h2>Account Update Form</h2>
+					<DeleteAccountButton account={account} />
+				</section>
 				<section className='gdpr-button-container'>
 					<TooltipButton
 						placement='top-end'

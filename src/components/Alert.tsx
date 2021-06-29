@@ -11,6 +11,7 @@ const Alert = ({ error, ...props }: ComponentProps) => {
 
 	useEffect(() => {
 		if (error && !show) setShow(true)
+		if (!error) setShow(false)
 	}, [error])
 
 	return (

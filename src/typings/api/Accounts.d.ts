@@ -53,3 +53,10 @@ export type PostAccountResponse =
 			error: true
 			message: string
 	  }
+
+export type DeleteAccountResponse =
+	| {
+			error: false
+			deleted: boolean
+	  }
+	| { error: true; message: string }

@@ -14,8 +14,12 @@ import nock from 'nock'
 import { Email } from 'node-mailjet'
 import { createMocks } from 'node-mocks-http'
 
-beforeAll(async () => {
-	await connection<AccountDB>('accounts').insert(driverAccount)
+beforeEach(async () => {
+	await connection<AccountDB>('accounts').insert({
+		...driverAccount,
+		// ! For some reason, this function cannot import confirmation code from the fixtures.
+		confirmation_code: 'ABC123',
+	})
 })
 
 describe('get', () => {
@@ -200,6 +204,59 @@ describe('post', () => {
 			nock.cleanAll()
 		})
 	})
+})
+
+describe('delete', () => {
+	it('deletes the account of an authorised user', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'DELETE',
+			query: { id: driverAccount.account_id },
+			cookies: {
+				token: inDateAccountToken(driverAccount),
+			},
+		})
+
+		await handler(req, res)
+
+		expect(res._getStatusCode()).toBe(200)
+		expect(JSON.parse(res._getData())).toEqual({
+			error: false,
+			deleted: true,
+		})
+
+		const accountIDs = (
+			await connection<AccountDB>('accounts').select('account_id')
+		).map((account) => account.account_id)
+		expect(accountIDs).not.toContain(driverAccount.account_id)
+	})
+
+	it('does not delete the account of an unauthorised user', async () => {
+		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
+			method: 'DELETE',
+			query: { id: driverAccount.account_id },
+			cookies: {
+				token: expiredAccountToken(driverAccount),
+			},
+		})
+
+		await handler(req, res)
+
+		expect(res._getStatusCode()).toBe(401)
+		expect(JSON.parse(res._getData())).toEqual(
+			expect.objectContaining({
+				error: true,
+			})
+		)
+
+		const accountIDs = (
+			await connection<AccountDB>('accounts').select('account_id')
+		).map((account) => account.account_id)
+		expect(accountIDs).toContain(driverAccount.account_id)
+	})
+})
+
+afterEach(async () => {
+	await connection<AccountDB>('accounts').del()
 })
 
 afterAll(async () => {

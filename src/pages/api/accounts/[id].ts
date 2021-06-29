@@ -1,5 +1,6 @@
 import {
 	AccountRequestType,
+	DeleteAccountResponse,
 	FormattedAccount,
 	GetAccountResponse,
 	PostAccountResponse,
@@ -21,8 +22,10 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 			return await get(req, res)
 		case 'POST':
 			return await post(req, res)
+		case 'DELETE':
+			return await remove(req, res)
 		default:
-			res.setHeader('Allow', ['GET', 'POST'])
+			res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
 			res.status(405).end('Method not allowed.')
 	}
 }
@@ -196,6 +199,39 @@ const sendGDPRNotificationEmails = async (account: AccountDB) => {
 			},
 		],
 	} as Email.SendParams)
+}
+
+const remove = async (
+	req: ConnectedRequest,
+	res: NextApiResponse<DeleteAccountResponse>
+) => {
+	try {
+		const {
+			db,
+			query: { id },
+		} = req
+		const token = getToken(req)
+		const status = await isAuthorised(token, ['*'])
+		if (!status.authorised || status.payload.account_id !== Number(id))
+			return res.status(401).json({
+				error: true,
+				message: 'Not authorised.',
+			})
+
+		await db<AccountDB>('accounts')
+			.del()
+			.where('account_id', '=', status.payload.account_id)
+
+		return res.status(200).json({
+			error: false,
+			deleted: true,
+		})
+	} catch (error) {
+		return res.status(500).json({
+			error: true,
+			message: error.message,
+		})
+	}
 }
 
 export default db()(handler)

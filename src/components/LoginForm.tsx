@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import Alert from './Alert'
+import PasswordField from './PasswordField'
 
 /**
  * Form used by the user to login to the application.
@@ -55,10 +56,9 @@ const LoginForm = () => {
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Password</Form.Label>
-				<Form.Control
+				<PasswordField
 					aria-label='password'
 					required
-					type='password'
 					autoComplete='current-password'
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}

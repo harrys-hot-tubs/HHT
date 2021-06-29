@@ -10,7 +10,7 @@ const LogoutButton = () => {
 	const [loading, setLoading] = useState<boolean>(false)
 	const router = useRouter()
 
-	const handleLogout: MouseEventHandler<HTMLButtonElement> = (event) => {
+	const handleLogout: MouseEventHandler<HTMLButtonElement> = () => {
 		setLoading(true)
 		Cookies.remove('token')
 		router.push('/login')
