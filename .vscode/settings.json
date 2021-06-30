@@ -14,5 +14,12 @@
 		"testid",
 		"zxcvbn"
 	],
-	"window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}"
+	"window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}",
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/*/**": true,
+		"**/.next/**": true,
+		"**/.hg/store/**": true
+	}
 }
