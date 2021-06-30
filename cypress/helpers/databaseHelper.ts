@@ -39,7 +39,7 @@ export const arbitraryInsert = async (tableName: string, data: any[]) => {
 }
 
 export const clearTable = async (tableName: string) => {
-	return connection(tableName).del()
+	return connection(tableName).del('*')
 }
 
 export const addAccountsToDatabase = async () => {
