@@ -29,12 +29,12 @@ export interface UserInformation {
 	telephoneNumber: string
 }
 
-interface EmailStatus {
+export interface EmailStatus {
 	confirmationCode: string
 	valid: boolean
 }
 
-interface PasswordStatus {
+export interface PasswordStatus {
 	password: string
 	acceptable: boolean
 }
@@ -263,6 +263,13 @@ const generateTooltip = (
 		return 'Please increase the strength of your password.'
 }
 
+/**
+ * Sends a request to create a new account to the API.
+ *
+ * @param user The information of the user to be added to the database.
+ * @param password The password of the user to be added to the database.
+ * @param confirmationCode The confirmation code of the user to be added to the database.
+ */
 const createAccount = async (
 	user: UserInformation,
 	password: string,

@@ -3,17 +3,20 @@ import { OverlayTrigger, OverlayTriggerProps } from 'react-bootstrap'
 
 interface ComponentProps extends OverlayTriggerProps {
 	disabled: boolean
+	'data-testid'?: string
 }
 
-const TooltipButton = ({ children, disabled, ...props }: ComponentProps) => {
+const TooltipButton = ({
+	children,
+	disabled,
+	'data-testid': dataTestID,
+	...props
+}: ComponentProps) => {
 	if (!disabled) return <>{children}</>
 
 	return (
 		<OverlayTrigger {...props}>
-			<div
-				className='tooltip-button-helper'
-				data-testid='tooltip-button-container'
-			>
+			<div className='tooltip-button-helper' data-testid={dataTestID}>
 				{children}
 			</div>
 		</OverlayTrigger>

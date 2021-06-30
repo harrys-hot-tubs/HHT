@@ -23,9 +23,13 @@ const useAccountInformation = (): {
 	account: FormattedAccount
 	isLoading: boolean
 	isError: any
+	mutate: (
+		data?: FormattedAccount | Promise<FormattedAccount>,
+		shouldRevalidate?: boolean
+	) => Promise<FormattedAccount | undefined>
 } => {
 	const id = getAccountID()
-	const { data, error } = useSWR<FormattedAccount>(
+	const { data, error, mutate } = useSWR<FormattedAccount>(
 		`/api/accounts/${id}`,
 		fetcher
 	)
@@ -34,6 +38,7 @@ const useAccountInformation = (): {
 		account: data,
 		isLoading: !error && !data,
 		isError: error,
+		mutate,
 	}
 }
 

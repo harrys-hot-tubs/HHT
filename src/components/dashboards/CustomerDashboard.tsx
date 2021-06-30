@@ -1,13 +1,14 @@
+import AccountUpdateForm from '@components/AccountUpdateForm'
+import DeleteAccountButton from '@components/DeleteAccountButton'
 import SpinnerButton from '@components/SpinnerButton'
 import TooltipButton from '@components/TooltipButton'
 import useAccountInformation from '@hooks/useAccountInformation'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { Alert, AlertProps, Popover } from 'react-bootstrap'
-import DeleteAccountButton from '../DeleteAccountButton'
 
 const CustomerDashboard = () => {
-	const { account, isLoading, isError } = useAccountInformation()
+	const { account, isLoading, isError, mutate } = useAccountInformation()
 	const [alertProps, setAlertProps] = useState<
 		Pick<AlertProps, 'variant' | 'show'> & { heading: string; content: string }
 	>({
@@ -46,10 +47,19 @@ const CustomerDashboard = () => {
 		}
 	}
 
-	if (isLoading) return <h1>Loading...</h1>
+	if (isLoading)
+		return (
+			<div className='outer'>
+				<h1>Loading...</h1>
+			</div>
+		)
 	// TODO add proper loading indicator
-	if (isError) return <h1>Error</h1>
-	// TODO add proper error indicator
+	if (isError)
+		return (
+			<div className='outer'>
+				<h1>There was an error loading this page. Please try again</h1>
+			</div>
+		)
 	return (
 		<div className='outer customer-dashboard'>
 			<aside>
@@ -64,16 +74,15 @@ const CustomerDashboard = () => {
 				</Alert>
 			</aside>
 			<main>
-				<h1>Account</h1>
-				<h2>
-					{account.first_name} {account.last_name}
-				</h2>
+				<h1>Welcome back, {account.first_name}.</h1>
 				<section>
 					<h2>Account Update Form</h2>
+					<AccountUpdateForm account={account} updateCache={mutate} />
 					<DeleteAccountButton account={account} />
 				</section>
 				<section className='gdpr-button-container'>
 					<TooltipButton
+						data-testid='gdpr-request-button-container'
 						placement='top-end'
 						overlay={
 							<Popover id='gdpr-tooltip'>

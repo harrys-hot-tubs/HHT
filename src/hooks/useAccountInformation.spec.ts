@@ -2,7 +2,7 @@ import { driverAccount } from '@fixtures/accountFixtures'
 import SWRWrapper from '@helpers/SWRWrapper'
 import useAccountInformation from '@hooks/useAccountInformation'
 import { inDateAccountToken } from '@test/fixtures/authFixtures'
-import { renderHook } from '@testing-library/react-hooks'
+import { act, renderHook } from '@testing-library/react-hooks'
 import { GetAccountResponse } from '@typings/api/Accounts'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
@@ -76,6 +76,27 @@ it('responds with data when request succeeds', async () => {
 	await waitForValueToChange(() => result.current.isLoading)
 	expect(result.current.isLoading).toBe(false)
 	expect(result.current.account).toEqual(successValue.account)
+})
+
+it('allows the data to be changed using the mutate method', async () => {
+	mock
+		.onGet(`/api/accounts/${successValue.account.account_id}`)
+		.replyOnce(200, successValue)
+	const { result, waitForValueToChange } = renderHook(useAccountInformation, {
+		wrapper: SWRWrapper,
+	})
+
+	await waitForValueToChange(() => result.current.isLoading)
+	expect(result.current.account).toEqual(successValue.account)
+
+	await act(async () => {
+		await result.current.mutate({
+			...successValue.account,
+			first_name: 'Wendell',
+		})
+	})
+
+	expect(result.current.account.first_name).toEqual('Wendell')
 })
 
 afterAll(() => {

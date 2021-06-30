@@ -13,6 +13,7 @@ interface ComponentProps {
 	isValidCode: boolean
 	onChange: React.ChangeEventHandler<HTMLInputElement>
 	setConfirmed: (value: boolean) => void
+	requestPath?: string
 }
 
 const VerificationCodeField = ({
@@ -21,6 +22,7 @@ const VerificationCodeField = ({
 	value,
 	isValidCode,
 	setConfirmed,
+	requestPath = '/api/email',
 }: ComponentProps) => {
 	const [spinning, setSpinning] = useState(false)
 	const [validated, setValidated] = useState(false)
@@ -46,7 +48,7 @@ const VerificationCodeField = ({
 							try {
 								const { data } =
 									await axios.post<ValidateConfirmationCodeResponse>(
-										'/api/email',
+										requestPath,
 										{
 											validate: true,
 											confirmationCode: value,
