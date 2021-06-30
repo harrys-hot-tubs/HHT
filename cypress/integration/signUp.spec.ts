@@ -158,7 +158,7 @@ describe('form', () => {
 
 		it('indicates at what strength the password will be accepted', () => {
 			const password = 'H&5E8eN$DHnnycm5'
-			cy.get('[data-testid=tooltip-button-container]')
+			cy.get('[data-testid=submit-button-container]')
 				.as('buttonContainer')
 				.trigger('mouseover')
 			cy.get('#submit-button-tooltip')
@@ -287,7 +287,7 @@ describe('form', () => {
 		})
 
 		it('shows a tooltip informing the user why it is disabled', () => {
-			cy.get('[data-testid=tooltip-button-container]').trigger('mouseover')
+			cy.get('[data-testid=submit-button-container]').trigger('mouseover')
 
 			cy.get('#submit-button-tooltip').should('be.visible')
 		})

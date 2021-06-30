@@ -230,6 +230,7 @@ const SignUpForm = () => {
 					</Popover>
 				}
 				disabled={submitDisabled}
+				data-testid='submit-button-container'
 			>
 				<SpinnerButton
 					type='submit'
