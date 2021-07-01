@@ -71,3 +71,16 @@ export type UpdateAccountResponse =
 			updated: FormattedAccount
 	  }
 	| { error: true; message: string }
+
+export interface ResetPasswordRequest {
+	email: string
+	confirmationCode: string
+	password: string
+}
+
+export type ResetPasswordResponse =
+	| {
+			error: false
+			reset: boolean
+	  }
+	| { error: true; message: string }

@@ -2,6 +2,7 @@ import SpinnerButton from '@components/SpinnerButton'
 import { AuthRequest } from '@typings/api/Auth'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Form } from 'react-bootstrap'
@@ -63,6 +64,9 @@ const LoginForm = () => {
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 				/>
+				<Form.Text>
+					<Link href='/reset'>I forgot my password</Link>
+				</Form.Text>
 			</Form.Group>
 			<SpinnerButton
 				className='button'

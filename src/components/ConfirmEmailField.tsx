@@ -23,7 +23,7 @@ interface ComponentProps {
 	required?: boolean
 }
 
-const UpdateEmailField = ({
+const ConfirmEmailField = ({
 	email,
 	onEmailChange,
 	confirmationCode,
@@ -31,7 +31,7 @@ const UpdateEmailField = ({
 	isValid: emailIsValid,
 	setConfirmed,
 	placeholder,
-	requestPath = '/api/email',
+	requestPath = '/api/accounts/reset',
 	required = true,
 }: ComponentProps) => {
 	const [emailError, setEmailError] = useState(undefined)
@@ -68,9 +68,9 @@ const UpdateEmailField = ({
 		<>
 			<InputGroup>
 				<Form.Control
-					isValid={emailIsValid || email === ''}
+					isValid={emailIsValid}
 					isInvalid={emailIsInvalid}
-					disabled={emailIsValid && email !== ''}
+					disabled={emailIsValid}
 					aria-label='email'
 					required={required}
 					autoComplete='email'
@@ -114,4 +114,4 @@ const UpdateEmailField = ({
 	)
 }
 
-export default UpdateEmailField
+export default ConfirmEmailField
