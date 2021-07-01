@@ -16,6 +16,9 @@ before(() => {
 })
 
 beforeEach(() => {
+	cy.intercept('GET', '/api/orders').as('getOrders')
+	cy.intercept('GET', '/api/accounts').as('getAccount')
+
 	cy.clearCookies()
 	cy.clearLocalStorage()
 	setStorage({
@@ -28,6 +31,8 @@ beforeEach(() => {
 		cy.setCookie('token', token)
 	)
 	cy.visit('/dashboard')
+	cy.wait('@getOrders')
+	cy.wait('@getAccount')
 })
 
 it('sets the page title', () => {

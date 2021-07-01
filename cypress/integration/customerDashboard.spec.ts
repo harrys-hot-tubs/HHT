@@ -20,6 +20,10 @@ before(() => {
 })
 
 beforeEach(() => {
+	cy.intercept('GET', `/api/accounts/${accounts[2].account_id}`).as(
+		'getAccountInfo'
+	)
+
 	cy.clearCookies()
 	cy.clearLocalStorage()
 	setStorage({
@@ -32,6 +36,7 @@ beforeEach(() => {
 		cy.setCookie('token', token)
 	)
 	cy.visit('/dashboard')
+	cy.wait('@getAccountInfo')
 })
 
 it('sets the page title', () => {
