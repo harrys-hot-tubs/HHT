@@ -1,15 +1,9 @@
 import useDateRange from '@hooks/useDateRange'
-import validateDates from '@utils/validators/dateValidator'
+import validateDates, {
+	MAX_NIGHTS,
+	MIN_NIGHTS,
+} from '@utils/validators/dateValidator'
 import { differenceInDays, getDay } from 'date-fns'
-
-/**
- * The maximum duration of a customer's booking.
- */
-const MAX_NIGHTS = 7
-/**
- * The minimum duration of a customer's booking.
- */
-const MIN_NIGHTS = 2
 
 /**
  * Stores and validates user inputted booking dates.
