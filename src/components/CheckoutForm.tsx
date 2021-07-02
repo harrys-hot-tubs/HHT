@@ -172,11 +172,8 @@ const CheckoutForm = ({
 					{endDate ? endDate.toLocaleDateString() : 'XX/XX/XXXX'}
 				</small>
 				<h1 className='price'>
-					{price !== undefined ? priceToString((price + 70) * 100) : '£XXX.XX'}
+					{price !== undefined ? priceToString(price * 100) : '£XXX.XX'}
 				</h1>
-				<div>
-					Includes refundable <b>£70</b> deposit
-				</div>
 			</div>
 			<div style={{ marginTop: '1em' }} />
 			<CheckoutErrors error={checkoutError} />

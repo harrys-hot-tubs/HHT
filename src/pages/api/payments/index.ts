@@ -55,11 +55,8 @@ const post = async (
 		const paymentIntent: Stripe.PaymentIntent =
 			await stripe.paymentIntents.create({
 				payment_method_types: ['card'],
-				amount: formatAmount(price + 70),
+				amount: formatAmount(price),
 				currency: 'gbp',
-				metadata: {
-					integration_check: 'accept_a_payment',
-				},
 			})
 
 		res.status(200).json({
