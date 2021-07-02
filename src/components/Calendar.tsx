@@ -1,10 +1,7 @@
 import { CalendarInterface } from '@hooks/useCalendar'
 import { addBusinessDays, addDays } from 'date-fns'
-import React, { useEffect, useRef } from 'react'
-import {
-	default as DatePicker,
-	default as ReactDatePicker,
-} from 'react-datepicker'
+import React, { useEffect } from 'react'
+import { default as DatePicker } from 'react-datepicker'
 
 interface ComponentProps extends CalendarInterface {
 	/**
@@ -25,8 +22,6 @@ const Calendar = ({
 	resetDates,
 	isAvailable,
 }: ComponentProps) => {
-	const endRef = useRef<ReactDatePicker>(null)
-
 	useEffect(() => {
 		// Checks for malicious date injection.
 		if (!isAvailable(startDate)) resetDates({ startDate: true })
@@ -44,7 +39,6 @@ const Calendar = ({
 					selectsStart
 					onChange={(date: Date) => {
 						updateDates({ startDate: date })
-						endRef.current.setFocus()
 					}}
 					minDate={new Date()}
 					filterDate={isAvailable}
@@ -73,7 +67,6 @@ const Calendar = ({
 					id='end'
 					dateFormat='dd/MM/yyyy'
 					placeholderText='End Date'
-					ref={endRef}
 					disabledKeyboardNavigation
 				/>
 			</span>

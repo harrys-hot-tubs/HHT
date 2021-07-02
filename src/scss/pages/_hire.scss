@@ -75,16 +75,16 @@
 .inline-picker.hire {
 	background-color: transparent;
 	color: white;
+	text-align: center;
 }
 
 .date-pickers {
-	font-size: 20pt;
+	font-size: 19pt;
 	display: inline-block;
 	width: 100%;
 }
 
 .postcode-validate-button {
-	height: 100%;
 	border: none !important;
 }
 
@@ -105,5 +105,11 @@
 	.tub-list {
 		flex-direction: column !important;
 		grid-column: span 2;
+	}
+
+	.date-pickers {
+		font-size: 22pt;
+		display: inline-block;
+		width: 100%;
 	}
 }
