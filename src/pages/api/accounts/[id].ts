@@ -16,7 +16,7 @@ import { NextApiResponse } from 'next'
 import mj, { Email } from 'node-mailjet'
 import { hashPassword } from './index'
 
-export const DPO_EMAIL = 'bridges.wood@gmail.com'
+export const DPO_EMAIL = 'harry@harryshottubs.com'
 const mailjet = mj.connect(process.env.MJ_PUBLIC, process.env.MJ_SECRET)
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
