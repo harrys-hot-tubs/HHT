@@ -26,7 +26,7 @@ it('sets the page title', () => {
 describe('postcode field', () => {
 	it('renders all parts', () => {
 		cy.get('[aria-label=postcode]').should('exist')
-		cy.get('[data-testid="postcode-validate"]').should('exist')
+		cy.get('[data-testid=postcode-validate]').should('exist')
 	})
 
 	it('recognises valid postcode', () => {
@@ -60,83 +60,63 @@ describe('postcode field', () => {
 				inRange: true,
 				closest: locations[0],
 			},
-		})
+		}).as('validatePostcode')
 
 		cy.get('[aria-label=postcode]')
 			.as('postcode-field')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate"]').click()
+		cy.get('[data-testid=postcode-validate]').click()
+
+		cy.wait('@validatePostcode')
+
 		cy.get('@postcode-field').should('have.class', 'is-valid')
 	})
 
-	it('recognises postcodes of the wrong format', async () => {
-		const testedPostcode = birmingham
-
-		cy.intercept(
-			'GET',
-			`https://api.postcodes.io/postcodes/${testedPostcode}/validate`,
-			{
-				statusCode: 200,
-				body: {
-					result: { isValid: false },
-				},
-			}
-		)
+	it('recognises postcodes of the wrong format', () => {
+		const testedPostcode = 'BCC67 2DD'
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate]').click()
+		cy.get('[data-testid=postcode-validate]').click()
 
 		cy.get('[role=alert]')
 			.should('be.visible')
 			.should('have.text', 'Postcode is not in the correct format.')
 	})
 
-	it('recognises postcodes that are blocked', async () => {
+	it('recognises postcodes that are blocked', () => {
 		const testedPostcode = 'SE1 1AP'
-
-		cy.intercept(
-			'GET',
-			`https://api.postcodes.io/postcodes/${testedPostcode}/validate`,
-			{
-				statusCode: 200,
-				body: {
-					result: { isValid: false },
-				},
-			}
-		)
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate]').click()
+		cy.get('[data-testid=postcode-validate]').click()
 
 		cy.get('[role=alert]')
 			.should('be.visible')
-			.should('have.text', 'Delivery in your area is subject to change.')
+			.contains('Delivery in your area is subject to change.')
 	})
 
-	it('recognises postcodes that are out of range', async () => {
+	it('recognises postcodes that are out of range', () => {
 		const testedPostcode = birmingham
 
 		cy.intercept('POST', `/api/locations`, {
 			statusCode: 200,
 			body: failedRangeResponse,
-		})
+		}).as('validatePostcode')
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate]').click()
+		cy.get('[data-testid=postcode-validate]').click()
+
+		cy.wait('@validatePostcode')
 
 		cy.get('[role=alert]')
 			.should('be.visible')
-			.should(
-				'have.text',
-				"Sadly we don't currently offer deliveries in your area."
-			)
+			.contains("Sadly we don't currently offer deliveries in your area.")
 	})
 })
 

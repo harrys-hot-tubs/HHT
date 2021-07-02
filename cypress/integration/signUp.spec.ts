@@ -383,6 +383,9 @@ describe('form', () => {
 				}
 			}).as('apiCall')
 
+			cy.intercept('POST', '/api/accounts').as('createAccount')
+			cy.intercept('POST', '/api/auth').as('login')
+
 			cy.get('[data-testid=submit-button]')
 				.as('submitButton')
 				.should('be.disabled')
@@ -407,8 +410,11 @@ describe('form', () => {
 			cy.get('[aria-label=telephone]').type('1-800-654-1984')
 
 			cy.get('@submitButton').should('not.be.disabled').click()
+			cy.wait('@createAccount')
+			cy.wait('@login')
 
-			cy.location('pathname').should('eq', '/dashboard')
+			//! This timeout may need to be longer.
+			cy.location('pathname', { timeout: 5000 }).should('eq', '/dashboard')
 		})
 	})
 

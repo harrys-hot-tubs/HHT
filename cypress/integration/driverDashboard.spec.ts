@@ -11,6 +11,16 @@ import { extractBookingStart } from '@utils/date'
 import { addHours, isSameDay } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
+interface LoadOptions {
+	reload: boolean
+}
+
+const loadPage = (options?: LoadOptions) => {
+	options?.reload ? cy.reload() : cy.visit('/dashboard')
+	cy.wait('@getAccount')
+	cy.wait('@getOrders')
+}
+
 before(() => {
 	cy.task('defaults:db')
 })
@@ -30,22 +40,23 @@ beforeEach(() => {
 	cy.task('generateToken', { index: 1 }).then((token: string) =>
 		cy.setCookie('token', token)
 	)
-	cy.visit('/dashboard')
-	cy.wait('@getOrders')
-	cy.wait('@getAccount')
 })
 
 it('sets the page title', () => {
+	loadPage()
+
 	cy.title().should('equal', 'Dashboard')
 })
 
 it("displays a title indicating the driver's region", () => {
+	loadPage()
+
 	cy.get('h1').should('have.text', `Orders in ${locations[0].name}`)
 })
 
 it('display a card for each upcoming order', () => {
 	setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
-	cy.reload()
+	loadPage()
 
 	cy.get('.order-card').should('be.visible').as('card')
 	cy.get('@card')
@@ -70,9 +81,8 @@ it('display a card for each upcoming order', () => {
 
 it('allows cards to be dragged from one column to another', () => {
 	cy.intercept('POST', `/api/orders/${storedOrder.id}`, { statusCode: 200 })
-
 	setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
-	cy.reload()
+	loadPage()
 
 	cy.get('.order-card').should('be.visible')
 	cy.drag('.order-card', '[data-testid=delivered]').should(
@@ -89,11 +99,17 @@ describe('cards are shown when their date is in range', () => {
 	})
 
 	it('displays in date upcoming deliveries', () => {
-		cy.task('DBInsert', { tableName: 'orders', data: [storedOrder] })
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
 
+		cy.task('DBInsert', { tableName: 'orders', data: [storedOrder] })
 		cy.get('.order-card').should('not.exist')
+
 		setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
-		cy.reload()
+
+		loadPage({ reload: true })
+
 		cy.get('.order-card')
 			.should('be.visible')
 			.parent()
@@ -101,6 +117,10 @@ describe('cards are shown when their date is in range', () => {
 	})
 
 	it('displays in date delivered orders', () => {
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
+
 		cy.task('DBInsert', {
 			tableName: 'orders',
 			data: [{ ...storedOrder, fulfilled: true }],
@@ -108,7 +128,9 @@ describe('cards are shown when their date is in range', () => {
 
 		cy.get('.order-card').should('not.exist')
 		setStorage({ minDate: generateEndDate(), maxDate: generateEndDate() })
-		cy.reload()
+
+		loadPage({ reload: true })
+
 		cy.get('.order-card')
 			.should('be.visible')
 			.parent()
@@ -116,6 +138,10 @@ describe('cards are shown when their date is in range', () => {
 	})
 
 	it('displays in date returned orders', () => {
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
+
 		cy.task('DBInsert', {
 			tableName: 'orders',
 			data: [{ ...storedOrder, fulfilled: true, returned: true }],
@@ -123,7 +149,9 @@ describe('cards are shown when their date is in range', () => {
 
 		cy.get('.order-card').should('not.exist')
 		setStorage({ minDate: generateStartDate(), maxDate: generateEndDate() })
-		cy.reload()
+
+		loadPage({ reload: true })
+
 		cy.get('.order-card')
 			.should('be.visible')
 			.parent()
@@ -132,7 +160,13 @@ describe('cards are shown when their date is in range', () => {
 })
 
 describe('calendar interaction', () => {
+	beforeEach(() => {})
+
 	it('allows the start date to be set', () => {
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
+
 		cy.get('input#start').as('startDate').click()
 		cy.get('div.react-datepicker__today-button').click()
 		cy.get('@startDate').should(
@@ -147,6 +181,10 @@ describe('calendar interaction', () => {
 	})
 
 	it('allows the end date to be set', () => {
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
+
 		cy.get('input#end').as('endDate').click()
 		cy.get('div.react-datepicker__today-button').click()
 		cy.get('@endDate').should(
@@ -161,6 +199,10 @@ describe('calendar interaction', () => {
 	})
 
 	it('persists dates between reloads', () => {
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
+
 		setStorage({ minDate: generateStartDate() })
 		cy.get('input#start').as('startDate').click()
 		cy.get('div.react-datepicker__today-button').click()
@@ -170,7 +212,9 @@ describe('calendar interaction', () => {
 			'value',
 			new Date().toLocaleDateString('en-GB')
 		)
-		cy.reload()
+
+		loadPage({ reload: true })
+
 		cy.get('@startDate').should(
 			'have.attr',
 			'value',
@@ -180,7 +224,10 @@ describe('calendar interaction', () => {
 
 	it('is impossible to mis-order dates', () => {
 		setStorage({ minDate: generateEndDate() })
-		cy.reload()
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
+
 		cy.get('input#end').click()
 		cy.get('div.react-datepicker__today-button').click()
 		cy.get('input#end').should('have.attr', 'value', '')
@@ -201,7 +248,9 @@ describe('modal interactions', () => {
 			tableName: 'orders',
 			data: [storedOrder],
 		})
-		cy.reload()
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
 
 		cy.drag('.order-card', '[data-testid=returned]').should(
 			'contain',
@@ -217,7 +266,9 @@ describe('modal interactions', () => {
 			tableName: 'orders',
 			data: [{ ...storedOrder, fulfilled: true, returned: true }],
 		})
-		cy.reload()
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
 
 		cy.drag('.order-card', '[data-testid=upcoming]').should(
 			'contain',
@@ -233,7 +284,9 @@ describe('modal interactions', () => {
 			tableName: 'orders',
 			data: [storedOrder],
 		})
-		cy.reload()
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
 
 		cy.drag('.order-card', '[data-testid=returned]').should(
 			'contain',
@@ -254,7 +307,9 @@ describe('modal interactions', () => {
 			tableName: 'orders',
 			data: [{ ...storedOrder, fulfilled: true, returned: true }],
 		})
-		cy.reload()
+		cy.visit('/dashboard')
+		cy.wait('@getAccount')
+		cy.wait('@getOrders')
 
 		cy.drag('.order-card', '[data-testid=upcoming]').should(
 			'contain',
@@ -276,17 +331,22 @@ describe('modal interactions', () => {
 					fulfilled: true,
 					returned: false,
 				})
-			})
+				req.continue()
+			}).as('statusChange')
+
 			cy.task('DBInsert', {
 				tableName: 'orders',
 				data: [storedOrder],
 			})
-			cy.reload()
+			cy.visit('/dashboard')
+			cy.wait('@getAccount')
+			cy.wait('@getOrders')
 
 			cy.drag('.order-card', '[data-testid=delivered]').should(
 				'contain',
 				storedOrder.first_name + ' ' + storedOrder.last_name
 			)
+			cy.wait('@statusChange')
 		})
 
 		it('sends a refund request to the API when the refund modal is filled in', () => {
@@ -296,23 +356,28 @@ describe('modal interactions', () => {
 					fulfilled: true,
 					returned: true,
 				})
-			})
+				req.continue()
+			}).as('statusChange')
 			cy.intercept('POST', `/api/refunds/${storedOrder.id}`, (req) => {
 				expect(req.body).to.deep.equal({
 					damaged: true,
 					damage_information: damageDetails,
 				})
+				req.continue()
 			}).as('create-refund')
 			cy.task('DBInsert', {
 				tableName: 'orders',
 				data: [storedOrder],
 			})
-			cy.reload()
+			cy.visit('/dashboard')
+			cy.wait('@getAccount')
+			cy.wait('@getOrders')
 
 			cy.drag('.order-card', '[data-testid=returned]').should(
 				'contain',
 				storedOrder.first_name + ' ' + storedOrder.last_name
 			)
+			cy.wait('@statusChange')
 
 			cy.get('[data-testid=refund-modal]').should('be.visible')
 			cy.get('[data-testid=damage-checkbox]').click()
@@ -327,7 +392,8 @@ describe('modal interactions', () => {
 					fulfilled: false,
 					returned: false,
 				})
-			})
+				req.continue()
+			}).as('statusChange')
 			cy.intercept('DELETE', `/api/refunds/${storedOrder.id}`).as(
 				'delete-refund'
 			)
@@ -344,12 +410,16 @@ describe('modal interactions', () => {
 				tableName: 'fulfilments',
 				data: [{ ...fulfilments[0], status: 'returned' }],
 			})
-			cy.reload()
+			cy.visit('/dashboard')
+			cy.wait('@getAccount')
+			cy.wait('@getOrders')
 
 			cy.drag('.order-card', '[data-testid=upcoming]').should(
 				'contain',
 				storedOrder.first_name + ' ' + storedOrder.last_name
 			)
+
+			cy.wait('@statusChange')
 
 			cy.get('[data-testid=refund-modal]').should('be.visible')
 			cy.get('[data-testid=submit-button]').click()

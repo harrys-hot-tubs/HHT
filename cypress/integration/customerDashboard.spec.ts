@@ -67,6 +67,9 @@ describe('GDPR request', () => {
 	})
 
 	it('disables the GDPR request button for an account with an active request', () => {
+		cy.intercept('GET', `/api/accounts/${accounts[2].account_id}`).as(
+			'getAccountInfo'
+		)
 		cy.task('DBClear', { tableName: 'accounts' })
 		cy.task('DBInsert', {
 			tableName: 'accounts',
@@ -77,6 +80,9 @@ describe('GDPR request', () => {
 				},
 			] as AccountDB[],
 		})
+
+		cy.reload()
+		cy.wait('@getAccountInfo')
 
 		cy.get('[data-testid=gdpr-request-button]').should('be.disabled')
 	})

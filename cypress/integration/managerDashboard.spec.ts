@@ -11,6 +11,9 @@ before(() => {
 
 beforeEach(() => {
 	cy.intercept('GET', '/api/orders').as('getOrders')
+	cy.intercept('GET', '/api/refunds').as('getRefunds')
+	cy.intercept('GET', '/api/fulfilments').as('getFulfilments')
+	cy.intercept('GET', '/api/locations').as('getLocations')
 
 	cy.clearCookies()
 	cy.clearLocalStorage()
@@ -24,8 +27,10 @@ beforeEach(() => {
 		cy.setCookie('token', token)
 	)
 	cy.visit('/dashboard')
-
 	cy.wait('@getOrders')
+	cy.wait('@getRefunds')
+	cy.wait('@getFulfilments')
+	cy.wait('@getLocations')
 })
 
 it('sets the page title', () => {
@@ -33,25 +38,22 @@ it('sets the page title', () => {
 })
 
 it('displays loading to the user whilst loading', () => {
+	cy.reload()
 	cy.get('[data-testid=loading-indicator]').should('exist')
 })
 
 it('allows the user to log out', () => {
-	cy.intercept('GET', '/api/refunds').as('refunds')
-	cy.intercept('GET', '/api/fulfilments').as('fulfilments')
-	cy.intercept('GET', '/api/locations').as('locations')
-
-	cy.wait('@refunds')
-	cy.wait('@fulfilments')
-	cy.wait('@locations')
-
 	cy.get('[data-testid=logout-button]').click()
 	cy.location('pathname').should('eq', '/login')
 })
 
 describe('refund manager', () => {
 	beforeEach(() => {
+		cy.intercept('GET', '/api/refunds').as('getRefunds')
 		cy.task('DBInsert', { tableName: 'refunds', data: [refunds[0]] })
+
+		cy.reload()
+		cy.wait('@getRefunds')
 	})
 
 	it('shows existing refunds', () => {
@@ -69,7 +71,13 @@ describe('refund manager', () => {
 	})
 
 	it('allows refunds to be dismissed', () => {
+		cy.intercept('POST', `/api/refunds/${refunds[0].order_id}`).as(
+			'settleRefund'
+		)
+
 		cy.get('[data-testid=settle-button]').click()
+
+		cy.wait('@settleRefund')
 		cy.get('.card.refund').should('not.exist')
 		cy.get('.refund-manager')
 			.children('h5')
@@ -98,6 +106,8 @@ describe('upcoming orders', () => {
 
 describe('recent changes', () => {
 	beforeEach(() => {
+		cy.intercept('GET', '/api/fulfilments').as('getFulfilments')
+
 		const yesterday = new Date()
 		const today = new Date()
 
@@ -106,6 +116,9 @@ describe('recent changes', () => {
 			tableName: 'fulfilments',
 			data: [{ ...fulfilments[1], created_at: yesterday.toISOString() }],
 		})
+
+		cy.reload()
+		cy.wait('@getFulfilments', { timeout: 10000 })
 	})
 
 	it('shows recent changes when locations are selected', () => {
