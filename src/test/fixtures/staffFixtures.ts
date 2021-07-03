@@ -1,4 +1,4 @@
-import { driverAccount } from '@fixtures/accountsFixtures'
+import { driverAccount } from '@fixtures/accountFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { StaffDB } from '@typings/db/Staff'
 

@@ -5,7 +5,7 @@ import { DraggableLocation } from 'react-beautiful-dnd'
 
 export type RefundModalVersion = 'ADD_REFUND' | 'REMOVE_REFUND'
 
-interface RefundModalState {
+export interface RefundModalState {
 	show: boolean
 	modalVersion: RefundModalVersion
 	lastMoved: PopulatedOrder

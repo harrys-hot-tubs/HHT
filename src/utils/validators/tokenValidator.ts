@@ -8,6 +8,7 @@ const validateToken = (token: string): [boolean, TokenError] => {
 		jwt.verify(token, process.env.TOKEN_SECRET)
 		return [true, null]
 	} catch (error) {
+		console.error(error.message)
 		switch (error.name) {
 			case 'TokenExpiredError':
 				return [false, 'expired']

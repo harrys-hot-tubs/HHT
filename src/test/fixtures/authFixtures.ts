@@ -1,7 +1,7 @@
-import { driverAccount } from '@fixtures/accountsFixtures'
+import { driverAccount } from '@fixtures/accountFixtures'
 import { TokenAccount } from '@typings/api/Auth'
+import { AccountDB } from '@typings/db/Account'
 import jwt from 'jsonwebtoken'
-import { AccountDB } from '../../typings/db/Account'
 
 export const signedString = jwt.sign('test', process.env.TOKEN_SECRET)
 export const expiredObject = jwt.sign(

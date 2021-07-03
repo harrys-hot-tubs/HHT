@@ -1,0 +1,18 @@
+.password-field {
+	display: flex;
+}
+
+.eye-icon-container {
+	user-select: none;
+	box-sizing: border-box;
+	width: 20px;
+}
+
+.eye-icon-container:hover {
+	cursor: pointer;
+}
+
+.eye-icon {
+	display: inline;
+	height: 100%;
+}

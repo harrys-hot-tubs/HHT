@@ -1,66 +1,39 @@
-import React, { MouseEventHandler, ReactNode } from 'react'
-import { Spinner } from 'react-bootstrap'
+import React from 'react'
+import { Button, ButtonProps, Spinner } from 'react-bootstrap'
+import { BsPrefixRefForwardingComponent } from 'react-bootstrap/esm/helpers'
 
-type Type = 'button' | 'submit' | 'reset'
-
-interface ComponentProps {
-	id?: string
-	className?: string
+interface ComponentProps extends ButtonProps {
 	/**
 	 * Whether the spinner is active.
 	 */
 	status: boolean
-	type?: Type
-	value?: string
-	children: ReactNode
 	/**
 	 * The text to be displayed when the spinner is active.
 	 */
 	activeText: string
-	disabled?: boolean
-	onClick?: MouseEventHandler<HTMLElement>
-	'data-testid'?: string
 }
 
 /**
  * Generic button that allows async actions to be performed, while keeping the user updated, when it is clicked.
  */
-const SpinnerButton = ({
-	id,
-	className = 'button',
-	status,
-	type = 'button',
-	value,
-	children,
-	activeText,
-	disabled,
-	onClick,
-	'data-testid': dataTestID,
-}: ComponentProps) => (
-	<button
-		id={id}
-		type={type}
-		value={value}
-		disabled={disabled || status}
-		onClick={onClick}
-		className={className}
-		data-testid={dataTestID}
-	>
-		{status ? (
-			<React.Fragment>
-				<span>{activeText} </span>
-				<Spinner
-					animation='border'
-					role='status'
-					size='sm'
-					aria-busy='true'
-					aria-label='spinner'
-				/>
-			</React.Fragment>
-		) : (
-			<>{children}</>
-		)}
-	</button>
-)
+const SpinnerButton: BsPrefixRefForwardingComponent<'button', ComponentProps> =
+	({ status, activeText, children, ...props }) => (
+		<Button disabled={props.disabled || status} {...props}>
+			{status ? (
+				<React.Fragment>
+					<span>{activeText} </span>
+					<Spinner
+						animation='border'
+						role='status'
+						size='sm'
+						aria-busy='true'
+						aria-label='spinner'
+					/>
+				</React.Fragment>
+			) : (
+				<>{children}</>
+			)}
+		</Button>
+	)
 
 export default SpinnerButton

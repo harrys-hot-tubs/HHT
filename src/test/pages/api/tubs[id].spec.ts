@@ -1,9 +1,9 @@
 import { locations } from '@fixtures/locationFixtures'
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/tubs/[id]'
-import { PriceResponse } from '@typings/api/Checkout'
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
+import { PriceResponse } from '@typings/api/Payment'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'
 import { NextApiResponse } from 'next'
@@ -11,7 +11,7 @@ import { createMocks } from 'node-mocks-http'
 
 beforeAll(async () => {
 	await connection<LocationDB>('locations').insert(locations)
-	await connection<TubDB>('tubs').insert(mixedSizes)
+	await connection<TubDB>('tubs').insert(tubs)
 })
 
 describe('get', () => {
@@ -19,13 +19,13 @@ describe('get', () => {
 		const { req, res } = createMocks({
 			method: 'GET',
 			query: {
-				id: mixedSizes[0].tub_id,
+				id: tubs[0].tub_id,
 			},
 		})
 
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
-		expect(JSON.parse(res._getData())).toEqual(mixedSizes[0])
+		expect(JSON.parse(res._getData())).toEqual(tubs[0])
 	})
 
 	it('fails to return non-existent tub', async () => {
@@ -49,7 +49,7 @@ describe('post', () => {
 		>({
 			method: 'POST',
 			query: {
-				id: mixedSizes[0].tub_id,
+				id: tubs[0].tub_id,
 			},
 			body: { startDate: '2021-03-01', endDate: '2021-03-03' },
 		})
@@ -70,7 +70,7 @@ describe('post', () => {
 		>({
 			method: 'POST',
 			query: {
-				id: mixedSizes[0].tub_id,
+				id: tubs[0].tub_id,
 			},
 			body: { startDate: '2021-03-01', endDate: '2021-03-04' },
 		})

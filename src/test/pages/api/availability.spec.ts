@@ -4,10 +4,10 @@ import {
 } from '@fixtures/availabilityFixtures'
 import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/availability'
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { BookingDB } from '@typings/db/Booking'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'
@@ -16,7 +16,7 @@ import { createMocks } from 'node-mocks-http'
 
 beforeAll(async () => {
 	await connection<LocationDB>('locations').insert(locations)
-	await connection<TubDB>('tubs').insert(mixedSizes)
+	await connection<TubDB>('tubs').insert(tubs)
 	await connection<BookingDB>('bookings').insert(bookings)
 })
 
@@ -30,7 +30,7 @@ describe('post', () => {
 		expect(res._getStatusCode()).toBe(200)
 		expect(JSON.parse(res._getData())).toEqual({
 			available: true,
-			tubs: mixedSizes,
+			tubs: tubs.filter((tub) => tub.location_id === locations[0].location_id),
 		})
 	})
 
@@ -64,7 +64,7 @@ describe('post', () => {
 		expect(res._getStatusCode()).toBe(200)
 		expect(JSON.parse(res._getData())).toEqual({
 			available: true,
-			tubs: mixedSizes.filter((tub) => tub.tub_id <= 1),
+			tubs: tubs.filter((tub) => tub.tub_id <= 1),
 		})
 
 		await connection<TubDB>('tubs')

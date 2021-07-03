@@ -1,14 +1,17 @@
 import { bir } from '@fixtures/coordinateFixtures'
 import { locations } from '@fixtures/locationFixtures'
-import { birmingham, failedRangeResponse } from '@fixtures/postcodeFixtures'
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
+import { birmingham } from '@fixtures/postcodeFixtures'
+import { failedRangeResponse } from '@fixtures/rangeFixtures'
+import { addHours, addMonths, format, isSameDay } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
-const mock = new MockAdapter(axios)
-
 beforeEach(() => {
-	setStorage({ consent: 'true' })
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
 	cy.visit('/hire')
 })
 
@@ -23,95 +26,149 @@ it('sets the page title', () => {
 describe('postcode field', () => {
 	it('renders all parts', () => {
 		cy.get('[aria-label=postcode]').should('exist')
-		cy.get('[data-testid="postcode-validate"]').should('exist')
+		cy.get('[data-testid=postcode-validate]').should('exist')
 	})
 
 	it('recognises valid postcode', () => {
 		const testedPostcode = birmingham
 
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}/validate`)
-			.reply(200, {
-				result: { isValid: true },
-			})
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}`)
-			.reply(200, {
-				result: { latitude: bir.latitude, longitude: bir.longitude },
-			})
-		mock.onPost(`/api/locations`).reply(200, {
-			inRange: true,
-			closest: locations[0],
-		})
+		cy.intercept(
+			'GET',
+			`https://api.postcodes.io/postcodes/${testedPostcode}/validate`,
+			{
+				statusCode: 200,
+				body: {
+					result: { isValid: true },
+				},
+			}
+		)
+
+		cy.intercept(
+			'GET',
+			`https://api.postcodes.io/postcodes/${testedPostcode}`,
+			{
+				statusCode: 200,
+				body: {
+					result: { latitude: bir.latitude, longitude: bir.longitude },
+				},
+			}
+		)
+
+		cy.intercept('POST', `/api/locations`, {
+			statusCode: 200,
+			body: {
+				inRange: true,
+				closest: locations[0],
+			},
+		}).as('validatePostcode')
 
 		cy.get('[aria-label=postcode]')
+			.as('postcode-field')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate"]').click()
-		cy.get('[role=alert]').should('not.be.visible')
+		cy.get('[data-testid=postcode-validate]').click()
+
+		cy.wait('@validatePostcode')
+
+		cy.get('@postcode-field').should('have.class', 'is-valid')
 	})
 
-	it('recognises postcodes of the wrong format', async () => {
-		const testedPostcode = birmingham
-
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}/validate`)
-			.reply(200, {
-				result: { isValid: false },
-			})
+	it('recognises postcodes of the wrong format', () => {
+		const testedPostcode = 'BCC67 2DD'
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate]').click()
+		cy.get('[data-testid=postcode-validate]').click()
 
 		cy.get('[role=alert]')
 			.should('be.visible')
 			.should('have.text', 'Postcode is not in the correct format.')
 	})
 
-	it('recognises postcodes that are blocked', async () => {
+	it('recognises postcodes that are blocked', () => {
 		const testedPostcode = 'SE1 1AP'
 
-		mock
-			.onGet(`https://api.postcodes.io/postcodes/${testedPostcode}/validate`)
-			.reply(200, {
-				result: { isValid: false },
-			})
-
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate]').click()
+		cy.get('[data-testid=postcode-validate]').click()
 
 		cy.get('[role=alert]')
 			.should('be.visible')
-			.should('have.text', 'Delivery in your area is subject to change.')
+			.contains('Delivery in your area is subject to change.')
 	})
 
-	it('recognises postcodes that are out of range', async () => {
+	it('recognises postcodes that are out of range', () => {
 		const testedPostcode = birmingham
 
-		mock.onPost('/api/locations').reply(200, failedRangeResponse)
+		cy.intercept('POST', `/api/locations`, {
+			statusCode: 200,
+			body: failedRangeResponse,
+		}).as('validatePostcode')
 
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid="postcode-validate]').click()
+		cy.get('[data-testid=postcode-validate]').click()
+
+		cy.wait('@validatePostcode')
 
 		cy.get('[role=alert]')
 			.should('be.visible')
-			.should(
-				'have.text',
-				"Sadly we don't currently offer deliveries in your area."
-			)
+			.contains("Sadly we don't currently offer deliveries in your area.")
 	})
 })
 
 describe('date picker', () => {
-	//TODO add date picker tests.
-	it('lets the user pick dates', () => {})
-	it('lets the user change months', () => {})
-	it('lets the user type the dates they want', () => {})
-	it('notifies the user ', () => {})
+	const date = new Date('2021-07-05')
+
+	beforeEach(() => {
+		cy.clock(date) // Avoid problem of testing on weekends.
+	})
+
+	it('lets the user pick dates', () => {
+		cy.get('input#start').as('startDate').click()
+		cy.get('div.react-datepicker__today-button').click()
+		cy.get('@startDate').should(
+			'have.attr',
+			'value',
+			date.toLocaleDateString('en-GB')
+		)
+
+		cy.getLocalStorage('startDate').then((startDate) => {
+			expect(isSameDay(new Date(startDate), date)).to.be.true
+		})
+	})
+
+	it('lets the user change months', () => {
+		cy.get('input#start').as('startDate').click()
+		cy.get('div.react-datepicker__today-button').click()
+		cy.get('@startDate').click()
+		cy.get('.react-datepicker__current-month').should(
+			'contain.text',
+			format(date, 'MMMM')
+		)
+		cy.get('[aria-label="Next Month"]').click()
+		cy.get('.react-datepicker__current-month').should(
+			'contain.text',
+			format(addMonths(date, 1), 'MMMM')
+		)
+
+		cy.get('@startDate').should(
+			'have.attr',
+			'value',
+			date.toLocaleDateString('en-GB')
+		)
+	})
+
+	it('lets the user type the dates they want', () => {
+		cy.get('input#start').as('startDate').click()
+
+		cy.get('@startDate').type(date.toLocaleDateString('en-GB'))
+
+		cy.getLocalStorage('startDate').then((startDate) => {
+			expect(isSameDay(new Date(startDate), date)).to.be.true
+		})
+	})
 })

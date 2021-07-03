@@ -1,10 +1,11 @@
 import {
-	seventeenthDecemberMoment,
+	seventeenthDecemberDate,
 	twentySecondApril,
-	twentySecondAprilMoment,
+	twentySecondAprilDate,
 } from '@fixtures/dateFixtures'
 import useStoredDate from '@hooks/useStoredDate'
 import { act, renderHook } from '@testing-library/react-hooks'
+import { isSameDay } from 'date-fns'
 
 const name = 'test'
 
@@ -18,7 +19,7 @@ it('accesses stored data if available', () => {
 
 	const { result } = renderHook(() => useStoredDate(name))
 	const [value] = result.current
-	expect(twentySecondAprilMoment.isSame(value)).toBe(true)
+	expect(isSameDay(twentySecondAprilDate, value)).toBe(true)
 })
 
 it('defaults to the fallback if no data is available', () => {
@@ -28,7 +29,7 @@ it('defaults to the fallback if no data is available', () => {
 })
 
 it('sets stored data when updated', () => {
-	const storedValue = seventeenthDecemberMoment
+	const storedValue = seventeenthDecemberDate
 
 	const { result } = renderHook(() => useStoredDate(name))
 	act(() => {
@@ -42,7 +43,7 @@ it('sets stored data when updated', () => {
 })
 
 it('sets active data when updated', () => {
-	const storedValue = twentySecondAprilMoment
+	const storedValue = twentySecondAprilDate
 
 	const { result } = renderHook(() => useStoredDate(name))
 	act(() => {
@@ -53,12 +54,13 @@ it('sets active data when updated', () => {
 })
 
 it('overwrites stored data when updated', () => {
-	const storedValue = seventeenthDecemberMoment.toISOString()
-	const nextValue = twentySecondAprilMoment
+	const storedValue = seventeenthDecemberDate.toISOString()
+	const nextValue = twentySecondAprilDate
 	localStorage.setItem(name, storedValue)
 
 	const { result } = renderHook(() => useStoredDate(name))
-	expect(seventeenthDecemberMoment.isSame(result.current[0])).toBe(true)
+	const [value] = result.current
+	expect(isSameDay(seventeenthDecemberDate, value)).toBe(true)
 	act(() => {
 		result.current[1](nextValue)
 	})

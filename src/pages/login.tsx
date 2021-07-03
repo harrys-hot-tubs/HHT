@@ -13,7 +13,7 @@ const Login = () => {
 			<Head>
 				<title>Login</title>
 			</Head>
-			<div>
+			<div className='login-form-container'>
 				<h1>Login</h1>
 				<LoginForm />
 			</div>

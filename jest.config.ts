@@ -1,4 +1,6 @@
-const config = {
+import type { Config } from '@jest/types'
+
+const config: Config.InitialOptions = {
 	clearMocks: false,
 	resetMocks: false,
 	coverageDirectory: 'coverage',
@@ -23,7 +25,6 @@ const config = {
 			transform: {
 				'^.+\\.(js|ts)$': 'ts-jest',
 				'^.+\\.(jsx|tsx)$': 'babel-jest',
-				'^.+\\.svg$': 'jest-svg-transformer',
 			},
 			moduleNameMapper: {
 				'@components/(.*)$': '<rootDir>/src/components/$1',

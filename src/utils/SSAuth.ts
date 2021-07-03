@@ -1,13 +1,15 @@
+import { TokenAccount } from '@typings/api/Auth'
 import { AccountDB, Role } from '@typings/db/Account'
 import { connector } from '@utils/db'
 import validateToken, {
 	isTokenAccount,
 	TokenError,
 } from '@utils/validators/tokenValidator'
+import { IncomingMessage } from 'http'
 import jwt from 'jsonwebtoken'
+import { Knex } from 'knex'
 import { GetServerSidePropsContext } from 'next'
 import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils'
-import { IncomingMessage } from 'node:http'
 import { ParsedUrlQuery } from 'querystring'
 
 export type SSRRequest = IncomingMessage & {
@@ -46,38 +48,72 @@ export const isAuthorised = async (
 	token: string,
 	permittedRoles: Role[]
 ): Promise<AuthResponse> => {
-	if (!token) return { authorised: false, error: 'missing' }
+	try {
+		const payload = parseToken(token)
+		const account = await fetchAccount(payload.account_id)
+		if (!accountIsPermitted(permittedRoles, account.account_roles))
+			return { authorised: false, error: 'forbidden' }
+
+		return { authorised: true, payload: account }
+	} catch (error) {
+		console.error(error.message)
+		switch (error.message) {
+			case 'expired':
+			case 'malformed':
+			case 'missing':
+			case 'invalid':
+			case 'forbidden':
+				return { authorised: false, error: error.message }
+			default:
+				return { authorised: false, error: 'invalid' }
+		}
+	}
+}
+
+/**
+ * Transforms a string into a tokenised account, if the string is a valid token.
+ *
+ * @param token The string to be turned into a tokenised account, if it is valid.
+ * @returns The account represented by the token if it is valid.
+ * @throws An error describing how the token is not valid.
+ */
+export const parseToken = (token: string): TokenAccount => {
+	if (!token) throw new Error('missing')
 
 	const [isValid, error] = validateToken(token)
-	if (!isValid) return { authorised: false, error }
+	if (!isValid) throw new Error(error)
 
 	const payload: unknown = jwt.decode(token)
 
-	if (!isTokenAccount(payload)) return { authorised: false, error: 'invalid' }
+	if (!isTokenAccount(payload)) throw new Error('invalid')
 
-	const account = await fetchAccount(payload.account_id)
-
-	if (!accountIsPermitted(permittedRoles, account.account_roles))
-		return { authorised: false, error: 'forbidden' }
-
-	return { authorised: true, payload: account }
+	return payload
 }
 
 export const fetchAccount = async (
 	accountID: number
 ): Promise<Omit<AccountDB, 'password_hash'>> => {
-	const connection = connector()()
-	const rawAccount = await connection<AccountDB>('accounts')
-		.select()
-		.where('account_id', '=', accountID)
-		.first()
-	delete rawAccount.password_hash
-	await connection.destroy()
-	return {
-		...rawAccount,
-		account_roles: convertRoles(
-			(rawAccount.account_roles as unknown) as string
-		),
+	let connection: Knex
+	try {
+		connection = connector()()
+		const rawAccount = await connection<AccountDB>('accounts')
+			.select()
+			.where('account_id', '=', accountID)
+			.first()
+
+		if (!rawAccount) throw new Error('Account does not exist.')
+
+		delete rawAccount.password_hash
+		return {
+			...rawAccount,
+			account_roles: convertRoles(
+				rawAccount.account_roles as unknown as string
+			),
+		}
+	} catch (error) {
+		throw error
+	} finally {
+		await connection.destroy()
 	}
 }
 
@@ -104,6 +140,12 @@ export const accountIsPermitted = (
 	return accountRoles.some((role) => permittedRoles.includes(role))
 }
 
+/**
+ * Checks whether a given account has a given role.
+ * @param account The account to be checked.
+ * @param role The role the account is to be checked against.
+ * @returns true if the account has the role, false otherwise.
+ */
 export const hasRole = (
 	{ account_roles }: Pick<AccountDB, 'account_roles'>,
 	role: Role

@@ -1,20 +1,26 @@
 import { bookings } from '@fixtures/bookingFixtures'
 import { locations } from '@fixtures/locationFixtures'
 import { orderRequest, storedOrder } from '@fixtures/orderFixtures'
-import { mixedSizes } from '@fixtures/tubsFixtures'
+import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import handler from '@pages/api/orders/index'
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
+import { CreateOrderRequest } from '@typings/api/Order'
 import { BookingDB } from '@typings/db/Booking'
 import { LocationDB } from '@typings/db/Location'
 import { OrderDB } from '@typings/db/Order'
 import { TubDB } from '@typings/db/Tub'
 import { NextApiResponse } from 'next'
 import { createMocks } from 'node-mocks-http'
+import { Stripe } from 'stripe'
+
+const stripe: Stripe = new Stripe(process.env.STRIPE_SECRET, {
+	apiVersion: '2020-08-27',
+})
 
 beforeAll(async () => {
 	await connection<LocationDB>('locations').insert(locations)
-	await connection<TubDB>('tubs').insert(mixedSizes)
+	await connection<TubDB>('tubs').insert(tubs)
 })
 
 describe('get', () => {
@@ -36,7 +42,7 @@ describe('get', () => {
 			{
 				...bookings[0],
 				...storedOrder,
-				...mixedSizes[0],
+				...tubs[0],
 				payment_intent_id: null,
 			},
 		])
@@ -46,14 +52,23 @@ describe('get', () => {
 describe('post', () => {
 	it('adds an order', async () => {
 		await connection<OrderDB[]>('orders').del()
-		await connection<BookingDB[]>('bookings').del()
+		const { id } = await stripe.paymentIntents.create({
+			amount: 1099,
+			currency: 'gbp',
+			payment_method_types: ['card'],
+		})
 		const { req, res } = createMocks<ConnectedRequest, NextApiResponse>({
 			method: 'POST',
-			body: orderRequest,
+			body: {
+				...orderRequest,
+				paymentIntentID: id,
+			} as CreateOrderRequest,
 		})
 		await handler(req, res)
 		expect(res._getStatusCode()).toBe(200)
 		expect(JSON.parse(res._getData())).toEqual({ added: true })
+
+		await stripe.paymentIntents.cancel(id)
 	})
 })
 

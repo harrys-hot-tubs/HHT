@@ -4,8 +4,8 @@ export default class Coordinate {
 	/**
 	 * Radius of the Earth in km.
 	 */
-	static R = 6371e3
-	static client = new Client({})
+	private static R = 6371e3
+	private static client = new Client({})
 	public latitude: number
 	public longitude: number
 
@@ -87,7 +87,8 @@ export default class Coordinate {
 				},
 			})
 			return Number(response.data.rows[0].elements[0].duration.value) / 60
-		} catch (e) {
+		} catch (error) {
+			console.error(error.message)
 			return Infinity
 		}
 	}

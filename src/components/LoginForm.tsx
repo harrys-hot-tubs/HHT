@@ -1,10 +1,13 @@
 import SpinnerButton from '@components/SpinnerButton'
-import { AuthRequest, AuthResponse } from '@typings/api/Auth'
+import { AuthRequest } from '@typings/api/Auth'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Form } from 'react-bootstrap'
+import Alert from './Alert'
+import PasswordField from './PasswordField'
 
 /**
  * Form used by the user to login to the application.
@@ -13,23 +16,27 @@ const LoginForm = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState(undefined)
 	const router = useRouter()
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault()
 		event.stopPropagation()
 		try {
-			const params: AuthRequest = { email: email.toLowerCase(), password }
+			setError(undefined)
 			setLoading(true)
-			const res = await axios.post<AuthRequest, AuthResponse>(
-				'/api/auth',
-				params
-			)
-			const { token } = res.data as AuthResponse
-			router.push('/dashboard')
+			const {
+				data: { token },
+			} = await axios.post<{ token: string }>('/api/auth', {
+				email,
+				password,
+			} as AuthRequest)
+
 			Cookies.set('token', token)
-		} catch (e) {
-			console.error(e)
+			router.push('/dashboard')
+		} catch (error) {
+			console.error(error.message)
+			setError('Email address and password do not match.')
 		} finally {
 			setLoading(false)
 		}
@@ -37,6 +44,7 @@ const LoginForm = () => {
 
 	return (
 		<Form onSubmit={handleSubmit}>
+			<Alert error={error} />
 			<Form.Group>
 				<Form.Label>Email Address</Form.Label>
 				<Form.Control
@@ -49,14 +57,16 @@ const LoginForm = () => {
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>Password</Form.Label>
-				<Form.Control
+				<PasswordField
 					aria-label='password'
 					required
-					type='password'
 					autoComplete='current-password'
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 				/>
+				<Form.Text>
+					<Link href='/reset'>I forgot my password</Link>
+				</Form.Text>
 			</Form.Group>
 			<SpinnerButton
 				className='button'

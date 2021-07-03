@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { RefundDB } from '@typings/db/Refund'
 import db from '@utils/db'
 import { getToken, hasRole, isAuthorised } from '@utils/SSAuth'
@@ -7,27 +7,33 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		case 'DELETE':
-			return await remove(req, res)
+			return remove(req, res)
 		default:
 			res.setHeader('Allow', ['POST', 'DELETE'])
 			res.status(405).end('Method not allowed.')
 	}
 }
 
-const post = async (req: ConnectedRequest, res: NextApiResponse) => {
+const post = async (
+	req: ConnectedRequest<
+		Omit<RefundDB, 'account_id' | 'order_id'> | Pick<RefundDB, 'settled'>
+	>,
+	res: NextApiResponse
+) => {
 	const {
 		db,
 		query: { id },
+		body,
 	} = req
 	const token = getToken(req)
-	const status = await isAuthorised(token, ['driver', 'manager'])
+	const status = await isAuthorised(token, ['driver', 'manager']) // ! This could cause unexpected behaviour for accounts with multiple roles.
 	if (status.authorised) {
 		const { payload: account } = status
 
 		if (hasRole(account, 'driver')) {
-			const refundDetails: Omit<RefundDB, 'account_id' | 'order_id'> = req.body
+			const refundDetails = body as Omit<RefundDB, 'account_id' | 'order_id'>
 			const driver_id = account.account_id
 			try {
 				const inserted = await db<RefundDB>('refunds').insert(
@@ -39,30 +45,35 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 					},
 					'*'
 				)
-				return res.status(200).json({ inserted: inserted[0] })
-			} catch (e) {
-				res.status(500).json(e)
+				return res.status(200).json({ inserted: inserted })
+			} catch (error) {
+				console.error(error.message)
+				return res.status(500).json(error)
 			}
 		}
 
 		if (hasRole(account, 'manager')) {
-			const { settled }: Pick<RefundDB, 'settled'> = req.body
+			const { settled } = body as Pick<RefundDB, 'settled'>
 			const manager_id = account.account_id
 			try {
 				const updated = await db<RefundDB>('refunds')
-					.update({
-						account_id: manager_id,
-						settled,
-					})
+					.update(
+						{
+							account_id: manager_id,
+							settled,
+						},
+						'*'
+					)
 					.where('order_id', '=', id as string)
 
-				return res.status(200).json({ updated: updated[0] })
-			} catch (e) {
-				res.status(500).json(e)
+				return res.status(200).json({ updated: updated })
+			} catch (error) {
+				console.error(error.message)
+				return res.status(500).json(error)
 			}
 		}
 	}
-	res.status(400).end()
+	res.status(401).end()
 }
 
 const remove = async (req: ConnectedRequest, res: NextApiResponse) => {
@@ -78,11 +89,12 @@ const remove = async (req: ConnectedRequest, res: NextApiResponse) => {
 				.del('*')
 				.where('order_id', '=', id)
 			return res.status(200).json({ removed })
-		} catch (e) {
-			res.status(500).json(e)
+		} catch (error) {
+			console.error(error.message)
+			res.status(500).json(error)
 		}
 	}
-	res.status(400).end()
+	res.status(401).end()
 }
 
 export default db()(handler)

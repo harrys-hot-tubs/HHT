@@ -1,19 +1,20 @@
+import { driverAccount } from '@fixtures/accountFixtures'
 import {
 	expiredObject,
 	inDateAccountToken,
 	nonExpiredObject,
 } from '@fixtures/authFixtures'
+import { cleanupDatabase, connection } from '@helpers/DBHelper'
 import { AccountDB, Role } from '@typings/db/Account'
 import handleSSAuth, {
 	accountIsPermitted,
 	AuthResponse,
 	getToken,
+	hasRole,
 	SSRRequest,
 } from '@utils/SSAuth'
 import { GetServerSidePropsContext } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { driverAccount } from '../test/fixtures/accountsFixtures'
-import { cleanupDatabase, connection } from '../test/helpers/DBHelper'
 
 describe('getToken', () => {
 	it('retrieves token if it exists', () => {
@@ -179,5 +180,28 @@ describe('accountIsPermitted', () => {
 		allRoles.forEach((role) => {
 			expect(accountIsPermitted(['*'], [role])).toBe(true)
 		})
+	})
+})
+
+describe('hasRole', () => {
+	it('identifies an account with a role', () => {
+		const roles: Pick<AccountDB, 'account_roles'> = {
+			account_roles: ['driver'],
+		}
+		expect(hasRole(roles, 'driver')).toBeTruthy()
+	})
+
+	it('identifies an account without a role', () => {
+		const roles: Pick<AccountDB, 'account_roles'> = {
+			account_roles: ['driver'],
+		}
+		expect(hasRole(roles, 'customer')).toBeFalsy()
+	})
+
+	it('returns false for a non-existent role', () => {
+		const roles = {
+			account_roles: ['swimmer'],
+		} as unknown as Pick<AccountDB, 'account_roles'>
+		expect(hasRole(roles, 'customer')).toBeFalsy()
 	})
 })

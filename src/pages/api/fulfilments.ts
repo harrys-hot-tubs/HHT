@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { FulfilmentDB } from '@typings/db/Fulfilment'
 import db from '@utils/db'
 import { NextApiResponse } from 'next'
@@ -6,7 +6,7 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'GET':
-			return await get(req, res)
+			return get(req, res)
 		default:
 			res.setHeader('Allow', 'GET')
 			res.status(405).end('Method not allowed.')
@@ -31,8 +31,9 @@ const get = async (
 			)
 			.select()
 		return res.status(200).json(mostRecentFulfilments)
-	} catch (e) {
-		return res.status(400).json(e)
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json(error)
 	}
 }
 

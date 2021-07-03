@@ -1,7 +1,7 @@
 import useCalendar from '@hooks/useCalendar'
 import { jest } from '@jest/globals'
 import { act, renderHook } from '@testing-library/react-hooks'
-import moment from 'moment'
+import { isSameDay } from 'date-fns'
 
 const startDateName = 'startDate'
 const endDateName = 'endDate'
@@ -19,8 +19,8 @@ it('accesses stored data if available', () => {
 
 	const { result } = renderHook(() => useCalendar())
 	const { startDate, endDate } = result.current
-	expect(startDate.isSame(moment(storedStartDate))).toBe(true)
-	expect(endDate.isSame(moment(storedEndDate))).toBe(true)
+	expect(isSameDay(startDate, new Date(storedStartDate))).toBe(true)
+	expect(isSameDay(endDate, new Date(storedEndDate))).toBe(true)
 })
 
 it('defaults to the fallback if no data is available', () => {
@@ -31,8 +31,8 @@ it('defaults to the fallback if no data is available', () => {
 })
 
 it('sets values when updated', () => {
-	const newStartDate = moment('2021-02-03')
-	const newEndDate = moment('2021-02-06')
+	const newStartDate = new Date('2021-02-03')
+	const newEndDate = new Date('2021-02-06')
 
 	const { result } = renderHook(() => useCalendar())
 	act(() => {
@@ -48,45 +48,5 @@ it('sets values when updated', () => {
 	expect(localStorage.setItem).toHaveBeenCalledWith(
 		endDateName,
 		newEndDate.toISOString()
-	)
-})
-
-it('rejects weekends', () => {
-	const storedStartDate = '2021-01-04'
-	const weekendInRange = '2021-01-09'
-	localStorage.setItem(startDateName, storedStartDate)
-
-	const { result } = renderHook(() => useCalendar())
-	act(() => {
-		result.current.updateDates({
-			startDate: null,
-			endDate: moment(weekendInRange),
-		})
-	})
-
-	expect(result.current.endDate?.isSame(moment(weekendInRange))).toBeFalsy()
-	expect(localStorage.setItem).not.toHaveBeenCalledWith(
-		endDateName,
-		moment(weekendInRange).toISOString()
-	)
-})
-
-it('ensures bookings are not too short', () => {
-	const storedEndDate = '2021-01-05'
-	const tooCloseDate = '2021-01-04'
-	localStorage.setItem(endDateName, storedEndDate)
-
-	const { result } = renderHook(() => useCalendar())
-	act(() => {
-		result.current.updateDates({
-			startDate: moment(tooCloseDate),
-			endDate: null,
-		})
-	})
-
-	expect(result.current.startDate?.isSame(moment(tooCloseDate))).toBeFalsy()
-	expect(localStorage.setItem).not.toHaveBeenCalledWith(
-		startDateName,
-		moment(tooCloseDate).toISOString()
 	)
 })

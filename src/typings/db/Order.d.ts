@@ -3,7 +3,7 @@ import { TubDB } from '@typings/db/Tub'
 
 export interface OrderDB {
 	id: string
-	booking_id: number
+	booking_id: BookingDB['booking_id']
 	payment_intent_id?: string
 	paid: boolean
 	fulfilled: boolean

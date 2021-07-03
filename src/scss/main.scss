@@ -1,19 +1,24 @@
-@import '~react-dates/lib/css/_datepicker.css';
 @import '~react-bootstrap-typeahead/css/Typeahead.css';
 @import '~react-datepicker/dist/react-datepicker.css';
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import './pages/home';
 @import './pages/hire';
 @import './pages/success';
+@import './pages/sign_up';
 @import './pages/failure';
 @import './pages/login';
+@import './components/countdown_timer';
+@import './components/customer_dashboard';
 @import './components/driver_dashboard';
 @import './components/manager_dashboard';
 @import './components/no_availabilities';
 @import './components/hot_tub';
 @import './components/postcode_field';
+@import './components/tooltip_button';
+
 @import './components/calendar';
 @import './components/checkout_form';
+@import './components/password_strength_checker';
 @import 'generics.scss';
 
 html,

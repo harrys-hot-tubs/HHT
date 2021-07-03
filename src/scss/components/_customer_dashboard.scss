@@ -1,0 +1,28 @@
+.customer-dashboard {
+	display: flex !important;
+	flex-direction: column;
+
+	main > h1,
+	h2 {
+		text-align: center;
+	}
+
+	h2 {
+		font-size: 1.2rem;
+	}
+
+	aside {
+		width: 100%;
+	}
+}
+
+.gdpr-button-container {
+	position: absolute;
+	bottom: 1em;
+	left: 1em;
+}
+
+.delete-button {
+	width: 100%;
+	margin-top: 1rem;
+}

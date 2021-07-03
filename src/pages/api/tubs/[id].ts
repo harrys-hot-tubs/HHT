@@ -1,11 +1,10 @@
-import { PriceResponse } from '@typings/api/Checkout'
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
+import { PriceResponse } from '@typings/api/Payment'
 import { LocationDB } from '@typings/db/Location'
 import { TubDB } from '@typings/db/Tub'
-import { stringToMoment } from '@utils/date'
 import db from '@utils/db'
+import { differenceInDays } from 'date-fns'
 import { Knex } from 'knex'
-import moment from 'moment'
 import { NextApiResponse } from 'next'
 
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
@@ -34,12 +33,13 @@ const get = async (req: ConnectedRequest, res: NextApiResponse<TubDB>) => {
 		if (!tub) throw new Error(`Tub with id ${id} doesn't exist`)
 		return res.status(200).json(tub)
 	} catch (error) {
+		console.error(error.message)
 		return res.status(400).json(error)
 	}
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<{ startDate: string; endDate: string }>,
 	res: NextApiResponse<PriceResponse>
 ) => {
 	const {
@@ -49,42 +49,56 @@ const post = async (
 	} = req
 	try {
 		const tubID = Number(id as string)
-		const parsedStartDate = stringToMoment(startDate)
-		const parsedEndDate = stringToMoment(endDate)
+		const parsedStartDate = new Date(startDate)
+		const parsedEndDate = new Date(endDate)
 
-		const price = await getPrice({
-			tubID,
-			startDate: parsedStartDate,
-			endDate: parsedEndDate,
-			db,
-		})
+		const price = await calculateHirePrice(
+			{
+				tubID,
+				startDate: parsedStartDate,
+				endDate: parsedEndDate,
+			},
+			db
+		)
 		return res.status(200).json({ price })
 	} catch (error) {
+		console.error(error.message)
 		return res.status(400).json(error)
 	}
 }
 
-const getPrice = async ({
-	tubID,
-	startDate,
-	endDate,
-	db,
-}: {
-	tubID: number
-	startDate: moment.Moment
-	endDate: moment.Moment
+/**
+ * Calculates the price (in pounds) of hiring a hot tub for a specific duration.
+ *
+ * @param tubInfo Information about the tub to have its price calculated.
+ * @param db Database instance.
+ * @returns The price of hiring the tub for the duration specified in pounds.
+ */
+export const calculateHirePrice = async (
+	{
+		tubID,
+		startDate,
+		endDate,
+	}: {
+		tubID: number
+		startDate: Date
+		endDate: Date
+	},
 	db: Knex
-}): Promise<number> => {
-	const booking_duration = moment.duration(endDate.diff(startDate))
-	const nights = booking_duration.days()
+): Promise<number> => {
+	const nights = differenceInDays(endDate, startDate)
 
-	if (nights > 7 || nights < 2) throw new Error('Duration is invalid.')
+	if (nights > 7 || nights < 2) throw new RangeError('Duration is invalid.')
 
-	const { initial_price, night_price } = await db<LocationDB>('locations')
+	const location = await db<LocationDB>('locations')
 		.select('initial_price', 'night_price')
 		.first()
 		.join('tubs', 'tubs.location_id', '=', 'locations.location_id')
 		.where('tubs.tub_id', '=', tubID)
+
+	if (!location) throw new ReferenceError('Location of tub not found.')
+
+	const { initial_price, night_price } = location
 
 	const finalPrice = Number(initial_price) + (nights - 2) * Number(night_price)
 	return finalPrice

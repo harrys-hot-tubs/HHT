@@ -2,10 +2,12 @@
 	"compilerOptions": {
 		"target": "esnext",
 		"lib": ["dom", "dom.iterable", "esnext"],
+		"typeRoots": ["../node_modules/@types", "typings"],
 		"types": ["@types/jest"],
 		"allowJs": true,
 		"skipLibCheck": true,
 		"strict": false,
+		"useDefineForClassFields": true,
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
 		"esModuleInterop": true,

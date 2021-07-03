@@ -1,5 +1,5 @@
+import { ConnectedRequest } from '@typings/api'
 import { RangeRequest, RangeResponse } from '@typings/api/Locations'
-import { ConnectedRequest } from '@typings/api/Request'
 import { LocationDB } from '@typings/db/Location'
 import Coordinate from '@utils/coordinate'
 import db from '@utils/db'
@@ -8,38 +8,48 @@ import { NextApiResponse } from 'next'
 async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	switch (req.method) {
 		case 'GET':
-			return await get(req, res)
+			return get(req, res)
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		default:
 			res.setHeader('Allow', ['GET', 'POST'])
 			res.status(405).end('Method not allowed.')
 	}
 }
 
-const get = async (req: ConnectedRequest, res: NextApiResponse) => {
+const get = async (
+	req: ConnectedRequest,
+	res: NextApiResponse<LocationDB[]>
+) => {
 	const { db } = req
 	try {
 		const locations: LocationDB[] = await db('locations').select()
-		res.status(200).json(locations)
+		const parsedLocations = locations.map((loc) => ({
+			...loc,
+			initial_price: Number(loc.initial_price),
+			night_price: Number(loc.night_price),
+		}))
+
+		res.status(200).json(parsedLocations)
 	} catch (error) {
-		console.error(error)
+		console.error(error.message)
 		res.status(500).end()
 	}
 }
 
 const post = async (
-	req: ConnectedRequest,
+	req: ConnectedRequest<RangeRequest>,
 	res: NextApiResponse<RangeResponse>
 ) => {
-	const { db } = req
-	const { latitude, longitude } = req.body as RangeRequest
+	const {
+		db,
+		body: { latitude, longitude },
+	} = req
 	const userLocation = new Coordinate(latitude, longitude)
 	const dispatchers = await db<LocationDB>('locations').select()
 
-	const dispatcherCoordinates: Coordinate[] = dispatchers.map(
-		locationToCoordinate
-	)
+	const dispatcherCoordinates: Coordinate[] =
+		dispatchers.map(locationToCoordinate)
 	const ranges = await Promise.all(
 		dispatcherCoordinates.map((location) => userLocation.timeTo(location))
 	)

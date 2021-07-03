@@ -1,3 +1,4 @@
+import CustomerDashboard from '@components/dashboards/CustomerDashboard'
 import DriverDashboard from '@components/dashboards/DriverDashboard'
 import ManagerDashboard from '@components/dashboards/ManagerDashboard'
 import { AccountDB, Role } from '@typings/db/Account'
@@ -21,6 +22,8 @@ const Dashboard = ({ account }: PageProps) => {
 				return <ManagerDashboard />
 			case 'driver':
 				return <DriverDashboard />
+			case 'customer':
+				return <CustomerDashboard />
 			default:
 				return <h1>No dashboard for you yet.</h1>
 		}

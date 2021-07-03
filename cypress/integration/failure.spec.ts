@@ -1,7 +1,13 @@
+import { addHours } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
 before(() => {
-	setStorage({ consent: 'true' })
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
 	cy.visit('/failure')
 })
 

@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import knex, { Knex } from 'knex'
 import { NextApiResponse } from 'next'
 
@@ -31,15 +31,13 @@ export const connector = () => {
  * Higher-order function for wrapping API route handlers to provide them with a database connection.
  */
 const db = (...args: any[]) => {
-	return (fn: Function) => async (
-		req: ConnectedRequest,
-		res: NextApiResponse
-	) => {
-		req.db = connector()()
-		await fn(req, res)
-		await req.db.destroy()
-		return
-	}
+	return (fn: Function) =>
+		async (req: ConnectedRequest, res: NextApiResponse) => {
+			req.db = connector()()
+			await fn(req, res)
+			await req.db.destroy()
+			return
+		}
 }
 
 export default db

@@ -1,7 +1,7 @@
 import useRefunds from '@hooks/useRefunds'
 import { PopulatedOrder } from '@typings/db/Order'
 import { PopulatedRefund, RefundDB } from '@typings/db/Refund'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import SpinnerButton from './SpinnerButton'
 
@@ -31,16 +31,25 @@ const RefundManager = ({ orders }: ComponentProps) => {
 	const settleRefund = async ({ order: { id } }: PopulatedRefund) => {
 		setLoading(true)
 		try {
-			const body: Pick<RefundDB, 'settled'> = { settled: true }
-			await axios.post(`/api/refunds/${id}`, body)
+			const { data: res } = await axios.post<
+				Pick<RefundDB, 'settled'>,
+				AxiosResponse<{ updated: RefundDB[] }>
+			>(`/api/refunds/${id}`, { settled: true })
+
+			if (res.updated.length === 0) throw new Error(`Tub ${id} does not exist.`)
+
 			setRefunds(refunds.filter((refund) => refund.order.id !== id))
 		} catch (error) {
-			console.error(error)
+			console.error(error.message)
 			console.warn(`Could not settle refund ${id}`)
 		} finally {
 			setLoading(false)
 		}
 	}
+
+	refunds?.map((r) => {
+		console.log(`r.damage_information`, r.damage_information)
+	})
 
 	return (
 		<div className='refund-manager'>
@@ -49,15 +58,18 @@ const RefundManager = ({ orders }: ComponentProps) => {
 			{refunds?.length > 0 ? (
 				refunds.map((refund) => (
 					<div key={refund.order.id} className='card refund'>
-						<h5>
+						<h5 data-testid='customer-name'>
 							{refund.order.first_name} {refund.order.last_name}
 						</h5>
-						<small>{refund.damaged ? 'Damage Incurred' : 'No Damage'}</small>
+						<small data-testid='damage-status'>
+							{refund.damaged ? 'Damage Incurred' : 'No Damage'}
+						</small>
 						<br />
 						{refund.damage_information ? (
-							<p>{refund.damage_information}</p>
+							<p data-testid='damage-details'>{refund.damage_information}</p>
 						) : null}
 						<SpinnerButton
+							data-testid='settle-button'
 							activeText='Settling...'
 							status={loading}
 							onClick={(event) => {

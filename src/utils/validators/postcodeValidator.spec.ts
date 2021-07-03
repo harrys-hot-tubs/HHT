@@ -1,8 +1,8 @@
+import { birmingham } from '@fixtures/postcodeFixtures'
 import {
-	birmingham,
 	failedRangeResponse,
 	successfulRangeResponse,
-} from '@fixtures/postcodeFixtures'
+} from '@fixtures/rangeFixtures'
 import blockedOutcodes from '@json/blockedOutcodes.json'
 import validatePostcode, {
 	PostcodeError,

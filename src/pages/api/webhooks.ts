@@ -1,4 +1,4 @@
-import { ConnectedRequest } from '@typings/api/Request'
+import { ConnectedRequest } from '@typings/api'
 import { LocationDB } from '@typings/db/Location'
 import { OrderDB } from '@typings/db/Order'
 import { TubDB } from '@typings/db/Tub'
@@ -33,7 +33,7 @@ const runMiddleware = (
 	fn: Function
 ) => {
 	return new Promise((resolve, reject) => {
-		fn(req, res, (result) => {
+		fn(req, res, (result: unknown) => {
 			if (result instanceof Error) {
 				return reject(result)
 			}
@@ -47,7 +47,7 @@ async function handler(req: ConnectedRequest, res: NextApiResponse) {
 	await runMiddleware(req, res, cors)
 	switch (req.method) {
 		case 'POST':
-			return await post(req, res)
+			return post(req, res)
 		default:
 			res.setHeader('Allow', 'POST')
 			res.status(405).end('Method not allowed.')
@@ -67,9 +67,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			sig,
 			process.env.WEBHOOK_SECRET
 		)
-	} catch (err) {
-		console.log(err.message)
-		return res.status(400).json({ error: `Webhook Error: ${err.message}` })
+	} catch (error) {
+		console.error(error.message)
+		return res.status(400).json({ error: `Webhook Error: ${error.message}` })
 	}
 
 	console.log('Success: ', event.id)
@@ -98,9 +98,9 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 				},
 			})
 			return
-		} catch (err) {
-			console.log(err.message)
-			return res.status(200).json({ received: true, error: err.message })
+		} catch (error) {
+			console.error(error.message)
+			return res.status(200).json({ received: true, error: error.message })
 		}
 	} else {
 		return res.status(200).json({ received: true })
@@ -176,8 +176,8 @@ const sendEmailNotification = async (
 				},
 			],
 		})
-	} catch (e) {
-		console.log('e', e)
+	} catch (error) {
+		console.error(error.message)
 	}
 }
 

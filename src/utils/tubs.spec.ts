@@ -1,4 +1,4 @@
-import { differentSizes, mixedSizes, sameSize } from '@fixtures/tubsFixtures'
+import { differentSizes, sameSize, tubs } from '@fixtures/tubFixtures'
 import { displayableTubs } from '@utils/tubs'
 
 expect.extend({
@@ -35,7 +35,7 @@ describe('displayableTubs', () => {
 	})
 
 	it('reduces the number of tubs displayed if multiple have the same capacity', () => {
-		const forDisplay = displayableTubs(mixedSizes)
+		const forDisplay = displayableTubs(tubs)
 		expect(forDisplay.length).toBe(differentSizes.length + 1)
 		expect(forDisplay).toContainNOf(sameSize, 1)
 	})

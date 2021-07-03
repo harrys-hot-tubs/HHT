@@ -1,13 +1,17 @@
 import { priceToString } from '@utils/stripe'
+import { addHours } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
-const totalPrice = priceToString(17900)
+const totalPrice = priceToString(30400)
 
 before(() => {
-	setStorage({ consent: 'true' })
-	cy.visit(
-		'/success?session_id=cs_test_b1ntF5EK43fzumB9QUrkhvof77a5DH6eOUgHsrypgdQ24o5xUz9LahsmWF'
-	)
+	setStorage({
+		consent: JSON.stringify({
+			value: 'true',
+			exp: addHours(new Date(), 2).getTime(),
+		}),
+	})
+	cy.visit('/success?id=pi_1J2Y67A1xrCenV8YEw7AhScA')
 })
 
 it('renders title', () => {

@@ -5,10 +5,21 @@
 		"Unavailabilities",
 		"datepicker",
 		"distancematrix",
+		"fontawesome",
+		"fortawesome",
 		"googlemaps",
 		"localstorage",
 		"mailjet",
 		"outcode",
-		"testid"
-	]
+		"testid",
+		"zxcvbn"
+	],
+	"window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}",
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/*/**": true,
+		"**/.next/**": true,
+		"**/.hg/store/**": true
+	}
 }

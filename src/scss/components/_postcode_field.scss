@@ -6,10 +6,10 @@
 	max-width: 20em;
 }
 
-input#postcode {
-	width: 4em;
-	height: 100%;
-}
+// input#postcode {
+// 	width: 4em;
+// 	height: 100%;
+// }
 
 .postcode-validate-button {
 	@extend .button;
@@ -18,5 +18,4 @@ input#postcode {
 	background-color: $secondary-blue;
 	color: $primary-light;
 	font-weight: 500;
-	width: 9em;
 }

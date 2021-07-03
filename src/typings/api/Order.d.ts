@@ -1,8 +1,7 @@
+import { BookingDB } from '@typings/db/Booking'
 export interface CreateOrderRequest {
-	checkout_session_id: string
-	tub_id: number
-	start_date: string
-	end_date: string
+	paymentIntentID: string
+	booking_id: BookingDB['booking_id']
 	first_name: string
 	last_name: string
 	email: string

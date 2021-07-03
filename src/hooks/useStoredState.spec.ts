@@ -66,6 +66,20 @@ describe('numbers', () => {
 		expect(localStorage.setItem).toHaveBeenLastCalledWith(key, String(newValue))
 		expect(result.current[0]).toBe(newValue)
 	})
+
+	it('reverts to fallback and removes value from localstorage on reset', () => {
+		const storedValue = '17'
+		localStorage.setItem(key, storedValue)
+
+		const { result } = renderHook(() => useStoredState<number>(params))
+		expect(result.current[0]).toBe(Number(storedValue))
+		act(() => {
+			result.current[2]()
+		})
+
+		expect(localStorage.removeItem).toHaveBeenLastCalledWith(key)
+		expect(result.current[0]).toBe(params.fallback)
+	})
 })
 
 describe('booleans', () => {
@@ -130,6 +144,20 @@ describe('booleans', () => {
 		)
 		expect(result.current[0]).toBe(nextValue)
 	})
+
+	it('reverts to fallback and removes value from localstorage on reset', () => {
+		const storedValue = 'false'
+		localStorage.setItem(key, storedValue)
+
+		const { result } = renderHook(() => useStoredState<boolean>(params))
+		expect(result.current[0]).toBe(false)
+		act(() => {
+			result.current[2]()
+		})
+
+		expect(localStorage.removeItem).toHaveBeenLastCalledWith(key)
+		expect(result.current[0]).toBe(params.fallback)
+	})
 })
 
 describe('arrays', () => {
@@ -146,13 +174,13 @@ describe('arrays', () => {
 
 		const { result } = renderHook(() => useStoredState<string[]>(params))
 		const [value] = result.current
-		expect(value).toEqual(storedValue.split(','))
+		expect(value).toStrictEqual(storedValue.split(','))
 	})
 
 	it('defaults to the fallback if no data is available', () => {
 		const { result } = renderHook(() => useStoredState<string[]>(params))
 		const [value] = result.current
-		expect(value).toEqual(params.fallback)
+		expect(value).toStrictEqual(params.fallback)
 	})
 
 	it('sets stored data when updated', () => {
@@ -186,7 +214,7 @@ describe('arrays', () => {
 		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<string[]>(params))
-		expect(result.current[0]).toEqual(storedValue.split(','))
+		expect(result.current[0]).toStrictEqual(storedValue.split(','))
 		act(() => {
 			result.current[1](nextValue)
 		})
@@ -196,6 +224,20 @@ describe('arrays', () => {
 			nextValue.toString()
 		)
 		expect(result.current[0]).toBe(nextValue)
+	})
+
+	it('reverts to fallback and removes value from localstorage on reset', () => {
+		const storedValue = 'e,f'
+		localStorage.setItem(key, storedValue)
+
+		const { result } = renderHook(() => useStoredState<string[]>(params))
+		expect(result.current[0]).toStrictEqual(storedValue.split(','))
+		act(() => {
+			result.current[2]()
+		})
+
+		expect(localStorage.removeItem).toHaveBeenLastCalledWith(key)
+		expect(result.current[0]).toStrictEqual(params.fallback)
 	})
 })
 
@@ -227,13 +269,13 @@ describe('objects', () => {
 
 		const { result } = renderHook(() => useStoredState<StorableObject>(params))
 		const [value] = result.current
-		expect(value).toEqual(JSON.parse(storedValue))
+		expect(value).toStrictEqual(JSON.parse(storedValue))
 	})
 
 	it('defaults to the fallback if no data is available', () => {
 		const { result } = renderHook(() => useStoredState<StorableObject>(params))
 		const [value] = result.current
-		expect(value).toEqual(params.fallback)
+		expect(value).toStrictEqual(params.fallback)
 	})
 
 	it('sets stored data when updated', () => {
@@ -283,7 +325,7 @@ describe('objects', () => {
 		localStorage.setItem(key, storedValue)
 
 		const { result } = renderHook(() => useStoredState<StorableObject>(params))
-		expect(result.current[0]).toEqual(JSON.parse(storedValue))
+		expect(result.current[0]).toStrictEqual(JSON.parse(storedValue))
 		act(() => {
 			result.current[1](nextValue)
 		})
@@ -293,5 +335,23 @@ describe('objects', () => {
 			JSON.stringify(nextValue)
 		)
 		expect(result.current[0]).toBe(nextValue)
+	})
+
+	it('reverts to fallback and removes value from localstorage on reset', () => {
+		const storedValue = JSON.stringify({
+			foo: 'as',
+			bar: 76,
+			bash: undefined,
+		})
+		localStorage.setItem(key, storedValue)
+
+		const { result } = renderHook(() => useStoredState<StorableObject>(params))
+		expect(result.current[0]).toStrictEqual(JSON.parse(storedValue))
+		act(() => {
+			result.current[2]()
+		})
+
+		expect(localStorage.removeItem).toHaveBeenLastCalledWith(key)
+		expect(result.current[0]).toStrictEqual(params.fallback)
 	})
 })

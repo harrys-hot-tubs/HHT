@@ -1,23 +1,25 @@
+import BookingCountdownTimer from '@components/BookingCountdownTimer'
+import CheckoutErrors from '@components/CheckoutErrors'
 import SpinnerButton from '@components/SpinnerButton'
+import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CheckoutInformation } from '@hooks/useCheckoutInformation'
-import {
-	CheckoutRequest,
-	PriceRequest,
-	PriceResponse,
-} from '@typings/api/Checkout'
+import useStoredStateWithExpiration from '@hooks/useStoredStateWithExpiration'
+import { BookingData } from '@pages/checkout'
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { StripeError } from '@stripe/stripe-js'
 import { CreateOrderRequest } from '@typings/api/Order'
-import { displayableMoment } from '@utils/date'
-import { getStripe } from '@utils/stripe'
-import axios from 'axios'
+import { BookingDB } from '@typings/db/Booking'
+import { priceToString } from '@utils/stripe'
+import axios, { AxiosResponse } from 'axios'
+import { isNumber } from 'lodash'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Col, Form } from 'react-bootstrap'
-import Stripe from 'stripe'
+import { Stripe } from 'stripe'
 
 interface ComponentProps {
-	/**
-	 * The tubID that the customer is booking.
-	 */
-	tubID: number
 	/**
 	 * The postcode the customer will have their booking sent to.
 	 */
@@ -25,11 +27,14 @@ interface ComponentProps {
 	/**
 	 * The start date of the customer's booking.
 	 */
-	startDate: moment.Moment
+	startDate: Date
 	/**
 	 * The end date of the customer's booking.
 	 */
-	endDate: moment.Moment
+	endDate: Date
+	price: number
+	paymentIntent: Pick<Stripe.PaymentIntent, 'client_secret' | 'id'>
+	bookingData: BookingData
 	/**
 	 * All other information about the customer needed to dispatch a hot tub to them.
 	 */
@@ -50,15 +55,32 @@ export const RefereeOptions = [
  * The form the customer must fill out in order to complete their booking.
  */
 const CheckoutForm = ({
-	tubID,
 	postcode,
 	startDate,
 	endDate,
+	price,
+	paymentIntent,
+	bookingData,
 	user,
 	setUser,
 }: ComponentProps) => {
+	const router = useRouter()
+	const stripe = useStripe()
+	const elements = useElements()
 	const [validated, setValidated] = useState(false)
 	const [loading, setLoading] = useState(false)
+	const [cardComplete, setCardComplete] = useState(false)
+	const [checkoutError, setCheckoutError] = useState<StripeError | string>(
+		undefined
+	)
+	const [viewers] = useStoredStateWithExpiration<number>({
+		fallback: 2 + Math.ceil(Math.random() * 4),
+		key: 'productViewers',
+		isType: isNumber,
+		ttl: 10 * 1000 * 60,
+		toString: (v) => v.toString(),
+		fromString: (v) => Number(v),
+	})
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		setLoading(true)
@@ -68,49 +90,53 @@ const CheckoutForm = ({
 		if (form.checkValidity() === false) {
 			setValidated(true)
 		} else {
-			const price = await getPrice(
-				startDate.toISOString(),
-				endDate.toISOString(),
-				tubID
-			)
-
-			const params: CheckoutRequest = {
-				price,
-				startDate: startDate.toISOString(),
-				endDate: endDate.toISOString(),
+			try {
+				await createOrder(
+					user,
+					postcode,
+					paymentIntent.id,
+					bookingData.bookingID
+				)
+			} catch (error) {
+				console.error(error.message)
+				setCheckoutError(
+					"Failed to create an order. Don't worry, we haven't charged you."
+				)
+				return setLoading(false)
 			}
 
-			const res = await axios.post<Stripe.Checkout.Session>(
-				'/api/checkout_sessions',
-				params
+			const result = await stripe.confirmCardPayment(
+				paymentIntent.client_secret,
+				{
+					payment_method: {
+						card: elements.getElement(CardElement),
+						billing_details: {
+							name: user.firstName + ' ' + user.firstName,
+							email: user.email,
+							phone: user.telephoneNumber,
+							address: {
+								line1: user.addressLine1,
+								line2: user.addressLine2,
+								postal_code: postcode,
+								country: 'GB',
+							},
+						},
+					},
+				}
 			)
 
-			if (res.status !== 200) {
+			if (result.error) {
 				console.error('Checkout request failed.')
-				setLoading(false)
-				return
+				setCheckoutError(result.error)
+				return setLoading(false)
 			} else {
-				const { id } = res.data
-				try {
-					await createOrder(
-						user,
-						postcode,
-						startDate.toISOString(),
-						endDate.toISOString(),
-						id,
-						tubID
-					)
-				} catch (error) {
-					setLoading(false)
-					return
+				const intent = result.paymentIntent
+				const { id } = intent
+				if (intent.status === 'succeeded') {
+					router.push(`/success?id=${id}`)
+				} else {
+					router.push(`/failure?id=${id}`)
 				}
-
-				const stripe = await getStripe()
-				const { error } = await stripe!.redirectToCheckout({
-					sessionId: id,
-				})
-
-				console.warn(error.message)
 			}
 		}
 
@@ -119,13 +145,54 @@ const CheckoutForm = ({
 
 	return (
 		<Form
-			noValidate={true}
+			noValidate
 			validated={validated}
 			onSubmit={handleSubmit}
 			className='checkout-form'
 			role='main'
 		>
-			<h1>Checkout</h1>
+			<span className='title-bar'>
+				<BookingCountdownTimer bookingData={bookingData} />
+				<div>
+					<h2 className='checkout-title'>Checkout</h2>
+					<small>
+						<strong>{viewers}</strong> people are looking at this.
+					</small>
+				</div>
+				<Link href='/hire'>
+					<div className='back-button'>
+						<FontAwesomeIcon icon={faAngleLeft} /> Back
+					</div>
+				</Link>
+			</span>
+			<div className='price-info'>
+				<small>
+					{' '}
+					{startDate ? startDate.toLocaleDateString() : 'XX/XX/XXXX'} to{' '}
+					{endDate ? endDate.toLocaleDateString() : 'XX/XX/XXXX'}
+				</small>
+				<h1 className='price'>
+					{price !== undefined ? priceToString(price * 100) : '£XXX.XX'}
+				</h1>
+			</div>
+			<div style={{ marginTop: '1em' }} />
+			<CheckoutErrors error={checkoutError} />
+			<CardElement
+				className='form-control'
+				options={{
+					hidePostalCode: true,
+					style: {
+						base: {
+							fontSize: '16px',
+						},
+					},
+				}}
+				onChange={(event) => {
+					console.log(`event`, event)
+					setCardComplete(event.complete)
+				}}
+			/>
+			<hr />
 			<h2>Contact Details</h2>
 			<Form.Row>
 				<Form.Group as={Col}>
@@ -313,7 +380,7 @@ const CheckoutForm = ({
 						aria-label='start-date'
 						required
 						disabled
-						placeholder={startDate ? displayableMoment(startDate) : null}
+						placeholder={startDate ? startDate.toLocaleDateString() : null}
 					/>
 				</Form.Group>
 				<Form.Group as={Col}>
@@ -322,81 +389,61 @@ const CheckoutForm = ({
 						aria-label='end-date'
 						required
 						disabled
-						placeholder={endDate ? displayableMoment(endDate) : null}
+						placeholder={endDate ? endDate.toLocaleDateString() : null}
 					/>
 				</Form.Group>
 			</Form.Row>
 			<Form.Text muted>
 				These dates were taken from the previous page and cannot be changed.
 			</Form.Text>
+			<hr />
+
 			<SpinnerButton
+				disabled={
+					!stripe || !elements || !paymentIntent?.client_secret || !cardComplete
+				}
 				status={loading}
 				type='submit'
 				activeText='Loading...'
 				className='checkout-button'
 			>
-				Submit
+				Submit and Pay
 			</SpinnerButton>
 		</Form>
 	)
 }
 
 /**
- * Fetches the current price of booking a hot tub.
- * @param startDate The start date of the customer's booking.
- * @param endDate The end date of the customer's booking.
- * @param id The id of the tub the customer is booking.
- * @returns The price of booking the tub from the start date until the end date.
- */
-const getPrice = async (
-	startDate: string,
-	endDate: string,
-	id: number
-): Promise<number> => {
-	const params: PriceRequest = {
-		startDate,
-		endDate,
-	}
-	const res = await axios.post<PriceResponse>(`api/tubs/${id}`, params)
-	if (res.status !== 200) throw new Error('Malformed price request.')
-	else return res.data.price
-}
-
-/**
  * Sends a order creation request to the API.
  * @param user The information describing the customer making the booking request
  * @param postcode The postcode of the customer making the booking request
- * @param startDate The start date of the customer's booking
- * @param endDate The end date of the customer's booking.
- * @param checkoutSessionID The id of the stripe checkout session associated with this booking request
- * @param tubID The id of the tub the customer is booking.
+ * @param paymentIntentID The ID associated with the current customer.
+ * @param bookingID The id of the booking created when the customer opened the checkout page.
  * @throws If the order creation fails on the server.
  */
 const createOrder = async (
 	user: CheckoutInformation,
 	postcode: string,
-	startDate: string,
-	endDate: string,
-	checkoutSessionID: string,
-	tubID: number
+	paymentIntentID: string,
+	bookingID: BookingDB['booking_id']
 ) => {
-	const params: CreateOrderRequest = {
-		checkout_session_id: checkoutSessionID,
-		tub_id: tubID,
-		start_date: startDate,
-		end_date: endDate,
-		first_name: user.firstName,
-		last_name: user.lastName,
-		email: user.email,
-		telephone_number: user.telephoneNumber,
-		address_line_1: user.addressLine1,
-		address_line_2: user.addressLine2,
-		address_line_3: user.addressLine3,
-		referee: user.referee,
-		special_requests: user.specialRequests,
-		postcode,
-	}
-	const res = await axios.post('/api/orders', params)
+	const res = await axios.post<CreateOrderRequest, AxiosResponse<any>>(
+		'/api/orders',
+		{
+			booking_id: bookingID,
+			paymentIntentID,
+			first_name: user.firstName,
+			last_name: user.lastName,
+			email: user.email,
+			telephone_number: user.telephoneNumber,
+			address_line_1: user.addressLine1,
+			address_line_2: user.addressLine2,
+			address_line_3: user.addressLine3,
+			referee: user.referee,
+			special_requests: user.specialRequests,
+			postcode,
+		}
+	)
 	if (res.status !== 200) throw new Error('Order creation failed.')
 }
 

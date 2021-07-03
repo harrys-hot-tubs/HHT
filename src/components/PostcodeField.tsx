@@ -1,4 +1,4 @@
-import PostcodeModal from '@components/postcode_modals/PostcodeModal'
+import PostcodeModal from '@components/modals/postcode_modals/PostcodeModal'
 import SpinnerButton from '@components/SpinnerButton'
 import { PostcodeError } from '@utils/validators/postcodeValidator'
 import React from 'react'

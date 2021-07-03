@@ -1,8 +1,7 @@
 import { CalendarInterface } from '@hooks/useCalendar'
-import React, { useEffect, useState } from 'react'
-import { Modal } from 'react-bootstrap'
-import { DateRangePicker } from 'react-dates'
-import 'react-dates/initialize'
+import { addBusinessDays, addDays, isWeekend } from 'date-fns'
+import React, { useEffect } from 'react'
+import { default as DatePicker } from 'react-datepicker'
 
 interface ComponentProps extends CalendarInterface {
 	/**
@@ -16,49 +15,59 @@ interface ComponentProps extends CalendarInterface {
  */
 const Calendar = ({
 	isStudent = true,
-	isTooLong,
+	isWrongDuration,
 	startDate,
 	endDate,
-	focused,
-	updateFocus,
 	updateDates,
 	resetDates,
-	isDayBlocked,
+	isAvailable,
 }: ComponentProps) => {
-	const [showModal, setShowModal] = useState(false)
 	useEffect(() => {
-		if (isTooLong(startDate, endDate) && !showModal) {
-			setShowModal(true)
-			resetDates()
-		}
+		// Checks for malicious date injection.
+		if (!isAvailable(startDate)) resetDates({ startDate: true })
+		if (!isAvailable(endDate)) resetDates({ endDate: true })
+		if (isWrongDuration(startDate, endDate)) resetDates({ endDate: true })
 	}, [startDate, endDate])
 
 	return (
 		<React.Fragment>
-			<DateRangePicker
-				numberOfMonths={1}
-				startDate={startDate}
-				startDateId='startDate'
-				endDate={endDate}
-				endDateId='endDate'
-				onDatesChange={updateDates}
-				focusedInput={focused}
-				onFocusChange={updateFocus}
-				isDayBlocked={isDayBlocked}
-				minimumNights={isStudent ? 2 : 3}
-			/>
-			<Modal show={showModal} onHide={() => setShowModal(false)}>
-				<Modal.Header closeButton>
-					<Modal.Title>Oh no!</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					Sadly we don't yet offer hires for longer than 7 days at the moment.
-					If you still really want that extra time, call the number below.
-				</Modal.Body>
-				<Modal.Footer>
-					<a href='tel:+447554002075'>07554 002075</a>
-				</Modal.Footer>
-			</Modal>
+			<span className='date-pickers'>
+				<DatePicker
+					selected={startDate}
+					startDate={startDate}
+					endDate={endDate}
+					selectsStart
+					onChange={(date: Date) => updateDates({ startDate: date })}
+					minDate={new Date()}
+					filterDate={isAvailable}
+					todayButton={isWeekend(new Date()) ? 'Today' : null}
+					className='inline-picker hire'
+					id='start'
+					dateFormat='dd/MM/yyyy'
+					placeholderText='Start Date'
+					disabledKeyboardNavigation
+				/>
+				<span> to </span>
+				<DatePicker
+					selected={endDate}
+					startDate={startDate}
+					endDate={endDate}
+					selectsEnd
+					openToDate={endDate ? endDate : startDate ? startDate : new Date()}
+					onChange={(date: Date) => updateDates({ endDate: date })}
+					minDate={addBusinessDays(
+						startDate ? startDate : new Date(),
+						isStudent ? 2 : 3
+					)}
+					maxDate={addDays(startDate, 7)}
+					filterDate={isAvailable}
+					className='inline-picker hire'
+					id='end'
+					dateFormat='dd/MM/yyyy'
+					placeholderText='End Date'
+					disabledKeyboardNavigation
+				/>
+			</span>
 		</React.Fragment>
 	)
 }
