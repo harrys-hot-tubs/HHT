@@ -188,7 +188,6 @@ const CheckoutForm = ({
 					},
 				}}
 				onChange={(event) => {
-					console.log(`event`, event)
 					setCardComplete(event.complete)
 				}}
 			/>

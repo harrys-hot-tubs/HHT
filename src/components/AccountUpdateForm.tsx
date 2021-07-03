@@ -320,7 +320,6 @@ const updateAccount = async (
 		if (body[key] === '') delete body[key]
 	})
 
-	console.log(`body`, body)
 	const { status, data } = await axios.patch<UpdateAccountResponse>(
 		`api/accounts/${account_id}`,
 		body
