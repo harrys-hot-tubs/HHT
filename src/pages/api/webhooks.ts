@@ -77,14 +77,13 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	if (event.type === 'payment_intent.succeeded') {
 		try {
 			const paymentIntent = event.data.object as Stripe.PaymentIntent
-			const sessionID = await getCheckoutSessionID(paymentIntent.id)
 			const order = (
 				await db<OrderDB>('orders')
 					.update({
 						payment_intent_id: paymentIntent.id,
 						paid: true,
 					})
-					.where('id', sessionID)
+					.where('id', paymentIntent.id)
 					.returning('*')
 			)[0]
 
@@ -105,21 +104,6 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 	} else {
 		return res.status(200).json({ received: true })
 	}
-}
-
-/**
- * Finds the checkout session that produced a specified payment intent.
- * @param paymentIntentID An id representing a payment intent.
- * @returns The checkout session the payment intent belongs to.
- */
-const getCheckoutSessionID = async (paymentIntentID: string) => {
-	const checkoutSession = await stripe.checkout.sessions.list({
-		payment_intent: paymentIntentID,
-	})
-
-	if (!checkoutSession?.data[0]?.id)
-		throw new Error('Missing checkoutSession id.')
-	return checkoutSession.data[0].id
 }
 
 /**
