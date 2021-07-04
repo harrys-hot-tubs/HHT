@@ -37,13 +37,19 @@ const Checkout = ({ tubID }: PageProps) => {
 	const [startDate, setStartDate] = useState<Date>(null)
 	const [endDate, setEndDate] = useState<Date>(null)
 	const [price, setPrice] = useState<number>(undefined)
-	const [paymentIntent, setPaymentIntent] =
-		useState<Pick<Stripe.PaymentIntent, 'client_secret' | 'id'>>(undefined)
+	const [paymentIntent, setPaymentIntent] = useStoredState<
+		Pick<Stripe.PaymentIntent, 'client_secret' | 'id'>
+	>({
+		fallback: undefined,
+		key: 'paymentIntentSecret',
+		fromString: JSON.parse,
+		toString: JSON.stringify,
+	})
 	const [bookingData, setBookingData] = useStoredState<BookingData>({
 		fallback: undefined,
 		key: 'bookingData',
-		toString: (v) => JSON.stringify(v),
-		fromString: (v) => JSON.parse(v),
+		toString: JSON.stringify,
+		fromString: JSON.parse,
 	})
 	const [user, setUser] = useCheckoutInformation()
 
@@ -64,14 +70,14 @@ const Checkout = ({ tubID }: PageProps) => {
 						)
 						setPrice(price)
 
-						// Creates payment intent on every render.
-						// TODO replace with update payment intent and fetch from localStorage.
-						const secret = await getPaymentIntentSecret(
-							startDate.toISOString(),
-							endDate.toISOString(),
-							tubID
-						)
-						setPaymentIntent(secret)
+						// // Creates payment intent on every render.
+						// // TODO replace with update payment intent and fetch from localStorage.
+						// const secret = await getPaymentIntentSecret(
+						// 	startDate.toISOString(),
+						// 	endDate.toISOString(),
+						// 	tubID
+						// )
+						// setPaymentIntent(secret)
 					} catch (error) {
 						console.error(error.message)
 						router.push('/hire')
@@ -87,6 +93,38 @@ const Checkout = ({ tubID }: PageProps) => {
 		}
 	}, [])
 
+	// Booking Data Loader
+	useEffect(() => {
+		if (tubID && startDate && endDate) {
+			;(async () => {
+				try {
+					const storedPaymentIntentSecret: Pick<
+						Stripe.PaymentIntent,
+						'client_secret' | 'id'
+					> = JSON.parse(localStorage.getItem('paymentIntentSecret'))
+					if (!storedPaymentIntentSecret) {
+						const secret = await getPaymentIntentSecret(
+							startDate.toISOString(),
+							endDate.toISOString(),
+							tubID
+						)
+						setPaymentIntent(secret)
+					} else {
+						// If booking data is valid.
+						setPaymentIntent(storedPaymentIntentSecret)
+					}
+				} catch (error) {
+					console.error(error.message)
+					localStorage.removeItem('bookingData')
+					localStorage.removeItem('paymentIntentSecret')
+					localStorage.removeItem('tub')
+					router.push('/hire')
+				}
+			})()
+		}
+	}, [tubID, startDate, endDate])
+
+	// Payment Intent Secret Loader
 	useEffect(() => {
 		if (tubID && startDate && endDate) {
 			;(async () => {
@@ -105,6 +143,7 @@ const Checkout = ({ tubID }: PageProps) => {
 						if (storedBookingData.exp < new Date().getTime()) {
 							// If booking data has expired
 							localStorage.removeItem('bookingData')
+							localStorage.removeItem('paymentIntentSecret')
 							localStorage.removeItem('tub')
 							await deleteBookingReservation(storedBookingData.bookingID)
 							router.push('/hire')
@@ -116,6 +155,8 @@ const Checkout = ({ tubID }: PageProps) => {
 				} catch (error) {
 					console.error(error.message)
 					localStorage.removeItem('bookingData')
+					localStorage.removeItem('paymentIntentSecret')
+
 					localStorage.removeItem('tub')
 					router.push('/hire')
 				}
