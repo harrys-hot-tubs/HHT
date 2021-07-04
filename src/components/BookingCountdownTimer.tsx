@@ -15,7 +15,7 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 	const router = useRouter()
 	const [duration, setDuration] = useState<number>(undefined)
 
-	const clear = async () => {
+	const removeBooking = async () => {
 		localStorage.removeItem('bookingData')
 		localStorage.removeItem('tub')
 		await deleteBookingReservation(bookingData.bookingID)
@@ -28,14 +28,12 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 				bookingData.exp,
 				new Date(bookingData.startTime)
 			)
-			if (newDuration < 0) {
-				clear()
-			} else {
-				setDuration(newDuration)
-			}
+
+			if (newDuration > 0) setDuration(newDuration)
 		}
 	}, [bookingData])
 
+	console.log(`duration`, duration)
 	if (!bookingData || duration === undefined)
 		return (
 			<CountdownCircleTimer
@@ -92,7 +90,7 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 						['#A30000', 0.33],
 					]}
 					onComplete={() => {
-						clear()
+						removeBooking()
 					}}
 					size={60}
 					strokeWidth={3}
@@ -120,7 +118,9 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
  *
  * @param bookingID The id of the reserved booking that is to be deleted.
  */
-const deleteBookingReservation = async (bookingID: BookingDB['booking_id']) => {
+export const deleteBookingReservation = async (
+	bookingID: BookingDB['booking_id']
+) => {
 	try {
 		const res = await axios.delete(`/api/bookings/${bookingID}`)
 		if (res.status !== 200)

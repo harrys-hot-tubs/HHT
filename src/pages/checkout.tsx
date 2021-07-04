@@ -1,3 +1,4 @@
+import { deleteBookingReservation } from '@components/BookingCountdownTimer'
 import CheckoutForm from '@components/CheckoutForm'
 import useCheckoutInformation from '@hooks/useCheckoutInformation'
 import useStoredState from '@hooks/useStoredState'
@@ -63,6 +64,8 @@ const Checkout = ({ tubID }: PageProps) => {
 						)
 						setPrice(price)
 
+						// Creates payment intent on every render.
+						// TODO replace with update payment intent and fetch from localStorage.
 						const secret = await getPaymentIntentSecret(
 							startDate.toISOString(),
 							endDate.toISOString(),
@@ -88,17 +91,32 @@ const Checkout = ({ tubID }: PageProps) => {
 		if (tubID && startDate && endDate) {
 			;(async () => {
 				try {
-					const storedBookingData = localStorage.getItem('bookingData')
+					const storedBookingData: BookingData = JSON.parse(
+						localStorage.getItem('bookingData')
+					)
 					if (!storedBookingData) {
-						const bookingData = await reserveBooking(
+						const newBooking = await reserveBooking(
 							startDate.toISOString(),
 							endDate.toISOString(),
 							tubID
 						)
-						setBookingData({ ...bookingData, startTime: new Date() })
+						setBookingData({ ...newBooking, startTime: new Date() })
+					} else {
+						if (storedBookingData.exp < new Date().getTime()) {
+							// If booking data has expired
+							localStorage.removeItem('bookingData')
+							localStorage.removeItem('tub')
+							await deleteBookingReservation(storedBookingData.bookingID)
+							router.push('/hire')
+						} else {
+							// If booking data is valid.
+							setBookingData(storedBookingData)
+						}
 					}
 				} catch (error) {
 					console.error(error.message)
+					localStorage.removeItem('bookingData')
+					localStorage.removeItem('tub')
 					router.push('/hire')
 				}
 			})()
