@@ -57,6 +57,7 @@ const post = async (
 				payment_method_types: ['card'],
 				amount: formatAmount(price),
 				currency: 'gbp',
+				description: `Booking from ${parsedStartDate.toLocaleDateString()} to ${parsedEndDate.toLocaleDateString()} for tub ${tubID}.`,
 			})
 
 		res.status(200).json({
