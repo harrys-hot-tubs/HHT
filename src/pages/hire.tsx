@@ -58,13 +58,14 @@ const Hire = () => {
 				<div className='description'>
 					<h1 role='heading'>Hire a hot tub</h1>
 					<p>
-						The process is simple!... Our team will provide everything you need
-						for the setup - we just need access to water and electricity. All
-						you have to do is book yourself in and enjoy!
+						Our team will provide everything you need for the setup - we just
+						need access to water (Outside taps are not essential! We have
+						adaptors to get water from inside taps) and electricity, all you
+						have to do is book yourself in and enjoy!
 					</p>
 					<p>
-						(Outside taps are not essential! We have adaptors to get water from
-						inside taps)
+						Please note <strong>we do not deliver on weekends</strong> so Friday
+						- Monday is the best option for your weekend bubbles!
 					</p>
 					<p>
 						For more information view our FAQ{' '}
