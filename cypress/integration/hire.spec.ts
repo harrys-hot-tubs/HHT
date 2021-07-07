@@ -5,6 +5,8 @@ import { failedRangeResponse } from '@fixtures/rangeFixtures'
 import { addHours, addMonths, format, isSameDay } from 'date-fns'
 import { setStorage } from '../helpers/localStorageHelper'
 
+const date = new Date('2021-07-05')
+
 beforeEach(() => {
 	setStorage({
 		consent: JSON.stringify({
@@ -12,7 +14,10 @@ beforeEach(() => {
 			exp: addHours(new Date(), 2).getTime(),
 		}),
 	})
+
+	cy.clock(date) // Avoid problem of testing on weekends.
 	cy.visit('/hire')
+	cy.tick(1000)
 })
 
 it('renders heading', () => {
@@ -121,12 +126,6 @@ describe('postcode field', () => {
 })
 
 describe('date picker', () => {
-	const date = new Date('2021-07-05')
-
-	beforeEach(() => {
-		cy.clock(date) // Avoid problem of testing on weekends.
-	})
-
 	it('lets the user pick dates', () => {
 		cy.get('input#start').as('startDate').click()
 		cy.get('div.react-datepicker__today-button').click()

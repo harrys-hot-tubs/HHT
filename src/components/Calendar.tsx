@@ -40,7 +40,7 @@ const Calendar = ({
 					onChange={(date: Date) => updateDates({ startDate: date })}
 					minDate={new Date()}
 					filterDate={isAvailable}
-					todayButton={isWeekend(new Date()) ? 'Today' : null}
+					todayButton={!isWeekend(new Date()) ? 'Today' : null}
 					className='inline-picker hire'
 					id='start'
 					dateFormat='dd/MM/yyyy'
