@@ -3,7 +3,7 @@ import validateDates, {
 	MAX_NIGHTS,
 	MIN_NIGHTS,
 } from '@utils/validators/dateValidator'
-import { differenceInDays, getDay } from 'date-fns'
+import { getDay } from 'date-fns'
 
 /**
  * Stores and validates user inputted booking dates.
@@ -107,9 +107,11 @@ export interface CalendarInterface {
  * @param endDate The end date of the customer's booking.
  * @returns True if the duration of the booking is of an inappropriate duration, false otherwise.
  */
-const isWrongDuration = (startDate: Date, endDate: Date): boolean =>
-	differenceInDays(endDate, startDate) > MAX_NIGHTS ||
-	differenceInDays(endDate, startDate) < MIN_NIGHTS
+const isWrongDuration = (startDate: Date, endDate: Date): boolean => {
+	const diffInMs = endDate?.getTime() - startDate?.getTime()
+	const differenceInDays = diffInMs / (24 * 60 * 60 * 1000)
+	return differenceInDays > MAX_NIGHTS || differenceInDays < MIN_NIGHTS
+}
 
 /**
  * Determines whether or not a given date falls on the weekend.
