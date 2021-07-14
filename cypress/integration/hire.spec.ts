@@ -127,13 +127,9 @@ describe('postcode field', () => {
 
 describe('date picker', () => {
 	it('lets the user pick dates', () => {
-		cy.get('input#start').as('startDate').click()
+		cy.get('.inline-picker.hire#start').as('startDate').click()
 		cy.get('div.react-datepicker__today-button').click()
-		cy.get('@startDate').should(
-			'have.attr',
-			'value',
-			date.toLocaleDateString('en-GB')
-		)
+		cy.get('@startDate').contains(date.toLocaleDateString('en-GB'))
 
 		cy.getLocalStorage('startDate').then((startDate) => {
 			expect(isSameDay(new Date(startDate), date)).to.be.true
@@ -141,7 +137,7 @@ describe('date picker', () => {
 	})
 
 	it('lets the user change months', () => {
-		cy.get('input#start').as('startDate').click()
+		cy.get('.inline-picker.hire#start').as('startDate').click()
 		cy.get('div.react-datepicker__today-button').click()
 		cy.get('@startDate').click()
 		cy.get('.react-datepicker__current-month').should(
@@ -154,20 +150,6 @@ describe('date picker', () => {
 			format(addMonths(date, 1), 'MMMM')
 		)
 
-		cy.get('@startDate').should(
-			'have.attr',
-			'value',
-			date.toLocaleDateString('en-GB')
-		)
-	})
-
-	it('lets the user type the dates they want', () => {
-		cy.get('input#start').as('startDate').click()
-
-		cy.get('@startDate').type(date.toLocaleDateString('en-GB'))
-
-		cy.getLocalStorage('startDate').then((startDate) => {
-			expect(isSameDay(new Date(startDate), date)).to.be.true
-		})
+		cy.get('@startDate').contains(date.toLocaleDateString('en-GB'))
 	})
 })

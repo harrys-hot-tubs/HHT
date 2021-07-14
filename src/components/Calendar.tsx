@@ -36,8 +36,9 @@ const Calendar = ({
 				onClick={onClick}
 				type='button'
 				ref={ref}
+				id='start'
 			>
-				{value || 'Start'}
+				{value || 'Start Date'}
 			</button>
 		)
 	)
@@ -49,8 +50,9 @@ const Calendar = ({
 				onClick={onClick}
 				type='button'
 				ref={ref}
+				id='end'
 			>
-				{value || 'End'}
+				{value || 'End Date'}
 			</button>
 		)
 	)
@@ -68,7 +70,6 @@ const Calendar = ({
 					filterDate={isAvailable}
 					todayButton={!isWeekend(new Date()) ? 'Today' : null}
 					className='inline-picker hire'
-					id='start'
 					dateFormat='dd/MM/yyyy'
 					placeholderText='Start Date'
 					disabledKeyboardNavigation
@@ -90,7 +91,6 @@ const Calendar = ({
 					maxDate={addDays(startDate, 7)}
 					filterDate={isAvailable}
 					className='inline-picker hire'
-					id='end'
 					dateFormat='dd/MM/yyyy'
 					placeholderText='End Date'
 					disabledKeyboardNavigation
