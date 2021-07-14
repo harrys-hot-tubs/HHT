@@ -35,8 +35,6 @@ const generateMessage = (error: StripeError | string): string => {
 	if (typeof error === 'string') return error
 
 	switch (error?.type) {
-		case 'card_error':
-			return error.message
 		case 'validation_error':
 			return 'Your card details cannot be validated.'
 		case 'api_connection_error':
@@ -46,6 +44,8 @@ const generateMessage = (error: StripeError | string): string => {
 			return 'There was an error when handing off your payment to be processed.'
 		case 'authentication_error':
 			return 'Improper authentication provided.'
+		default:
+			return error.message
 	}
 }
 
