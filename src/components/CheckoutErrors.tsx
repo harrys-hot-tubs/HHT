@@ -45,7 +45,7 @@ const generateMessage = (error: StripeError | string): string => {
 		case 'authentication_error':
 			return 'Improper authentication provided.'
 		default:
-			return error.message
+			return error?.message
 	}
 }
 
