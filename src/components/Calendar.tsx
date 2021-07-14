@@ -1,6 +1,6 @@
 import { CalendarInterface } from '@hooks/useCalendar'
 import { addBusinessDays, addDays, isWeekend } from 'date-fns'
-import React, { useEffect } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 import { default as DatePicker } from 'react-datepicker'
 
 interface ComponentProps extends CalendarInterface {
@@ -29,6 +29,32 @@ const Calendar = ({
 		if (isWrongDuration(startDate, endDate)) resetDates({ endDate: true })
 	}, [startDate, endDate])
 
+	const StartInput = forwardRef<HTMLInputElement, any>(
+		({ value, onClick }, ref) => (
+			<button
+				className='inline-picker hire'
+				onClick={onClick}
+				type='button'
+				ref={ref}
+			>
+				{value || 'Start'}
+			</button>
+		)
+	)
+
+	const EndInput = forwardRef<HTMLInputElement, any>(
+		({ value, onClick }, ref) => (
+			<button
+				className='inline-picker hire'
+				onClick={onClick}
+				type='button'
+				ref={ref}
+			>
+				{value || 'End'}
+			</button>
+		)
+	)
+
 	return (
 		<React.Fragment>
 			<span className='date-pickers'>
@@ -46,6 +72,8 @@ const Calendar = ({
 					dateFormat='dd/MM/yyyy'
 					placeholderText='Start Date'
 					disabledKeyboardNavigation
+					popperPlacement='top-start'
+					customInput={<StartInput />}
 				/>
 				<span> to </span>
 				<DatePicker
@@ -66,6 +94,8 @@ const Calendar = ({
 					dateFormat='dd/MM/yyyy'
 					placeholderText='End Date'
 					disabledKeyboardNavigation
+					popperPlacement='top-end'
+					customInput={<EndInput />}
 				/>
 			</span>
 		</React.Fragment>

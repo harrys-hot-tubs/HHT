@@ -16,6 +16,7 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 	const [duration, setDuration] = useState<number>(undefined)
 
 	const removeBooking = async () => {
+		localStorage.removeItem('paymentIntentSecret')
 		localStorage.removeItem('bookingData')
 		localStorage.removeItem('tub')
 		await deleteBookingReservation(bookingData.bookingID)
@@ -33,7 +34,6 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 		}
 	}, [bookingData])
 
-	console.log(`duration`, duration)
 	if (!bookingData || duration === undefined)
 		return (
 			<CountdownCircleTimer

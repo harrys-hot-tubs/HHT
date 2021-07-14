@@ -43,9 +43,7 @@ const useCalendar = (): CalendarInterface => {
 		if (endDate) resetEndDate()
 	}
 
-	const isValid = (): boolean => {
-		return validateDates(startDate, endDate)[0]
-	}
+	const isValid = (): boolean => validateDates(startDate, endDate)[0]
 
 	return {
 		startDate,
