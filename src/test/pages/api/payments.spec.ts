@@ -3,7 +3,7 @@ import {
 	invalidPaymentIntentRequestTubID,
 	invalidPaymentIntentRequestZeroPrice,
 	invalidPaymentIntentRequestZeroTime,
-	validPaymentIntentRequest,
+	validPaymentIntentRequest
 } from '@fixtures/paymentFixtures'
 import { tubs } from '@fixtures/tubFixtures'
 import { cleanupDatabase, connection } from '@helpers/DBHelper'
@@ -136,6 +136,10 @@ describe('post', () => {
 			} as APIError)
 		)
 	})
+})
+
+describe('patch', () => {
+	// TODO add tests.
 })
 
 afterAll(async () => {

@@ -166,7 +166,7 @@ describe('booleans', () => {
 		fallback: undefined,
 		key: key,
 		fromString: (v) => v === 'true',
-		toString: (v) => v.toString(),
+		toString: (v) => v?.toString(),
 		isType: (v: unknown): v is boolean => typeof v === 'boolean',
 	}
 

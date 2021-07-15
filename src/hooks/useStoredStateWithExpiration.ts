@@ -41,13 +41,13 @@ const useStoredStateWithExpiration = <T>({
 	const fetchState = () => {
 		const storedString = localStorage.getItem(key)
 		const item = JSON.parse(storedString) as unknown
-		if (isValueWithExpiration(item)) {
+		if (storedString !== undefined && isValueWithExpiration(item)) {
 			// If the value has expired or is the wrong type, reset.
 			if (Date.now() > item?.exp || !isType(fromString(item.value)))
 				return resetState()
 			return setState(fromString(item.value))
 		}
-		setState(fallback)
+		updateState(fallback)
 	}
 
 	/**

@@ -7,7 +7,7 @@ const useConsent = () =>
 	useStoredStateWithExpiration<boolean>({
 		fallback: undefined,
 		key: 'consent',
-		toString: (v) => v.toString(),
+		toString: (v) => v?.toString(),
 		fromString: (v) => v === 'true',
 		isType: (v: unknown): v is boolean => typeof v === 'boolean',
 	})

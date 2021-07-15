@@ -15,7 +15,9 @@ before(() => {
 })
 
 beforeEach(() => {
+	cy.clearLocalStorage()
 	cy.intercept('POST', `/api/tubs/${bookings[0].tub_id}`).as('getPrice')
+	cy.intercept('POST', `/api/payments`).as('createPaymentIntent')
 
 	setStorage({
 		consent: JSON.stringify({
@@ -44,6 +46,7 @@ beforeEach(() => {
 	setStorage(formData)
 	cy.visit('/checkout?tub_id=1')
 	cy.wait('@getPrice')
+	cy.wait('@createPaymentIntent')
 })
 
 it('sets the page title', () => {
@@ -101,7 +104,7 @@ describe('rendering', () => {
 	})
 
 	it('renders only these fields', () => {
-		cy.get('.form-group').should('have.length', 12)
+		cy.get('.form-group').should('have.length', 13)
 	})
 })
 
@@ -237,8 +240,6 @@ describe('credit card field', () => {
 			JSON.stringify(validCheckoutInformation)
 		)
 		cy.reload()
-
-		cy.wait('@getPrice')
 	})
 
 	it('shows error messages on card_error', () => {
@@ -332,6 +333,127 @@ describe('credit card field', () => {
 		cy.wait('@createOrder')
 
 		cy.location('pathname').should('eq', '/success')
+	})
+})
+
+describe('discount code field', () => {
+	it('displays an error message if a discount code does not exist', () => {
+		const promoCode = '3551456497'
+		cy.get('.time').should('be.visible')
+		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.should('be.visible')
+			.should('have.text', `Discount code ${promoCode} does not exist.`)
+	})
+
+	it('displays an error message if a discount code is inactive', () => {
+		const promoCode = 'TEST'
+		cy.get('.time').should('be.visible')
+		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.should('be.visible')
+			.should('have.text', `${promoCode} is not an active discount code.`)
+	})
+
+	it('reduces the price shown when a valid discount code is applied', () => {
+		const promoCode = 'TEST2020'
+		cy.get('.time').should('be.visible')
+		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.should('be.visible')
+			.should('have.text', `Discount code ${promoCode} applied.`)
+		cy.get('[data-testid=price]')
+			.should('be.visible')
+			.should('contain.text', '74.50')
+	})
+
+	it('does not allow the same discount code to be applied twice', () => {
+		const promoCode = 'TEST2020'
+		cy.get('.time').should('be.visible')
+		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.as('applyButton')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.as('feedback')
+			.should('be.visible')
+			.should('have.text', `Discount code ${promoCode} applied.`)
+		cy.get('[data-testid=price]')
+			.should('be.visible')
+			.should('contain.text', '74.50')
+
+		cy.get('@applyButton').click()
+		cy.get('@feedback').should(
+			'have.text',
+			`Discount code ${promoCode} already applied.`
+		)
+	})
+
+	it('allows the discount code to be changed', () => {
+		const firstPromoCode = 'TEST2020'
+		const secondPromoCode = 'TEST2021'
+
+		cy.get('.time').should('be.visible')
+		cy.get('[aria-label=discount-code]')
+			.as('discountCodeField')
+			.should('be.visible')
+			.type(firstPromoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.as('applyButton')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.as('feedback')
+			.should('be.visible')
+			.should('have.text', `Discount code ${firstPromoCode} applied.`)
+		cy.get('[data-testid=price]')
+			.as('price')
+			.should('be.visible')
+			.should('contain.text', '74.50')
+
+		cy.get('@discountCodeField').clear().type(secondPromoCode)
+		cy.get('@applyButton').click()
+		cy.get('@feedback').should(
+			'have.text',
+			`Discount code ${secondPromoCode} applied.`
+		)
+		cy.get('@price').should('contain.text', '139.00')
+	})
+
+	it('persists a discounted price between reloads', () => {
+		const promoCode = 'TEST2020'
+		cy.get('.time').should('be.visible')
+		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.should('be.visible')
+			.should('have.text', `Discount code ${promoCode} applied.`)
+		cy.get('[data-testid=price]')
+			.should('be.visible')
+			.should('contain.text', '74.50')
+
+		cy.reload()
+		cy.get('[data-testid=price]')
+			.should('be.visible')
+			.should('contain.text', '74.50')
 	})
 })
 

@@ -9,6 +9,8 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import React, { useState } from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
 
+// TODO combine this with other email field.
+
 interface ComponentProps {
 	email: string
 	confirmationCode: string
