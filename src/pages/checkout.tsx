@@ -1,7 +1,12 @@
-import { deleteBookingReservation } from '@components/BookingCountdownTimer'
+import BookingCountdownTimer, {
+	deleteBookingReservation,
+} from '@components/BookingCountdownTimer'
 import CheckoutForm from '@components/CheckoutForm'
+import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import useCheckoutInformation from '@hooks/useCheckoutInformation'
 import useStoredState from '@hooks/useStoredState'
+import useStoredStateWithExpiration from '@hooks/useStoredStateWithExpiration'
 import { Elements } from '@stripe/react-stripe-js'
 import {
 	CreateBookingRequest,
@@ -15,8 +20,10 @@ import {
 } from '@typings/api/Payment'
 import { getStripe } from '@utils/stripe'
 import axios, { AxiosResponse } from 'axios'
+import { isNumber } from 'lodash'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import Stripe from 'stripe'
@@ -36,7 +43,12 @@ const Checkout = ({ tubID }: PageProps) => {
 	const [postcode, setPostcode] = useState<string>('')
 	const [startDate, setStartDate] = useState<Date>(null)
 	const [endDate, setEndDate] = useState<Date>(null)
-	const [price, setPrice] = useState<number>(undefined)
+	const [price, setPrice] = useStoredState<number>({
+		fallback: undefined,
+		key: 'price',
+		fromString: (v) => Number(v),
+		toString: (v) => v.toString(),
+	})
 	const [paymentIntent, setPaymentIntent] = useStoredState<
 		Pick<Stripe.PaymentIntent, 'client_secret' | 'id'>
 	>({
@@ -52,115 +64,109 @@ const Checkout = ({ tubID }: PageProps) => {
 		fromString: JSON.parse,
 	})
 	const [user, setUser] = useCheckoutInformation()
+	const [viewers] = useStoredStateWithExpiration<number>({
+		fallback: 2 + Math.ceil(Math.random() * 4),
+		key: 'productViewers',
+		isType: isNumber,
+		ttl: 10 * 1000 * 60,
+		fromString: (v) => Number(v),
+		toString: (v) => v.toString(),
+	})
+
+	/**
+	 * @description Removes all booking related data from local storage and redirects to the hire page.
+	 */
+	const cleanupAndRedirect = () => {
+		localStorage.removeItem('bookingData')
+		localStorage.removeItem('paymentIntentSecret')
+		localStorage.removeItem('tub')
+		localStorage.removeItem('price')
+		router.push('/hire')
+	}
 
 	useEffect(() => {
 		try {
 			const startDate = new Date(localStorage.getItem('startDate'))
 			const endDate = new Date(localStorage.getItem('endDate'))
 			const postcode = localStorage.getItem('postcode')
+			const price = Number(localStorage.getItem('price'))
 			if (!postcode || !startDate || !endDate) {
 				throw new Error('Invalid state.')
 			} else {
-				;(async () => {
-					try {
+				if (!price) {
+					;(async () => {
 						const price = await getPrice(
 							startDate.toISOString(),
 							endDate.toISOString(),
 							tubID
 						)
 						setPrice(price)
-
-						// // Creates payment intent on every render.
-						// // TODO replace with update payment intent and fetch from localStorage.
-						// const secret = await getPaymentIntentSecret(
-						// 	startDate.toISOString(),
-						// 	endDate.toISOString(),
-						// 	tubID
-						// )
-						// setPaymentIntent(secret)
-					} catch (error) {
-						console.error(error.message)
-						router.push('/hire')
-					}
-				})()
+					})()
+				}
+				setPrice(price)
 				setPostcode(postcode)
 				setStartDate(startDate)
 				setEndDate(endDate)
 			}
 		} catch (error) {
 			console.error(error.message)
-			router.push('/hire')
+			cleanupAndRedirect()
 		}
 	}, [])
-
-	// Booking Data Loader
-	useEffect(() => {
-		if (tubID && startDate && endDate) {
-			;(async () => {
-				try {
-					const storedPaymentIntentSecret: Pick<
-						Stripe.PaymentIntent,
-						'client_secret' | 'id'
-					> = JSON.parse(localStorage.getItem('paymentIntentSecret'))
-					if (!storedPaymentIntentSecret) {
-						const secret = await getPaymentIntentSecret(
-							startDate.toISOString(),
-							endDate.toISOString(),
-							tubID
-						)
-						setPaymentIntent(secret)
-					} else {
-						// If booking data is valid.
-						setPaymentIntent(storedPaymentIntentSecret)
-					}
-				} catch (error) {
-					console.error(error.message)
-					localStorage.removeItem('bookingData')
-					localStorage.removeItem('paymentIntentSecret')
-					localStorage.removeItem('tub')
-					router.push('/hire')
-				}
-			})()
-		}
-	}, [tubID, startDate, endDate])
 
 	// Payment Intent Secret Loader
 	useEffect(() => {
 		if (tubID && startDate && endDate) {
-			;(async () => {
-				try {
-					const storedBookingData: BookingData = JSON.parse(
-						localStorage.getItem('bookingData')
-					)
-					if (!storedBookingData) {
-						const newBooking = await reserveBooking(
-							startDate.toISOString(),
-							endDate.toISOString(),
-							tubID
-						)
-						setBookingData({ ...newBooking, startTime: new Date() })
-					} else {
-						if (storedBookingData.exp < new Date().getTime()) {
-							// If booking data has expired
-							localStorage.removeItem('bookingData')
-							localStorage.removeItem('paymentIntentSecret')
-							localStorage.removeItem('tub')
-							await deleteBookingReservation(storedBookingData.bookingID)
-							router.push('/hire')
-						} else {
-							// If booking data is valid.
-							setBookingData(storedBookingData)
-						}
-					}
-				} catch (error) {
-					console.error(error.message)
-					localStorage.removeItem('bookingData')
-					localStorage.removeItem('paymentIntentSecret')
+			const storedPaymentIntentSecret: Pick<
+				Stripe.PaymentIntent,
+				'client_secret' | 'id'
+			> = JSON.parse(localStorage.getItem('paymentIntentSecret'))
+			if (!storedPaymentIntentSecret) {
+				// Create a new payment intent
+				getPaymentIntentSecret(
+					startDate.toISOString(),
+					endDate.toISOString(),
+					tubID
+				)
+					.then((secret) => setPaymentIntent(secret))
+					.catch((error) => {
+						console.error(error.message)
+						cleanupAndRedirect()
+					})
+			} else {
+				// If payment intent secret is already stored, then it means that the data is valid.
+				setPaymentIntent(storedPaymentIntentSecret)
+			}
+		}
+	}, [tubID, startDate, endDate])
 
-					localStorage.removeItem('tub')
-					router.push('/hire')
+	// Booking Data Loader
+	useEffect(() => {
+		if (tubID && startDate && endDate) {
+			const storedBookingData: BookingData = JSON.parse(
+				localStorage.getItem('bookingData')
+			)
+			if (!storedBookingData) {
+				reserveBooking(startDate.toISOString(), endDate.toISOString(), tubID)
+					.then((newBooking) =>
+						setBookingData({ ...newBooking, startTime: new Date() })
+					)
+					.catch((error) => {
+						console.error(error.message)
+						cleanupAndRedirect()
+					})
+			} else {
+				if (storedBookingData.exp < new Date().getTime()) {
+					console.error('Booking reservation expired')
+					// If booking data has expired
+					deleteBookingReservation(storedBookingData.bookingID).finally(() =>
+						cleanupAndRedirect()
+					)
+				} else {
+					// If booking data is valid.
+					setBookingData(storedBookingData)
 				}
-			})()
+			}
 		}
 	}, [tubID, startDate, endDate])
 
@@ -169,19 +175,40 @@ const Checkout = ({ tubID }: PageProps) => {
 			<Head>
 				<title>Checkout</title>
 			</Head>
-
-			<Elements stripe={getStripe()}>
-				<CheckoutForm
-					postcode={postcode}
-					startDate={startDate}
-					endDate={endDate}
-					bookingData={bookingData}
-					price={price}
-					paymentIntent={paymentIntent}
-					user={user}
-					setUser={setUser}
-				/>
-			</Elements>
+			<div className='checkout-outer'>
+				<span className='title-bar'>
+					<BookingCountdownTimer
+						bookingData={bookingData}
+						cleanup={cleanupAndRedirect}
+					/>
+					<div>
+						<h2 className='checkout-title'>Checkout</h2>
+						<small>
+							<strong suppressHydrationWarning>{viewers}</strong> people are
+							looking at this.
+						</small>
+					</div>
+					<Link href='/hire'>
+						<div className='back-button'>
+							<FontAwesomeIcon icon={faAngleLeft} /> Back
+						</div>
+					</Link>
+				</span>
+				<Elements stripe={getStripe()}>
+					<CheckoutForm
+						postcode={postcode}
+						startDate={startDate}
+						endDate={endDate}
+						bookingData={bookingData}
+						price={price}
+						paymentIntent={paymentIntent}
+						user={user}
+						setUser={setUser}
+						updatePaymentIntent={setPaymentIntent}
+						updatePrice={setPrice}
+					/>
+				</Elements>
+			</div>
 		</div>
 	)
 }

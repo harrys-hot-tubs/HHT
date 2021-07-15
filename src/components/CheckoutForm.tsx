@@ -1,10 +1,6 @@
-import BookingCountdownTimer from '@components/BookingCountdownTimer'
 import CheckoutErrors from '@components/CheckoutErrors'
 import SpinnerButton from '@components/SpinnerButton'
-import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CheckoutInformation } from '@hooks/useCheckoutInformation'
-import useStoredStateWithExpiration from '@hooks/useStoredStateWithExpiration'
 import { BookingData } from '@pages/checkout'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { StripeError } from '@stripe/stripe-js'
@@ -12,12 +8,11 @@ import { CreateOrderRequest } from '@typings/api/Order'
 import { BookingDB } from '@typings/db/Booking'
 import { priceToString } from '@utils/stripe'
 import axios, { AxiosResponse } from 'axios'
-import { isNumber } from 'lodash'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Col, Form } from 'react-bootstrap'
 import { Stripe } from 'stripe'
+import DiscountCodeField from './DiscountCodeField'
 
 interface ComponentProps {
 	/**
@@ -40,6 +35,10 @@ interface ComponentProps {
 	 */
 	user: CheckoutInformation
 	setUser: React.Dispatch<React.SetStateAction<CheckoutInformation>>
+	updatePaymentIntent: (
+		value: Pick<Stripe.PaymentIntent, 'client_secret' | 'id'>
+	) => void
+	updatePrice: React.Dispatch<React.SetStateAction<number>>
 }
 
 export const RefereeOptions = [
@@ -63,6 +62,8 @@ const CheckoutForm = ({
 	bookingData,
 	user,
 	setUser,
+	updatePaymentIntent,
+	updatePrice,
 }: ComponentProps) => {
 	const router = useRouter()
 	const stripe = useStripe()
@@ -73,14 +74,6 @@ const CheckoutForm = ({
 	const [checkoutError, setCheckoutError] = useState<StripeError | string>(
 		undefined
 	)
-	const [viewers] = useStoredStateWithExpiration<number>({
-		fallback: 2 + Math.ceil(Math.random() * 4),
-		key: 'productViewers',
-		isType: isNumber,
-		ttl: 10 * 1000 * 60,
-		toString: (v) => v.toString(),
-		fromString: (v) => Number(v),
-	})
 
 	const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		setLoading(true)
@@ -151,27 +144,13 @@ const CheckoutForm = ({
 			className='checkout-form'
 			role='main'
 		>
-			<span className='title-bar'>
-				<BookingCountdownTimer bookingData={bookingData} />
-				<div>
-					<h2 className='checkout-title'>Checkout</h2>
-					<small>
-						<strong>{viewers}</strong> people are looking at this.
-					</small>
-				</div>
-				<Link href='/hire'>
-					<div className='back-button'>
-						<FontAwesomeIcon icon={faAngleLeft} /> Back
-					</div>
-				</Link>
-			</span>
 			<div className='price-info'>
 				<small>
 					{' '}
 					{startDate ? startDate.toLocaleDateString() : 'XX/XX/XXXX'} to{' '}
 					{endDate ? endDate.toLocaleDateString() : 'XX/XX/XXXX'}
 				</small>
-				<h1 className='price'>
+				<h1 className='price' data-testid='price'>
 					{price !== undefined ? priceToString(price * 100) : '£XXX.XX'}
 				</h1>
 			</div>
@@ -184,12 +163,18 @@ const CheckoutForm = ({
 					style: {
 						base: {
 							fontSize: '16px',
+							fontFamily: 'Segoe UI',
 						},
 					},
 				}}
 				onChange={(event) => {
 					setCardComplete(event.complete)
 				}}
+			/>
+			<DiscountCodeField
+				paymentIntent={paymentIntent}
+				updatePaymentIntent={updatePaymentIntent}
+				updatePrice={updatePrice}
 			/>
 			<hr />
 			<h2>Contact Details</h2>

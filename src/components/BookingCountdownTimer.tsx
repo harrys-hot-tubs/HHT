@@ -2,25 +2,21 @@ import { BookingData } from '@pages/checkout'
 import { BookingDB } from '@typings/db/Booking'
 import axios from 'axios'
 import { differenceInSeconds } from 'date-fns'
-import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 interface ComponentProps {
 	bookingData: BookingData
+	cleanup: () => void
 }
 
-const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
-	const router = useRouter()
-	const [duration, setDuration] = useState<number>(undefined)
+const BookingCountdownTimer = ({ bookingData, cleanup }: ComponentProps) => {
+	const [duration, setDuration] = useState<number>(0)
 
 	const removeBooking = async () => {
-		localStorage.removeItem('paymentIntentSecret')
-		localStorage.removeItem('bookingData')
-		localStorage.removeItem('tub')
 		await deleteBookingReservation(bookingData.bookingID)
-		router.push('/hire')
+		cleanup()
 	}
 
 	useEffect(() => {
@@ -34,7 +30,7 @@ const BookingCountdownTimer = ({ bookingData }: ComponentProps) => {
 		}
 	}, [bookingData])
 
-	if (!bookingData || duration === undefined)
+	if (!bookingData || duration <= 0)
 		return (
 			<CountdownCircleTimer
 				isPlaying={false}
