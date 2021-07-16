@@ -233,7 +233,7 @@ const CheckoutForm = ({
 					required
 					autoComplete='email'
 					value={user.email}
-					onChange={(e) => setUser({ ...user, email: e.target.value })}
+					onChange={(e) => setUser({ ...user, email: e.target.value.trim() })}
 					aria-describedby='email-error'
 				/>
 				<Form.Control.Feedback type='invalid' id='email-error' role='alert'>
