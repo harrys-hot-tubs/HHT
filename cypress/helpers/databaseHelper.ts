@@ -34,13 +34,11 @@ export const seedDatabase = async () => {
 	}
 }
 
-export const arbitraryInsert = async (tableName: string, data: any[]) => {
-	return connection(tableName).insert(data)
-}
+export const arbitraryInsert = async (tableName: string, data: any[]) =>
+	connection(tableName).insert(data)
 
-export const clearTable = async (tableName: string) => {
-	return connection(tableName).del('*')
-}
+export const clearTable = async (tableName: string) =>
+	connection(tableName).del('*')
 
 export const addAccountsToDatabase = async () => {
 	await forEachAsync(accounts, async (account) => {

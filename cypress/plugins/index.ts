@@ -48,19 +48,19 @@ module.exports = (on, config) => {
 				resolve(true)
 			})
 		},
-		async 'defaults:db'() {
+		'defaults:db'() {
 			return seedDatabase()
 		},
-		async DBClear({ tableName }: { tableName: string }) {
+		DBClear({ tableName }: { tableName: string }) {
 			return clearTable(tableName)
 		},
-		async DBInsert({ tableName, data }: { tableName: string; data: any[] }) {
+		DBInsert({ tableName, data }: { tableName: string; data: any[] }) {
 			return arbitraryInsert(tableName, data)
 		},
-		async addAccounts() {
+		addAccounts() {
 			return addAccountsToDatabase()
 		},
-		async cleanup() {
+		cleanup() {
 			return cleanupConnection()
 		},
 		generateToken({ index }: { index: number }) {
