@@ -15,6 +15,8 @@ const validatePostcode = async (
 	try {
 		if (!postcode) return [false, 'missing']
 
+		postcode = postcode.trim() // Remove whitespace
+
 		if (isBlocked(postcode)) return [false, 'blocked']
 
 		const [valid, formatError] = await isPostcode(postcode)
