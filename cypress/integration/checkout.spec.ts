@@ -520,7 +520,7 @@ describe('countdown', () => {
 		})
 	})
 
-	it('redirects to the hire page when opened after expiration', () => {
+	it('regenerates booking if possible when opened after expiration', () => {
 		cy.get('.time').then(($time) => {
 			const [startMinutes, startSeconds] = $time.text().toString().split(':')
 			cy.wrap(Number(startSeconds)).should('be.lessThan', 60)
@@ -542,7 +542,7 @@ describe('countdown', () => {
 		cy.reload()
 		cy.wait('@delete')
 
-		cy.location('pathname').should('eq', '/hire')
+		cy.location('pathname').should('eq', '/checkout')
 	})
 
 	it('sends a request to delete booking on expiration', () => {
