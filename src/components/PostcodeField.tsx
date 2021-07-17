@@ -59,7 +59,7 @@ const PostcodeField = ({
 					isInvalid={isInvalid}
 					isValid={isValid}
 					value={postcode}
-					onChange={(e) => onChange(e.target.value)}
+					onChange={(e) => onChange(e.target.value.trim())}
 				/>
 				<InputGroup.Append>
 					<SpinnerButton

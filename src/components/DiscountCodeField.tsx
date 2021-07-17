@@ -65,7 +65,7 @@ const DiscountCodeField = ({
 				<Form.Control
 					aria-label='discount-code'
 					value={discountCode}
-					onChange={(event) => setDiscountCode(event.target.value)}
+					onChange={(event) => setDiscountCode(event.target.value.trim())}
 					placeholder='Discount Code'
 					isInvalid={feedback.type === 'invalid'}
 					isValid={feedback.type === 'valid'}
