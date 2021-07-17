@@ -35,7 +35,7 @@ const Hire = () => {
 			AvailabilityRequest,
 			AxiosResponse<AvailabilityResponse>
 		>('/api/availability', {
-			closest: await getClosestDispatcher(postcode.value),
+			closest: await getClosestDispatcher(postcode.value.trim()),
 			startDate: calendar.startDate.toISOString(),
 			endDate: calendar.endDate.toISOString(),
 		})

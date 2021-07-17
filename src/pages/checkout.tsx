@@ -1,5 +1,5 @@
 import BookingCountdownTimer, {
-	deleteBookingReservation,
+	deleteBookingReservation
 } from '@components/BookingCountdownTimer'
 import CheckoutForm from '@components/CheckoutForm'
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -11,15 +11,16 @@ import { Elements } from '@stripe/react-stripe-js'
 import {
 	CreateBookingRequest,
 	CreateBookingResponse,
-	CreateBookingSuccess,
+	CreateBookingSuccess
 } from '@typings/api/Bookings'
 import {
 	PaymentIntentRequest,
 	PriceRequest,
-	PriceResponse,
+	PriceResponse
 } from '@typings/api/Payment'
 import { getStripe } from '@utils/stripe'
 import axios, { AxiosResponse } from 'axios'
+import { subMinutes } from 'date-fns'
 import { isNumber } from 'lodash'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
@@ -95,11 +96,7 @@ const Checkout = ({ tubID }: PageProps) => {
 			} else {
 				if (!price) {
 					;(async () => {
-						const price = await getPrice(
-							startDate.toISOString(),
-							endDate.toISOString(),
-							tubID
-						)
+						const price = await getPrice(startDate, endDate, tubID)
 						setPrice(price)
 					})()
 				}
@@ -123,11 +120,7 @@ const Checkout = ({ tubID }: PageProps) => {
 			> = JSON.parse(localStorage.getItem('paymentIntentSecret'))
 			if (!storedPaymentIntentSecret) {
 				// Create a new payment intent
-				getPaymentIntentSecret(
-					startDate.toISOString(),
-					endDate.toISOString(),
-					tubID
-				)
+				getPaymentIntentSecret(startDate, endDate, tubID)
 					.then((secret) => setPaymentIntent(secret))
 					.catch((error) => {
 						console.error(error.message)
@@ -147,7 +140,7 @@ const Checkout = ({ tubID }: PageProps) => {
 				localStorage.getItem('bookingData')
 			)
 			if (!storedBookingData) {
-				reserveBooking(startDate.toISOString(), endDate.toISOString(), tubID)
+				reserveBooking(startDate, endDate, tubID)
 					.then((newBooking) =>
 						setBookingData({ ...newBooking, startTime: new Date() })
 					)
@@ -159,9 +152,16 @@ const Checkout = ({ tubID }: PageProps) => {
 				if (storedBookingData.exp < new Date().getTime()) {
 					console.error('Booking reservation expired')
 					// If booking data has expired
-					deleteBookingReservation(storedBookingData.bookingID).finally(() =>
-						cleanupAndRedirect()
-					)
+					deleteBookingReservation(storedBookingData.bookingID).then(() => {
+						reserveBooking(startDate, endDate, tubID)
+							.then((newBooking) =>
+								setBookingData({ ...newBooking, startTime: new Date() })
+							)
+							.catch((error) => {
+								console.error(error.message)
+								cleanupAndRedirect()
+							})
+					})
 				} else {
 					// If booking data is valid.
 					setBookingData(storedBookingData)
@@ -221,15 +221,18 @@ const Checkout = ({ tubID }: PageProps) => {
  * @returns The price of booking the tub from the start date until the end date.
  */
 const getPrice = async (
-	startDate: string,
-	endDate: string,
+	startDate: Date,
+	endDate: Date,
 	id: number
 ): Promise<number> => {
 	const res = await axios.post<PriceRequest, AxiosResponse<PriceResponse>>(
 		`api/tubs/${id}`,
 		{
-			startDate,
-			endDate,
+			startDate: subMinutes(
+				startDate,
+				startDate.getTimezoneOffset()
+			).toISOString(),
+			endDate: subMinutes(endDate, endDate.getTimezoneOffset()).toISOString(),
 		}
 	)
 	if (res.status !== 200) throw new Error('Malformed price request.')
@@ -245,16 +248,19 @@ const getPrice = async (
  * @returns The secret associated with a newly created payment intent.
  */
 const getPaymentIntentSecret = async (
-	startDate: string,
-	endDate: string,
+	startDate: Date,
+	endDate: Date,
 	id: number
 ): Promise<Pick<Stripe.PaymentIntent, 'client_secret' | 'id'>> => {
 	const res = await axios.post<
 		PaymentIntentRequest,
 		AxiosResponse<Pick<Stripe.PaymentIntent, 'client_secret' | 'id'>>
 	>('/api/payments', {
-		startDate,
-		endDate,
+		startDate: subMinutes(
+			startDate,
+			startDate.getTimezoneOffset()
+		).toISOString(),
+		endDate: subMinutes(endDate, endDate.getTimezoneOffset()).toISOString(),
 		tubID: id,
 	})
 	if (res.status !== 200) throw new Error('Malformed price request.')
@@ -270,8 +276,8 @@ const getPaymentIntentSecret = async (
  * @returns The booking_id and expiry time of the customer's reserved booking.
  */
 const reserveBooking = async (
-	startDate: string,
-	endDate: string,
+	startDate: Date,
+	endDate: Date,
 	id: number
 ): Promise<Omit<CreateBookingSuccess, 'error'>> => {
 	try {
@@ -279,8 +285,12 @@ const reserveBooking = async (
 			CreateBookingRequest,
 			AxiosResponse<CreateBookingResponse>
 		>('/api/bookings', {
-			startDate,
-			endDate,
+			startDate: subMinutes(
+				startDate,
+				startDate.getTimezoneOffset()
+			).toISOString(),
+			endDate: subMinutes(endDate, endDate.getTimezoneOffset()).toISOString(),
+
 			tubID: id,
 			expiryTime: 10,
 		})

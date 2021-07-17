@@ -1,7 +1,7 @@
 import { ConnectedRequest } from '@typings/api'
 import {
 	CreateBookingRequest,
-	CreateBookingResponse,
+	CreateBookingResponse
 } from '@typings/api/Bookings'
 import { BookingDB } from '@typings/db/Booking'
 import db from '@utils/db'

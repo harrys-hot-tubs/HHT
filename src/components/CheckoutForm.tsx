@@ -123,6 +123,12 @@ const CheckoutForm = ({
 				setCheckoutError(result.error)
 				return setLoading(false)
 			} else {
+				// Clear stale data from local storage.
+				localStorage.removeItem('bookingData')
+		localStorage.removeItem('paymentIntentSecret')
+		localStorage.removeItem('tub')
+		localStorage.removeItem('price')
+
 				const intent = result.paymentIntent
 				const { id } = intent
 				if (intent.status === 'succeeded') {

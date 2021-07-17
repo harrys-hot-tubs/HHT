@@ -47,6 +47,11 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 	}, [tubs, startDate, endDate])
 
 	const onSelectTub = (id: number) => {
+		// Remove any stale data from local storage.
+		localStorage.removeItem('bookingData')
+		localStorage.removeItem('paymentIntentSecret')
+		localStorage.removeItem('price')
+
 		localStorage.setItem('tub', id.toString())
 		router.push(`/checkout?tub_id=${id}`)
 	}
