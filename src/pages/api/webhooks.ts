@@ -88,6 +88,8 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 			)[0]
 
 			await sendEmailNotification(order, db, paymentIntent)
+			await sendConfirmationEmail(order, db)
+
 			res.status(200).json({
 				received: true,
 				message: {
@@ -108,6 +110,7 @@ const post = async (req: ConnectedRequest, res: NextApiResponse) => {
 
 /**
  * Sends an email notification to Harry informing him of the details of a processed order.
+ *
  * @param order Information describing a specific order, stored in the database.
  * @param db A Knex instance to allow connection to the database.
  * @param paymentIntent The payment intent of the order.
@@ -149,7 +152,7 @@ const sendEmailNotification = async (
 						},
 					],
 					Subject: `Online Booking`,
-					htmlPart: emailTemplate(
+					htmlPart: notificationTemplate(
 						order,
 						paymentIntent,
 						name,
@@ -165,7 +168,52 @@ const sendEmailNotification = async (
 	}
 }
 
-const emailTemplate = (
+/**
+ * Sends an email notification to the customer indicating that their order has been paid for.
+ *
+ * @param order Information describing a specific order, stored in the database.
+ * @param db A Knex instance to allow connection to the database.
+ */
+const sendConfirmationEmail = async (order: OrderDB, db: Knex) => {
+	try {
+		const { booking_duration } = await db<LocationDB>('locations')
+			.join('tubs', 'tubs.location_id', 'locations.location_id')
+			.join('bookings', 'bookings.tub_id', 'tubs.tub_id')
+			.join('orders', 'orders.booking_id', 'bookings.booking_id')
+			.where('orders.id', order.id)
+			.select('locations.name', 'bookings.booking_duration', 'tubs.tub_id')
+			.first()
+
+		await mailjet.post('send', { version: 'v3.1' }).request({
+			Messages: [
+				{
+					From: {
+						Email: 'no-reply@harryshottubs.com',
+						Name: "Harry's Hot Tubs",
+					},
+					To: [
+						{
+							Email: order.email,
+							Name: `${order.first_name} ${order.last_name}`,
+						},
+					],
+					Bcc: [
+						{
+							Email: 'bridges.wood@gmail.com',
+							Name: 'Max Wood',
+						},
+					],
+					Subject: `Booking Confirmation`,
+					htmlPart: confirmationTemplate(order, booking_duration),
+				},
+			],
+		})
+	} catch (error) {
+		console.error(error.message)
+	}
+}
+
+const notificationTemplate = (
 	order: OrderDB,
 	paymentIntent: Stripe.PaymentIntent,
 	name: string,
@@ -196,6 +244,22 @@ const emailTemplate = (
 		<p>Hot tub id: ${tub.tub_id}</p>
 		<p>Hot tub capacity: ${tub.max_capacity}</p>
 	</section> `
+
+const confirmationTemplate = (order: OrderDB, booking_duration: string) =>
+	`
+<h1>Your booking is confirmed, ${order.first_name}!</h1>
+<section>
+<p>
+Thank you for your order! Your tub will be delivered to your address at ${
+		order.postcode
+	} on ${booking_duration.slice(
+		1,
+		11
+	)}. A member of our team will be in touch <strong>within 48 hours of the delivery date</strong> with an accurate delivery time.
+</p>
+<p> In the meantime, if you have any questions, please don't hesitate to contact us at <a href="mailto:harry@harryshottubs.com">harry@harryshottubs.com</a>.</p>
+</section>
+`
 
 const formatDuration = (duration: string) => {
 	return `${duration.slice(1, 11)} to ${duration.slice(12, -1)}`
