@@ -252,9 +252,8 @@ const confirmationTemplate = (order: OrderDB, booking_duration: string) =>
 <p>
 Thank you for your order! Your tub will be delivered to your address at ${
 		order.postcode
-	} on ${booking_duration.slice(
-		1,
-		11
+	} on ${new Date(booking_duration.slice(1, 11)).toLocaleDateString(
+		'en-GB'
 	)}. A member of our team will be in touch <strong>within 48 hours of the delivery date</strong> with an accurate delivery time.
 </p>
 <p> In the meantime, if you have any questions, please don't hesitate to contact us at <a href="mailto:harry@harryshottubs.com">harry@harryshottubs.com</a>.</p>
