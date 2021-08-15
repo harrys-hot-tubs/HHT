@@ -532,9 +532,10 @@ describe('deposit field', () => {
 			expect(Number(price)).to.be.lessThan(60)
 		})
 
-		cy.get('[data-testid=deposit]')
-			.should('be.visible')
-			.should('contain.text', '60')
+		cy.get('[data-testid=deposit]').then(($price) => {
+			const price = $price.text().substr(1)
+			expect(Number(price)).to.be.lessThan(60)
+		})
 	})
 })
 
