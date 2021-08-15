@@ -28,6 +28,8 @@
 .title-bar > .back-button {
 	margin-left: auto;
 	margin-top: 0.25rem;
+	margin-bottom: auto;
+	cursor: pointer;
 }
 
 .title-bar > h2 {
@@ -49,6 +51,18 @@
 .price-info > .price {
 	font-size: 40pt;
 }
+
+.deposit-info {
+	width: min(100%, 300px);
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.form-check-label {
+	margin-bottom: 0.25rem;
+}
+
 .discount-code-group {
 	margin-top: 1rem;
 	font-size: 16px;

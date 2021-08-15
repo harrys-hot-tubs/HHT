@@ -145,12 +145,6 @@ const sendEmailNotification = async (
 							Name: 'Harry Strudwick',
 						},
 					],
-					Bcc: [
-						{
-							Email: 'bridges.wood@gmail.com',
-							Name: 'Max Wood',
-						},
-					],
 					Subject: `Online Booking`,
 					htmlPart: notificationTemplate(
 						order,
@@ -197,12 +191,7 @@ const sendConfirmationEmail = async (order: OrderDB, db: Knex) => {
 							Name: `${order.first_name} ${order.last_name}`,
 						},
 					],
-					Bcc: [
-						{
-							Email: 'bridges.wood@gmail.com',
-							Name: 'Max Wood',
-						},
-					],
+
 					Subject: `Booking Confirmation`,
 					htmlPart: confirmationTemplate(order, booking_duration),
 				},
@@ -243,7 +232,16 @@ const notificationTemplate = (
 		<p>To be delivered from: ${name}</p>
 		<p>Hot tub id: ${tub.tub_id}</p>
 		<p>Hot tub capacity: ${tub.max_capacity}</p>
-	</section> `
+	</section>
+	${
+		paymentIntent.metadata.remainder_to_be_paid
+			? `<section>
+		<h2>Remaining Payment</h2>
+		<p>£${priceToString(Number(paymentIntent.metadata.remainder_to_be_paid))}</p>
+	</section>`
+			: null
+	}
+	`
 
 const confirmationTemplate = (order: OrderDB, booking_duration: string) =>
 	`

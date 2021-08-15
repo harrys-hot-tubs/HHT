@@ -104,7 +104,7 @@ describe('rendering', () => {
 	})
 
 	it('renders only these fields', () => {
-		cy.get('.form-group').should('have.length', 13)
+		cy.get('.form-group').should('have.length', 14)
 	})
 })
 
@@ -437,6 +437,7 @@ describe('discount code field', () => {
 
 	it('persists a discounted price between reloads', () => {
 		const promoCode = 'TEST2020'
+
 		cy.get('.time').should('be.visible')
 		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
 		cy.get('[data-testid=apply-discount-code-button]')
@@ -454,6 +455,86 @@ describe('discount code field', () => {
 		cy.get('[data-testid=price]')
 			.should('be.visible')
 			.should('contain.text', '74.50')
+	})
+})
+
+describe('deposit field', () => {
+	it('sets a deposit of £60 for prices greater than £60', () => {
+		cy.intercept('GET', '/api/payments/*').as('getPI')
+
+		cy.get('[data-testid=price]').should('contain.text', '149.00')
+		cy.get('[data-testid=deposit]')
+			.should('be.visible')
+			.should('contain.text', '60')
+
+		cy.get('[data-testid=cash-on-delivery-button]').click()
+
+		cy.wait('@getPI')
+		cy.get('[data-testid=price]').should('contain.text', '60.00')
+	})
+
+	it('sets a deposit of 80% for prices less than £60', () => {
+		const promoCode = 'TEST2022'
+		cy.intercept('GET', '/api/payments/*').as('getPI')
+
+		cy.get('.time').should('be.visible')
+		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.should('be.visible')
+			.should('have.text', `Discount code ${promoCode} applied.`)
+
+		cy.wait('@getPI')
+		cy.scrollTo(0, 0)
+
+		cy.get('[data-testid=price]').then(($price) => {
+			const price = $price.text().substr(1)
+			expect(Number(price)).to.be.lessThan(60)
+		})
+
+		cy.get('[data-testid=deposit]')
+			.should('be.visible')
+			.should('contain.text', '60')
+	})
+
+	it('displays explanatory text if the deposit is enabled', () => {
+		cy.get('[data-testid=cash-on-delivery-button]').click()
+		cy.get('[data-testid=deposit-info]').should(
+			'contain.text',
+			'Please note this booking deposit is non-refundable and the remaining balance is to be paid via bank transfer upon delivery.'
+		)
+	})
+
+	it('correctly reacts when a discount code is applied', () => {
+		const promoCode = 'TEST2022'
+		cy.intercept('GET', '/api/payments/*').as('getPI')
+
+		cy.get('.time').should('be.visible')
+		cy.get('[data-testid=cash-on-delivery-button]').click()
+
+		cy.get('[aria-label=discount-code]').should('be.visible').type(promoCode)
+		cy.get('[data-testid=apply-discount-code-button]')
+			.should('be.visible')
+			.click()
+
+		cy.get('#discount-code-feedback')
+			.should('be.visible')
+			.should('have.text', `Discount code ${promoCode} applied.`)
+
+		cy.wait('@getPI')
+		cy.scrollTo(0, 0)
+
+		cy.get('[data-testid=price]').then(($price) => {
+			const price = $price.text().substr(1)
+			expect(Number(price)).to.be.lessThan(60)
+		})
+
+		cy.get('[data-testid=deposit]')
+			.should('be.visible')
+			.should('contain.text', '60')
 	})
 })
 
