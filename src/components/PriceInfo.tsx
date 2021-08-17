@@ -107,7 +107,7 @@ const PriceInfo = ({
 			<h1 className='price' data-testid='price'>
 				{price !== undefined ? priceToString(price * 100) : '£XXX.XX'}
 			</h1>
-			<Form.Group>
+			<Form.Group className='cash-on-delivery-group'>
 				<Form.Check
 					data-testid='cash-on-delivery-button'
 					disabled={loading}
@@ -135,13 +135,16 @@ const PriceInfo = ({
 						</span>
 					}
 				/>
-				{loading ? <Spinner animation='border' /> : null}
-				{cashOnDelivery ? (
-					<Form.Text className='deposit-info' data-testid='deposit-info'>
-						Please note this booking deposit is non-refundable and the remaining
-						balance is to be paid via bank transfer upon delivery.
-					</Form.Text>
-				) : null}
+				<div className={'spinner' + (loading ? ' expanded' : '')}>
+					<Spinner animation='border' />
+				</div>
+				<Form.Text
+					className={'deposit-info' + (cashOnDelivery ? ' expanded' : '')}
+					data-testid='deposit-info'
+				>
+					Please note this booking deposit is non-refundable and the remaining
+					balance is to be paid via bank transfer upon delivery.
+				</Form.Text>
 			</Form.Group>
 		</div>
 	)
