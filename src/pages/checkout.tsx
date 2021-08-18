@@ -1,5 +1,5 @@
 import BookingCountdownTimer, {
-	deleteBookingReservation
+	deleteBookingReservation,
 } from '@components/BookingCountdownTimer'
 import CheckoutForm from '@components/CheckoutForm'
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -11,12 +11,12 @@ import { Elements } from '@stripe/react-stripe-js'
 import {
 	CreateBookingRequest,
 	CreateBookingResponse,
-	CreateBookingSuccess
+	CreateBookingSuccess,
 } from '@typings/api/Bookings'
 import {
 	PaymentIntentRequest,
 	PriceRequest,
-	PriceResponse
+	PriceResponse,
 } from '@typings/api/Payment'
 import { getStripe } from '@utils/stripe'
 import axios, { AxiosResponse } from 'axios'
@@ -82,7 +82,7 @@ const Checkout = ({ tubID }: PageProps) => {
 		localStorage.removeItem('paymentIntentSecret')
 		localStorage.removeItem('tub')
 		localStorage.removeItem('price')
-		router.push('/hire')
+		router.push('/#book')
 	}
 
 	useEffect(() => {
@@ -188,7 +188,7 @@ const Checkout = ({ tubID }: PageProps) => {
 							looking at this.
 						</small>
 					</div>
-					<Link href='/hire'>
+					<Link href='/#book'>
 						<div className='back-button'>
 							<FontAwesomeIcon icon={faAngleLeft} /> Back
 						</div>
@@ -315,7 +315,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	else
 		return {
 			redirect: {
-				destination: '/hire',
+				destination: '/#book',
 				permanent: false,
 			},
 		}

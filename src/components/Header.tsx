@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 const Header = () => {
 	return (
-		<Navbar bg='pink' expand='sm'>
+		<Navbar bg='pink' expand='md'>
 			<Navbar.Brand href='/'>
 				<Image
 					src='/logo.png'

@@ -18,11 +18,17 @@
 
 .gdpr-button-container {
 	position: absolute;
-	bottom: 1em;
+	bottom: calc(1em + 130px);
 	left: 1em;
 }
 
 .delete-button {
 	width: 100%;
 	margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+	.gdpr-button-container {
+		bottom: calc(1em + 50px);
+	}
 }

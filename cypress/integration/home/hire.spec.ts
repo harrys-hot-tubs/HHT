@@ -3,7 +3,7 @@ import { locations } from '@fixtures/locationFixtures'
 import { birmingham } from '@fixtures/postcodeFixtures'
 import { failedRangeResponse } from '@fixtures/rangeFixtures'
 import { addHours, addMonths, format, isSameDay } from 'date-fns'
-import { setStorage } from '../helpers/localStorageHelper'
+import { setStorage } from '../../helpers/localStorageHelper'
 
 const date = new Date('2021-07-05')
 
@@ -16,12 +16,12 @@ beforeEach(() => {
 	})
 
 	cy.clock(date) // Avoid problem of testing on weekends.
-	cy.visit('/hire')
+	cy.visit('/#book')
 	cy.tick(1000)
 })
 
 it('renders heading', () => {
-	cy.get('[role=heading]').should('exist').should('have.text', 'Hire a hot tub')
+	cy.get('section#book > h2').should('contain.text', 'Hire a Tub')
 })
 
 it('sets the page title', () => {
@@ -29,9 +29,8 @@ it('sets the page title', () => {
 })
 
 describe('postcode field', () => {
-	it('renders all parts', () => {
+	it('renders field', () => {
 		cy.get('[aria-label=postcode]').should('exist')
-		cy.get('[data-testid=postcode-validate]').should('exist')
 	})
 
 	it('recognises valid postcode', () => {
@@ -71,7 +70,8 @@ describe('postcode field', () => {
 			.as('postcode-field')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid=postcode-validate]').click()
+
+		cy.tick(1000)
 
 		cy.wait('@validatePostcode')
 
@@ -84,7 +84,7 @@ describe('postcode field', () => {
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid=postcode-validate]').click()
+		cy.tick(1000)
 
 		cy.get('[role=alert]')
 			.should('be.visible')
@@ -97,11 +97,12 @@ describe('postcode field', () => {
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid=postcode-validate]').click()
+
+		cy.tick(1000)
 
 		cy.get('[role=alert]')
 			.should('be.visible')
-			.contains('Delivery in your area is subject to change.')
+			.should('contain.text', 'Delivery in your area is subject to change.')
 	})
 
 	it('recognises postcodes that are out of range', () => {
@@ -115,7 +116,7 @@ describe('postcode field', () => {
 		cy.get('[aria-label=postcode]')
 			.type(testedPostcode)
 			.should('have.attr', 'value', testedPostcode)
-		cy.get('[data-testid=postcode-validate]').click()
+		cy.tick(1000)
 
 		cy.wait('@validatePostcode')
 

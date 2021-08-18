@@ -2,6 +2,11 @@
 	background-color: #efa9e6;
 }
 
+.navbar {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
 .justify-content-end {
 	flex-grow: 1;
 }
@@ -17,8 +22,10 @@
 }
 
 .navbar-brand {
-	margin-left: 16px;
+	margin: 0;
+	padding-top: 0;
 	padding-bottom: 0;
+	height: 80px;
 }
 
 .account-links {

@@ -9,6 +9,12 @@ export type PostcodeError =
 	| 'blocked'
 	| 'insurance'
 
+/**
+ * Validates a postcode against the official specification {@link https://bit.ly/3g8eewL} and other specific constraints.
+ *
+ * @param {string} postcode The postcode to validate.
+ * @returns {Promise<[boolean, PostcodeError]>} Returns true if the postcode is valid, false otherwise.
+ */
 const validatePostcode = async (
 	postcode: string
 ): Promise<[boolean, PostcodeError]> => {
