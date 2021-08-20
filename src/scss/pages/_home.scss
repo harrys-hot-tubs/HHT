@@ -101,6 +101,10 @@ section#book {
 	width: min(90%, 600px);
 }
 
+section:last-child {
+	margin-bottom: 2rem;
+}
+
 @media screen and (min-width: 768px) {
 	.title {
 		font-size: 60pt;

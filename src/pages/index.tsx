@@ -1,7 +1,5 @@
 import HireForm from '@components/HireForm'
-import Testimonials from '@components/Testimonials'
 import Head from 'next/head'
-import Image from 'next/image'
 import React from 'react'
 
 /**
@@ -51,7 +49,7 @@ const Home = () => {
 				<h2>Hire a Tub</h2>
 				<HireForm />
 			</section>
-			<section id='about'>
+			{/* <section id='about'>
 				<h2>About Us</h2>
 				<Image
 					src='/about-image.jpeg'
@@ -75,7 +73,7 @@ const Home = () => {
 						viverra.
 					</p>
 				</div>
-			</section>
+			</section> */}
 		</div>
 	)
 }
