@@ -123,7 +123,12 @@ const AccountUpdateForm = ({ account, updateCache }: ComponentProps) => {
 	}
 
 	return (
-		<Form noValidate validated={validated} onSubmit={handleSubmit}>
+		<Form
+			noValidate
+			validated={validated}
+			onSubmit={handleSubmit}
+			className='account-update-form'
+		>
 			<Alert
 				variant={alertProps.variant}
 				show={alertProps.show}

@@ -2,6 +2,10 @@
 	display: flex !important;
 	flex-direction: column;
 
+	main {
+		margin-bottom: 1rem;
+	}
+
 	main > h1,
 	h2 {
 		text-align: center;
@@ -16,19 +20,19 @@
 	}
 }
 
-.gdpr-button-container {
-	position: absolute;
-	bottom: calc(1em + 130px);
-	left: 1em;
+.account-update-form {
+	padding: 1rem;
+}
+
+.button-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding-right: 1rem;
+	padding-left: 1rem;
 }
 
 .delete-button {
 	width: 100%;
 	margin-top: 1rem;
-}
-
-@media (min-width: 768px) {
-	.gdpr-button-container {
-		bottom: calc(1em + 50px);
-	}
 }
