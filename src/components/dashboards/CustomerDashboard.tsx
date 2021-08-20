@@ -78,9 +78,9 @@ const CustomerDashboard = () => {
 				<section>
 					<h2>Account Update Form</h2>
 					<AccountUpdateForm account={account} updateCache={mutate} />
-					<DeleteAccountButton account={account} />
 				</section>
-				<section className='gdpr-button-container'>
+				<section className='button-container'>
+					<DeleteAccountButton account={account} />
 					<TooltipButton
 						data-testid='gdpr-request-button-container'
 						placement='top-end'

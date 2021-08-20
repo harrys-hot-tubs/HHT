@@ -125,9 +125,9 @@ const CheckoutForm = ({
 			} else {
 				// Clear stale data from local storage.
 				localStorage.removeItem('bookingData')
-		localStorage.removeItem('paymentIntentSecret')
-		localStorage.removeItem('tub')
-		localStorage.removeItem('price')
+				localStorage.removeItem('paymentIntentSecret')
+				localStorage.removeItem('tub')
+				localStorage.removeItem('price')
 
 				const intent = result.paymentIntent
 				const { id } = intent

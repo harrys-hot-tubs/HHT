@@ -9,6 +9,11 @@ const Home = () => {
 	return (
 		<div className='outer'>
 			<Head>
+				<script
+					key='business schema'
+					type='application/ld+json'
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA) }}
+				/>
 				<title>Harry's Hot Tubs</title>
 			</Head>
 			<h1 className='title' role='heading' aria-level={1}>
@@ -76,6 +81,44 @@ const Home = () => {
 			</section> */}
 		</div>
 	)
+}
+
+/**
+ * Schema for the page.
+ */
+const SCHEMA = {
+	'@context': 'http://schema.org',
+	'@type': 'Corporation',
+	name: 'Harry’s Hot Tubs',
+	description:
+		'With 5 star reviews from over 2,500 successful hires, Harry’s Hot Tubs is the number one hot tub rental company in the UK.',
+	telephone: '+44 7554 002075',
+	address: {
+		'@type': 'PostalAddress',
+		addressCountry: 'GB',
+		addressLocality: 'Tiverton',
+		addressRegion: 'Devon',
+		postalCode: 'EX16 7RU',
+		streetAddress: 'Longham Farm, Cove',
+	},
+	aggregateRating: {
+		'@type': 'AggregateRating',
+		ratingValue: '4.9',
+		bestRating: '5',
+		worstRating: '1',
+		ratingCount: '187',
+		url: 'https://www.facebook.com/harryshottubsfb/reviews',
+	},
+	areaServed: 'GB',
+	email: 'harry@harryshottubs.com',
+	founder: {
+		'@type': 'Person',
+		givenName: 'Harry',
+		familyName: 'Strudwick',
+		jobTitle: 'Founder',
+		telephone: '+44 7554 002075',
+	},
+	logo: 'https://www.harryshottubs.com/logo.png',
 }
 
 export default Home

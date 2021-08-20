@@ -20,7 +20,9 @@ const SpinnerButton: BsPrefixRefForwardingComponent<'button', ComponentProps> =
 	({ status, activeText, children, ...props }) => (
 		<Button
 			disabled={props.disabled || status}
-			bsPrefix={status ? 'active' : 'inactive'}
+			className={`${props.className ? props.className + ' ' : ''}${
+				status ? 'active' : 'inactive'
+			}`}
 			{...props}
 		>
 			{status ? (
