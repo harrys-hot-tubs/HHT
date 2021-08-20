@@ -15,6 +15,14 @@ const Home = () => {
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA) }}
 				/>
 				<title>Harry's Hot Tubs</title>
+				<meta
+					name='description'
+					content='Harry’s Hot Tubs is the number one hot tub rental company in the UK. Serving just over 20 cities, our dedicated team of young, friendly professionals strive to make your life as easy as possible from booking your hot tub all the way through to collection.'
+				/>
+				<meta
+					name='viewport'
+					content='width=device-width, initial-scale=1'
+				></meta>
 			</Head>
 			<h1 className='title' role='heading' aria-level={1}>
 				Harry's Hot Tubs
