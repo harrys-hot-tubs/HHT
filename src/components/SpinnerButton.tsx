@@ -10,7 +10,7 @@ interface ComponentProps extends ButtonProps {
 	/**
 	 * The text to be displayed when the spinner is active.
 	 */
-	activeText: string
+	activeText?: string
 }
 
 /**
@@ -18,11 +18,16 @@ interface ComponentProps extends ButtonProps {
  */
 const SpinnerButton: BsPrefixRefForwardingComponent<'button', ComponentProps> =
 	({ status, activeText, children, ...props }) => (
-		<Button disabled={props.disabled || status} {...props}>
+		<Button
+			disabled={props.disabled || status}
+			bsPrefix={status ? 'active' : 'inactive'}
+			{...props}
+		>
 			{status ? (
 				<React.Fragment>
-					<span>{activeText} </span>
+					{activeText ? <span>{activeText}</span> : null}
 					<Spinner
+						as='span'
 						animation='border'
 						role='status'
 						size='sm'

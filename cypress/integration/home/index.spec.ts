@@ -1,6 +1,6 @@
 import { ValueWithExpiration } from '@hooks/useStoredStateWithExpiration'
 import { addHours } from 'date-fns'
-import { setStorage } from '../helpers/localStorageHelper'
+import { setStorage } from '../../helpers/localStorageHelper'
 
 const loadPage = () => {
 	cy.visit('/')
@@ -19,12 +19,6 @@ describe('with consent', () => {
 
 	it('renders heading properly', () => {
 		cy.get('[role=heading]').should('contain.text', "Harry's Hot Tubs")
-	})
-
-	it('renders call to action button properly', () => {
-		cy.get('[aria-label=hire]')
-			.should('contain.text', 'Hire a Hot Tub')
-			.should('not.have.css', 'background-color', '$primary-pink')
 	})
 
 	it('links to privacy policy', () => {

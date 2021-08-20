@@ -4,17 +4,21 @@ import { enGB } from 'date-fns/locale'
 import { AppProps } from 'next/app'
 import React from 'react'
 import { registerLocale, setDefaultLocale } from 'react-datepicker'
+import Footer from '@components/Footer'
+import Header from '@components/Header'
 import '../scss/main.scss'
 
 const App = ({ Component, pageProps }: AppProps) => {
 	registerLocale('en-GB', enGB)
 	setDefaultLocale('en-GB')
 	return (
-		<React.Fragment>
+		<>
 			<FacebookPixel />
 			<CookieConsentModal />
+			<Header />
 			<Component {...pageProps} />
-		</React.Fragment>
+			<Footer />
+		</>
 	)
 }
 

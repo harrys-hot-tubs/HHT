@@ -5,8 +5,9 @@ import axios from 'axios'
 
 /**
  * Checks if a postcode is valid, and exists in the UK.
- * @param postcode The postcode to be validated.
- * @returns True if the postcode is valid.
+ *
+ * @param {string} postcode The postcode to be validated.
+ * @returns {Promise<[boolean, string]>} True if the postcode is valid.
  */
 export const isPostcode = async (
 	postcode: string
@@ -23,8 +24,9 @@ export const isPostcode = async (
 
 /**
  * Determines the latitude and longitude of a UK postcode.
- * @param postcode A postcode in the UK.
- * @returns A coordinate object representing the geographic location of the postcode.
+ *
+ * @param {string} postcode A postcode in the UK.
+ * @returns {Coordinate} A coordinate object representing the geographic location of the postcode.
  */
 export const getCoordinates = async (postcode: string): Promise<Coordinate> => {
 	const {
@@ -39,8 +41,9 @@ export const getCoordinates = async (postcode: string): Promise<Coordinate> => {
 
 /**
  * Determines whether not not a given location can be delivered to by Harry's Hot Tubs.
- * @param location A geographic location in the UK.
- * @returns True if the postcode is in range of one of the delivery venues.
+ *
+ * @param {Coordinate} location A geographic location in the UK.
+ * @returns {boolean} True if the postcode is in range of one of the delivery venues.
  */
 export const isInRange = async (
 	location: Coordinate
@@ -57,8 +60,9 @@ export const isInRange = async (
 
 /**
  * Finds the closest delivery venue to a UK postcode.
- * @param postcode A UK postcode.
- * @returns The location_id of the nearest delivery venue, or throws an error if the postcode is invalid.
+ *
+ * @param {string} postcode A UK postcode.
+ * @returns {Promise<number>} The location_id of the nearest delivery venue, or throws an error if the postcode is invalid.
  */
 export const getClosestDispatcher = async (
 	postcode: string

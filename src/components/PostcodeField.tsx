@@ -1,8 +1,7 @@
 import PostcodeModal from '@components/modals/postcode_modals/PostcodeModal'
-import SpinnerButton from '@components/SpinnerButton'
 import { PostcodeError } from '@utils/validators/postcodeValidator'
-import React from 'react'
-import { FormControl, InputGroup } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { FormControl } from 'react-bootstrap'
 
 interface ComponentProps {
 	/**
@@ -32,7 +31,7 @@ interface ComponentProps {
 	/**
 	 * Function to be called when the postcode is validated.
 	 */
-	onValidate: React.MouseEventHandler<HTMLElement>
+	onValidate: () => Promise<void>
 }
 
 /**
@@ -47,44 +46,44 @@ const PostcodeField = ({
 	invalidReason,
 	onValidate,
 }: ComponentProps) => {
+	const [touched, setTouched] = useState(false)
+
+	useEffect(() => {
+		const delayDebounce = setTimeout(() => {
+			if (touched || postcode) onValidate()
+		}, 1000)
+
+		return () => clearTimeout(delayDebounce)
+	}, [postcode])
+
 	return (
-		<React.Fragment>
-			<InputGroup className='postcode-field' hasValidation>
-				<FormControl
-					id='postcode'
-					aria-label='postcode'
-					aria-describedby='postcode-error'
-					placeholder='Postcode'
-					autoComplete='postal-code'
-					isInvalid={isInvalid}
-					isValid={isValid}
-					value={postcode}
-					onChange={(e) => onChange(e.target.value)}
-				/>
-				<InputGroup.Append>
-					<SpinnerButton
-						id='postcode-validator'
-						status={loading}
-						type='button'
-						activeText='Checking...'
-						onClick={onValidate}
-						className='postcode-validate-button'
-						data-testid='postcode-validate'
-					>
-						Check Availability
-					</SpinnerButton>
-				</InputGroup.Append>
-				<FormControl.Feedback
-					type='invalid'
-					id='postcode-error'
-					role='alert'
-					aria-label='postcode-feedback'
-				>
-					{generateFeedback(invalidReason)}
-				</FormControl.Feedback>
-			</InputGroup>
+		<>
+			<FormControl
+				as='input'
+				id='postcode'
+				aria-label='postcode'
+				aria-describedby='postcode-error'
+				placeholder='Postcode'
+				autoComplete='postal-code'
+				isInvalid={isInvalid}
+				isValid={isValid}
+				value={postcode}
+				onChange={(e) => {
+					if (!touched) setTouched(true)
+					onChange(e.target.value)
+				}}
+				htmlSize={8}
+			/>
+			<FormControl.Feedback
+				type='invalid'
+				id='postcode-error'
+				role='alert'
+				aria-label='postcode-feedback'
+			>
+				{generateFeedback(invalidReason)}
+			</FormControl.Feedback>
 			<PostcodeModal invalidReason={invalidReason} />
-		</React.Fragment>
+		</>
 	)
 }
 

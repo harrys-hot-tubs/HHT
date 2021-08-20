@@ -20,15 +20,11 @@
 }
 
 .hero-image {
-	border-radius: 2px;
 	content: '';
-	height: 90%;
-	width: 90%;
+	height: 300px;
+	width: 100%;
 	filter: opacity(70%);
 	object-fit: cover;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 .title {
@@ -38,47 +34,27 @@
 	z-index: 1;
 }
 
-.call-to-action {
-	@extend .button;
-	width: 10em;
-	color: $primary-dark;
-	font-size: 14pt;
-	font-weight: bold;
-	background-color: $primary-pink !important;
-	border-width: 0px;
-	border-radius: 100px !important;
-	margin-bottom: 0.5em;
-	z-index: 1;
-}
-
-.call-to-action:active {
-	background-color: #ffffff99;
-	border-color: $primary-pink;
-}
-
-.details-container {
+.lean-to {
 	flex: 1;
-	height: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: baseline;
+	position: relative;
+	margin: 0 32px 0 32px;
+
+	:not(a) {
+		padding-left: 1.2ch;
+		font-size: 12px;
+		line-height: 14px;
+	}
+
+	* {
+		margin-bottom: 0.4rem;
+	}
 }
 
-.background-text {
-	margin: 0 20px 0 20px;
-	position: absolute;
-	background-image: linear-gradient(45deg, $primary-pink, $primary-blue);
-	background-clip: text;
-	color: transparent;
-	filter: opacity(30%);
-	overflow: hidden;
-	line-height: 0.9;
-	font-size: 4.8em;
-	user-select: none;
-}
-
-.introduction::before {
+.lean-to::before {
 	position: absolute;
 	transform: translateX(-10px);
 	display: block;
@@ -89,16 +65,21 @@
 	border-radius: 3px;
 }
 
+.lean-to#lead {
+	margin-top: 2rem;
+	margin-right: 24px;
+}
+
+.lean-to#about {
+	margin-bottom: 2rem;
+}
+
 .introduction {
 	position: relative;
-	margin: 0 20px 0 40px;
-	font-size: 12pt;
 }
 
 .links {
 	color: grey;
-	margin: 0 30px 0 30px;
-	z-index: 1;
 }
 
 .links > a:hover {
@@ -106,38 +87,53 @@
 	color: lighten($color: grey, $amount: 20%);
 }
 
-@media screen and (orientation: landscape) {
-	.outer.home {
-		grid-template-columns: 1fr 1fr;
-	}
-
-	.lead-container {
-		height: 90vh !important;
-	}
+.about-image {
+	border-radius: 10px;
 }
 
-@media (max-width: 350px) {
+section {
+	@extend .container;
+	margin-top: 2rem;
+	width: min(90%, 400px);
+}
+
+section#book {
+	width: min(90%, 600px);
+}
+
+section:last-child {
+	margin-bottom: 2rem;
+}
+
+@media screen and (min-width: 768px) {
 	.title {
-		background-image: linear-gradient(45deg, $primary-pink, $primary-blue);
-		background-clip: text;
-		color: transparent;
-	}
-}
-
-@media (min-width: 750px) {
-	.lead-container {
-		height: 100%;
-	}
-
-	.details-container {
-		height: 100%;
+		font-size: 60pt;
+		position: absolute;
+		top: calc(80px + 20vh);
+		left: 50%;
+		transform: translateX(-50%);
+		white-space: nowrap;
+		text-align: center;
+		width: 728px;
 	}
 
-	.background-text {
-		font-size: 80pt;
+	.hero-image {
+		height: calc(100vh - 80px);
+		filter: opacity(30%);
+	}
+
+	.lean-to#lead {
+		z-index: 1;
+		position: absolute;
+		top: calc(80px + 20vh + 120px);
+		left: 50%;
+		transform: translateX(-50%);
+		width: 400px;
+		margin: 13px;
 	}
 
 	.introduction {
-		font-size: 16pt;
+		font-size: 16px !important;
+		line-height: 1.2 !important;
 	}
 }

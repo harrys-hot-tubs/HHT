@@ -56,7 +56,7 @@ it('sets the page title', () => {
 it('redirects to hire if data is not present', () => {
 	cy.clearLocalStorage()
 	cy.visit('/checkout')
-	cy.location('pathname').should('eq', '/hire')
+	cy.location('pathname').should('eq', '/')
 })
 
 describe('rendering', () => {
