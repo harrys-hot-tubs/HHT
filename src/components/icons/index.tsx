@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import React from 'react'
 
 interface ComponentProps {
@@ -25,11 +24,9 @@ const Icon = ({
 		className,
 	})
 	return (
-		<Link href={href} aria-role='img'>
-			<a target='_blank' role='link' aria-label={label}>
-				{cloned}
-			</a>
-		</Link>
+		<a target='_blank' role='link' aria-label={label} href={href}>
+			{cloned}
+		</a>
 	)
 }
 
