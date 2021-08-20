@@ -4,12 +4,14 @@
 	height: fit-content;
 	display: flex;
 	justify-content: center;
+	width: 100%;
 }
 
 .checkout-outer {
 	padding: 1em;
 	background-color: #ffffff;
 	border-radius: 5px;
+	width: 100%;
 }
 
 .title-bar {
@@ -46,6 +48,7 @@
 	background-color: $primary-pink;
 	border-radius: 10px;
 	padding: 1em;
+	transition: height 0.2s ease-in-out;
 }
 
 .price-info > .price {
@@ -53,19 +56,46 @@
 }
 
 .deposit-info {
-	width: min(100%, 300px);
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 0;
+	max-height: 0;
+	transition: max-height 0.5s ease-out;
+	overflow: hidden;
+}
+
+.deposit-info.expanded {
+	max-height: 500px;
+	transition: max-height 0.5s ease-in;
+	// width: min(270px, 80%);
+}
+
+.spinner {
+	max-height: 0;
+	transition: max-height 0.5s ease-out;
+	overflow: hidden;
+}
+
+.spinner.expanded {
+	display: inline-block;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	max-height: 500px;
+	transition: max-height 0.5s ease-in;
 }
 
 .form-check-label {
-	margin-bottom: 0.25rem;
+	margin-bottom: 0.25rem !important;
 }
 
 .discount-code-group {
 	margin-top: 1rem;
 	font-size: 16px;
+}
+
+.cash-on-delivery-group {
+	margin-bottom: 0;
 }
 
 .checkout-button {
