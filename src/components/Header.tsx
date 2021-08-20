@@ -1,6 +1,6 @@
+import Image from 'next/image'
 import React from 'react'
 import { Nav, Navbar } from 'react-bootstrap'
-import Image from 'next/image'
 
 const Header = () => {
 	return (
@@ -22,10 +22,10 @@ const Header = () => {
 					<Nav.Link href='/docs/FAQs.pdf'>FAQs</Nav.Link>
 					<Nav.Link href='/docs/T&Cs.pdf'>Terms and Conditions</Nav.Link>
 				</Nav>
-				<Nav className='justify-content-end'>
+				{/* <Nav className='justify-content-end'>
 					<Nav.Link href='/login'>Login</Nav.Link>
 					<Nav.Link href='/signup'>Sign Up</Nav.Link>
-				</Nav>
+				</Nav> */}
 			</Navbar.Collapse>
 		</Navbar>
 	)

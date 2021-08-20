@@ -91,17 +91,17 @@
 	border-radius: 10px;
 }
 
-.outer.home > section {
+.outer > section {
 	@extend .container;
 	margin-top: 2rem;
 	width: min(90%, 400px);
 }
 
-.outer.home > section#book {
+.outer > section#book {
 	width: min(90%, 600px);
 }
 
-.outer.home > section:last-child {
+.outer > section:last-child {
 	margin-bottom: 2rem;
 }
 
