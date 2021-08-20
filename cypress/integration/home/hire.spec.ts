@@ -25,7 +25,7 @@ it('renders heading', () => {
 })
 
 it('sets the page title', () => {
-	cy.title().should('eq', 'Hire a Hot Tub')
+	cy.title().should('eq', "Harry's Hot Tubs")
 })
 
 describe('postcode field', () => {
