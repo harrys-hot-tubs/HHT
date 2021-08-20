@@ -127,10 +127,9 @@ const CheckoutForm = ({
 				localStorage.removeItem('bookingData')
 				localStorage.removeItem('paymentIntentSecret')
 				localStorage.removeItem('tub')
-				localStorage.removeItem('price'
-	  		localStorage.removeItem('originalPrice')
+				localStorage.removeItem('price')
+				localStorage.removeItem('originalPrice')
 				localStorage.removeItem('cashOnDelivery')
-
 
 				const intent = result.paymentIntent
 				const { id } = intent
