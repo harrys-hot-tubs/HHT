@@ -1,4 +1,6 @@
 import CheckoutErrors from '@components/CheckoutErrors'
+import DiscountCodeField from '@components/DiscountCodeField'
+import PriceInfo from '@components/PriceInfo'
 import SpinnerButton from '@components/SpinnerButton'
 import { CheckoutInformation } from '@hooks/useCheckoutInformation'
 import { BookingData } from '@pages/checkout'
@@ -6,13 +8,11 @@ import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { StripeError } from '@stripe/stripe-js'
 import { CreateOrderRequest } from '@typings/api/Order'
 import { BookingDB } from '@typings/db/Booking'
-import { priceToString } from '@utils/stripe'
 import axios, { AxiosResponse } from 'axios'
 import { useRouter } from 'next/router'
 import React, { FormEventHandler, useState } from 'react'
 import { Col, Form } from 'react-bootstrap'
 import { Stripe } from 'stripe'
-import DiscountCodeField from './DiscountCodeField'
 
 interface ComponentProps {
 	/**
@@ -127,7 +127,10 @@ const CheckoutForm = ({
 				localStorage.removeItem('bookingData')
 				localStorage.removeItem('paymentIntentSecret')
 				localStorage.removeItem('tub')
-				localStorage.removeItem('price')
+				localStorage.removeItem('price'
+	  		localStorage.removeItem('originalPrice')
+				localStorage.removeItem('cashOnDelivery')
+
 
 				const intent = result.paymentIntent
 				const { id } = intent
@@ -150,16 +153,14 @@ const CheckoutForm = ({
 			className='checkout-form'
 			role='main'
 		>
-			<div className='price-info'>
-				<small>
-					{' '}
-					{startDate ? startDate.toLocaleDateString() : 'XX/XX/XXXX'} to{' '}
-					{endDate ? endDate.toLocaleDateString() : 'XX/XX/XXXX'}
-				</small>
-				<h1 className='price' data-testid='price'>
-					{price !== undefined ? priceToString(price * 100) : '£XXX.XX'}
-				</h1>
-			</div>
+			<PriceInfo
+				paymentIntent={paymentIntent}
+				updatePaymentIntent={updatePaymentIntent}
+				updatePrice={updatePrice}
+				startDate={startDate}
+				endDate={endDate}
+				price={price}
+			/>
 			<div style={{ marginTop: '1em' }} />
 			<CheckoutErrors error={checkoutError} />
 			<CardElement

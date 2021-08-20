@@ -1,7 +1,7 @@
 import SpinnerButton from '@components/SpinnerButton'
 import { useStripe } from '@stripe/react-stripe-js'
 import { APIError } from '@typings/api/Error'
-import { UpdatePaymentRequest } from '@typings/api/Payment'
+import { ApplyPromoCodeRequest } from '@typings/api/Payment'
 import axios from 'axios'
 import React, { MouseEventHandler, useState } from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
@@ -51,10 +51,10 @@ const DiscountCodeField = ({
 				message: `Discount code ${discountCode} applied.`,
 				show: true,
 			})
-			setLoading(false)
 		} catch (error) {
 			console.error(error.message)
 			setFeedback({ type: 'invalid', message: error.message, show: true })
+		} finally {
 			setLoading(false)
 		}
 	}
@@ -98,9 +98,10 @@ const applyPromoCode = async (
 	>(
 		`/api/payments`,
 		{
+			type: 'PROMO_CODE',
 			paymentIntentID,
 			promoCode,
-		} as UpdatePaymentRequest,
+		} as ApplyPromoCodeRequest,
 		{ validateStatus: (status) => status < 500 }
 	)
 	if (res.status !== 200) throw new Error((res.data as APIError).message)

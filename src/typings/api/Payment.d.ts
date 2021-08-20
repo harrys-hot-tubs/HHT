@@ -16,7 +16,17 @@ export interface PaymentIntentRequest {
 	endDate: string
 }
 
-export interface UpdatePaymentRequest {
+export type UpdatePaymentRequestType = keyof Stripe.PaymentIntent
+
+export type UpdatePaymentRequest = ApplyPromoCodeRequest | CashOnDeliveryRequest
+export interface ApplyPromoCodeRequest {
+	type: 'PROMO_CODE'
 	paymentIntentID: Stripe.PaymentIntent['payment_intent_id']
 	promoCode: string
+}
+
+export interface CashOnDeliveryRequest {
+	type: 'CASH_ON_DELIVERY'
+	paymentIntentID: Stripe.PaymentIntent['payment_intent_id']
+	cashOnDelivery: boolean
 }

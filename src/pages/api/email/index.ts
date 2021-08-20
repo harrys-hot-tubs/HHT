@@ -93,7 +93,7 @@ const verifyEmail = async (
 			})
 		}
 
-		await sendConfirmationEmail(email, code)
+		await sendConfirmationCodeEmail(email, code)
 
 		return res.status(200).json({
 			error: false,
@@ -156,7 +156,7 @@ export const generateConfirmationCode = (length: number): string => {
  * @param email The email address the confirmation is to be sent to.
  * @param code The confirmation code to be sent.
  */
-export const sendConfirmationEmail = async (email: string, code: string) =>
+export const sendConfirmationCodeEmail = async (email: string, code: string) =>
 	mailjet.post('send', { version: 'v3.1' }).request({
 		Messages: [
 			{

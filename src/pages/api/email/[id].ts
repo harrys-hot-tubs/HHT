@@ -1,6 +1,6 @@
 import {
 	generateConfirmationCode,
-	sendConfirmationEmail,
+	sendConfirmationCodeEmail,
 } from '@pages/api/email/index'
 import { ConnectedRequest } from '@typings/api'
 import {
@@ -94,7 +94,7 @@ const verifyEmail = async (
 				confirmation_code: code,
 			})
 
-		await sendConfirmationEmail(email, code)
+		await sendConfirmationCodeEmail(email, code)
 
 		return res.status(200).json({
 			error: false,

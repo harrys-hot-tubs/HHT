@@ -82,6 +82,9 @@ const Checkout = ({ tubID }: PageProps) => {
 		localStorage.removeItem('paymentIntentSecret')
 		localStorage.removeItem('tub')
 		localStorage.removeItem('price')
+		localStorage.removeItem('originalPrice')
+		localStorage.removeItem('cashOnDelivery')
+
 		router.push('/#book')
 	}
 
@@ -215,9 +218,10 @@ const Checkout = ({ tubID }: PageProps) => {
 
 /**
  * Fetches the current price of booking a hot tub.
- * @param startDate The start date of the customer's booking.
- * @param endDate The end date of the customer's booking.
- * @param id The id of the tub the customer is booking.
+ *
+ * @param {Date} startDate The start date of the customer's booking.
+ * @param {Date} endDate The end date of the customer's booking.
+ * @param {Number} id The id of the tub the customer is booking.
  * @returns The price of booking the tub from the start date until the end date.
  */
 const getPrice = async (
@@ -242,9 +246,9 @@ const getPrice = async (
 /**
  * Fetches the secret for a new payment intent.
  *
- * @param startDate The start date of the customer's booking.
- * @param endDate The end date of the customer's booking.
- * @param id The id of the tub the customer is booking.
+ * @param {Date} startDate The start date of the customer's booking.
+ * @param {Date} endDate The end date of the customer's booking.
+ * @param {Number} id The id of the tub the customer is booking.
  * @returns The secret associated with a newly created payment intent.
  */
 const getPaymentIntentSecret = async (
@@ -270,9 +274,9 @@ const getPaymentIntentSecret = async (
 /**
  * Reserves a booking for the customer.
  *
- * @param startDate The start date of the customer's booking.
- * @param endDate The end date of the customer's booking.
- * @param id The id of the tub the customer is booking.
+ * @param {Date} startDate The start date of the customer's booking.
+ * @param {Date} endDate The end date of the customer's booking.
+ * @param {Number} id The id of the tub the customer is booking.
  * @returns The booking_id and expiry time of the customer's reserved booking.
  */
 const reserveBooking = async (
