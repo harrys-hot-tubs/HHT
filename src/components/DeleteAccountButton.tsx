@@ -88,6 +88,7 @@ const DeleteAccountButton = ({
 				variant='danger'
 				onClick={() => setShowModal(true)}
 				data-testid='delete-account-button'
+				className='delete-account-button'
 			>
 				Delete Account
 			</Button>

@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /api/
+Disallow: /checkout
+Disallow: /dashboard
+Disallow: /failure
+Disallow: /success
+Disallow: /maintenance.html

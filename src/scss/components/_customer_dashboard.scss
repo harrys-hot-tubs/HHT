@@ -2,6 +2,10 @@
 	display: flex !important;
 	flex-direction: column;
 
+	main {
+		margin-bottom: 1rem;
+	}
+
 	main > h1,
 	h2 {
 		text-align: center;
@@ -16,10 +20,16 @@
 	}
 }
 
-.gdpr-button-container {
-	position: absolute;
-	bottom: 1em;
-	left: 1em;
+.account-update-form {
+	padding: 1rem;
+}
+
+.button-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding-right: 1rem;
+	padding-left: 1rem;
 }
 
 .delete-button {

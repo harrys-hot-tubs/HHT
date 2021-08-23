@@ -1,59 +1,15 @@
 @import '../variables.scss';
 
-.outer.hire {
-	background-color: transparent !important;
-}
-
-.outer.hire > :not(img) {
-	z-index: 1;
-}
-
-.hire-background {
-	height: 96%;
-	width: 96%;
-	filter: opacity(80%) brightness(20%);
-	object-fit: cover;
-	position: absolute;
-	top: 2%;
-	left: 2%;
-	border-radius: 20px;
-}
-
-.primary-container {
-	display: grid;
-	place-items: center;
-	margin: 1em;
-	height: 100%;
-}
-
-.primary-container h1 {
-	color: white;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
-.hire-form-container {
-	// This increases the stacking context for the popper.
-	z-index: 2 !important;
-}
-
 .hire-form {
-	color: white;
+	color: black;
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: space-around;
-	position: relative;
 }
 
-.description p {
-	color: white;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
-.description a {
-	color: $secondary-blue;
+.hire-information {
+	text-align: center;
 }
 
 .hire-submit {
@@ -62,7 +18,14 @@
 	font-size: 16pt;
 	background-color: $secondary-blue;
 	color: $primary-light;
-	width: 6em;
+	height: 50px;
+	width: 50px;
+	padding: 0;
+	border-radius: 50% !important;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
 }
 
 @media (min-width: 1080px) {
@@ -74,8 +37,11 @@
 
 .inline-picker.hire {
 	background-color: transparent;
-	color: white;
 	text-align: center;
+}
+
+.inline-picker.hire.placeholder {
+	color: #495057;
 }
 
 .date-pickers {
@@ -85,32 +51,8 @@
 	text-align: center;
 }
 
-.postcode-validate-button {
-	border: none !important;
-}
-
-@media screen and (orientation: landscape) {
-	.outer.hire {
-		grid-template-columns: 1fr 1fr;
-	}
-
-	.hire-container {
-		margin-top: 20px;
-	}
-
-	.hire-form {
-		margin-top: 20px;
-		margin-bottom: 20px;
-	}
-
+@media (min-width: 768px) {
 	.tub-list {
-		flex-direction: column !important;
-		grid-column: span 2;
-	}
-
-	.date-pickers {
-		font-size: 22pt;
-		display: inline-block;
-		width: 100%;
+		flex-direction: row !important;
 	}
 }

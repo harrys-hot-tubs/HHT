@@ -84,7 +84,8 @@ const Checkout = ({ tubID }: PageProps) => {
 		localStorage.removeItem('price')
 		localStorage.removeItem('originalPrice')
 		localStorage.removeItem('cashOnDelivery')
-		router.push('/hire')
+
+		router.push('/#book')
 	}
 
 	useEffect(() => {
@@ -190,7 +191,7 @@ const Checkout = ({ tubID }: PageProps) => {
 							looking at this.
 						</small>
 					</div>
-					<Link href='/hire'>
+					<Link href='/#book'>
 						<div className='back-button'>
 							<FontAwesomeIcon icon={faAngleLeft} /> Back
 						</div>
@@ -318,7 +319,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	else
 		return {
 			redirect: {
-				destination: '/hire',
+				destination: '/#book',
 				permanent: false,
 			},
 		}

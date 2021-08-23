@@ -33,7 +33,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (
 	if (!tub)
 		return {
 			redirect: {
-				destination: '/hire',
+				destination: '/#book',
 				permanent: false,
 			},
 		}

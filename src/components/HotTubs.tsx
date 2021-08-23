@@ -75,16 +75,17 @@ const HotTubs = ({ tubs, startDate, endDate }: ComponentProps) => {
 
 /**
  * Queries the API to determine the price of a given hot tub over a given booking.
- * @param id The id of the hot tub to be priced.
- * @param startDate The start date of the customer's booking.
- * @param endDate The end date of the customer's booking.
- * @returns The price to the customer for booking the particular tub from the start date to the end date.
+ *
+ * @param {number} id The id of the hot tub to be priced.
+ * @param {Date} startDate The start date of the customer's booking.
+ * @param {Date} endDate The end date of the customer's booking.
+ * @returns {Promise<number>} The price to the customer for booking the particular tub from the start date to the end date.
  */
 const determinePrice = async (
 	id: number,
 	startDate: string,
 	endDate: string
-) => {
+): Promise<number> => {
 	const { data } = await axios.post<PriceRequest, AxiosResponse<PriceResponse>>(
 		`/api/tubs/${id}`,
 		{

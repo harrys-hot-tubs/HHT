@@ -4,6 +4,7 @@
 	height: fit-content;
 	display: flex;
 	justify-content: center;
+	padding-bottom: 150px;
 	width: 100%;
 }
 
@@ -118,5 +119,9 @@
 @media (min-width: 768px) {
 	.title-bar > h2 {
 		font-size: 2rem;
+	}
+
+	.checkout-wrapper {
+		padding-bottom: 50px;
 	}
 }
