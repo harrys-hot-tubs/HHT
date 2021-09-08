@@ -1,4 +1,3 @@
-import HireForm from '@components/HireForm'
 import Head from 'next/head'
 import React from 'react'
 
@@ -58,10 +57,10 @@ const Home = () => {
 					</a>
 				</span>
 			</div>
-			<section id='book'>
+			{/* <section id='book'>
 				<h2>Hire a Tub</h2>
 				<HireForm />
-			</section>
+			</section> */}
 			{/* <section id='about'>
 				<h2>About Us</h2>
 				<Image

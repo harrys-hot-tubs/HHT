@@ -18,7 +18,7 @@ const Header = () => {
 			<Navbar.Toggle />
 			<Navbar.Collapse>
 				<Nav>
-					<Nav.Link href='/#book'>Book</Nav.Link>
+					{/* <Nav.Link href='/#book'>Book</Nav.Link> */}
 					<Nav.Link href='/docs/FAQs.pdf'>FAQs</Nav.Link>
 					<Nav.Link href='/docs/T&Cs.pdf'>Terms and Conditions</Nav.Link>
 				</Nav>
